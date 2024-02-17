@@ -1,0 +1,43 @@
+{
+  "definitions": {
+    "models": {
+      "type": "string",
+      "enum": [
+        "mistral-tiny",
+        "mistral-small",
+        "mistral-medium"
+      ]
+    }
+  },
+  "title": "Mistral AI LLM",
+  "type": "object",
+  "required": [
+    "adapter_name",
+    "api_key",
+    "model"
+  ],
+  "properties": {
+    "adapter_name": {
+      "type": "string",
+      "title": "LLM Adapter ID",
+      "default": "",
+      "description": "Provide a unique name for this adapter instance. Example: mistral-group-1"
+    },
+    "model": {
+      "title": "Model",
+      "$ref": "#/definitions/models"
+    },
+    "api_key": {
+      "type": "string",
+      "title": "API Key",
+      "format": "password",
+      "description": "API Key for Mistral AI LLM"
+    },
+    "timeout": {
+      "type": "number",
+      "title": "Timeout",
+      "default": 900,
+      "description": "Timeout in seconds"
+    }
+  }
+}

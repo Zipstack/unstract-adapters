@@ -1,0 +1,36 @@
+{
+  "title": "Azure Open AI LLM",
+  "type": "object",
+  "required": [
+    "adapter_name",
+    "project",
+    "json_credentials",
+    "model"
+  ],
+  "properties": {
+    "adapter_name": {
+      "type": "string",
+      "title": "LLM Adapter ID",
+      "default": "",
+      "description": "Provide a unique name for this adapter instance. Example: vectorai-group-1"
+    },
+    "json_credentials": {
+      "type": "string",
+      "title": "Credentials",
+      "default": "",
+      "description": "You can download credentials from Google Clouds's iam-admin/serviceaccounts/Keys. Click on Add keys."
+    },
+    "model": {
+      "type": "string",
+      "title": "Model",
+      "default": "",
+      "description": "Provide the name of the model you defined for vectorai"
+    },
+    "project": {
+      "type": "string",
+      "title": "Project",
+      "default": "",
+      "description": "Provide the name of the deployment or project you defined for vectorai"
+    }
+  }
+}

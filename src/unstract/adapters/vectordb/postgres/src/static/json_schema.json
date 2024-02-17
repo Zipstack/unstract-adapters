@@ -1,0 +1,43 @@
+{
+  "title": "Postgres Vector DB",
+  "type": "object",
+  "required": [
+    "adapter_name",
+    "database",
+    "host",
+    "port",
+    "user",
+    "password"
+  ],
+  "properties": {
+    "adapter_name": {
+      "type": "string",
+      "title": "Vector DB Adapter ID",
+      "default": "",
+      "description": "Provide a unique name for this adapter instance. Example: pg-vdb-1"
+    },
+    "database": {
+      "type": "string",
+      "title": "Database",
+      "description": "Provide a name for the database"
+    },
+    "host": {
+      "type": "string",
+      "title": "Host",
+      "description": "Hostname"
+    },
+    "port": {
+      "type": "integer",
+      "title": "Port"
+    },
+    "user": {
+      "type": "string",
+      "title": "User",
+      "description": "Username"
+    },
+    "password": {
+      "type": "string",
+      "title": "Password"
+    }
+  }
+}

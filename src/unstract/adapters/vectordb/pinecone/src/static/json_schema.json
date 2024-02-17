@@ -1,0 +1,30 @@
+{
+  "title": "Pinecone Vector DB",
+  "type": "object",
+  "required": [
+    "adapter_name",
+    "api_key",
+    "environment"
+  ],
+  "properties": {
+    "adapter_name": {
+      "type": "string",
+      "title": "Vector DB Adapter ID",
+      "default": "",
+      "description": "Provide a unique name for this adapter instance. Example: pinecone-vdb-1"
+    },
+    "api_key": {
+      "type": "string",
+      "title": "API Key",
+      "format": "password",
+      "description": "Provide the API key for your Pinecone account"
+    },
+    "environment": {
+      "type": "string",
+      "title": "Environment",
+      "type": "string",
+      "default": "us-west1-gcp",
+      "description": "Provide the environment for your Pinecone account. Example us-west1-gcp-free"
+    }
+  }
+}
