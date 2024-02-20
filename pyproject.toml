@@ -19,7 +19,7 @@ dependencies = [
         # vertex ai
         "google-cloud-aiplatform==1.40.0",
         # Embeddings
-        "fastembed==0.1.3",
+        "fastembed==0.2.2",
         "huggingface==0.0.1",
         # VectorDBs
         "pymilvus==2.3.4",
