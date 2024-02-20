@@ -9,6 +9,7 @@ from llama_index import (
     VectorStoreIndex,
 )
 from llama_index.vector_stores.types import BasePydanticVectorStore, VectorStore
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.vectordb.constants import VectorDbConstants
 
@@ -43,9 +44,9 @@ class VectorDBHelper:
             )
             query_engine = index.as_query_engine()
 
-            response = query_engine.query("What did the author learn?")
-            if response is not None:
-                return True
+            query_engine.query("What did the author learn?")
+            return True
+
         except Exception as e:
             logger.error(f"Error occured while testing adapter {e}")
             raise AdapterError(str(e))
