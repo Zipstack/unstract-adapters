@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Any
+from typing import Any, Optional
 
 from unstract.adapters.x2text.helper import UnstructuredHelper
 from unstract.adapters.x2text.x2text_adapter import X2TextAdapter
@@ -42,7 +42,7 @@ class UnstructuredEnterprise(X2TextAdapter):
     def process(
         self,
         input_file_path: str,
-        output_file_path: str,
+        output_file_path: Optional[str] = None,
         **kwargs: dict[Any, Any],
     ) -> str:
         try:
