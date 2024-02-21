@@ -1,5 +1,5 @@
 from abc import ABC
-from typing import Any
+from typing import Any, Optional
 
 from unstract.adapters.base import Adapter
 from unstract.adapters.enums import AdapterTypes
@@ -34,7 +34,10 @@ class OCRAdapter(Adapter, ABC):
     def get_adapter_type() -> AdapterTypes:
         return AdapterTypes.OCR
 
-    def process(self, input_file_path: str, output_file_path: str) -> str:
+    def process(
+        self, input_file_path: str, output_file_path: Optional[str] = None
+    ) -> str:
+        # Overriding methods will contain actual implementation
         return ""
 
     def test_connection(self, llm_metadata: dict[str, Any]) -> bool:
