@@ -20,13 +20,6 @@
       "format": "uri",
       "default": "http://unstract-llm-whisperer:30005",
       "description": "Provide the URL of the LLM Whisperer server."
-    },
-    "api_key": {
-      "type": "string",
-      "title": "API Key",
-      "default": "",
-      "format": "password",
-      "description": "Provide the API Key of the LLM Whisperer service."
     }
   }
 }

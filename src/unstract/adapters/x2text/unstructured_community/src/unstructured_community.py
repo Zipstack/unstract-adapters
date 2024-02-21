@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Any
+from typing import Any, Optional
 
 from unstract.adapters.x2text.helper import UnstructuredHelper
 from unstract.adapters.x2text.x2text_adapter import X2TextAdapter
@@ -39,11 +39,17 @@ class UnstructuredCommunity(X2TextAdapter):
         f.close()
         return schema
 
-    def process(self, input_file_path: str, output_file_path: str) -> None:
+    def process(
+        self,
+        input_file_path: str,
+        output_file_path: Optional[str] = None,
+        **kwargs: dict[Any, Any],
+    ) -> str:
         try:
-            UnstructuredHelper.process_document(
+            output: str = UnstructuredHelper.process_document(
                 self.config, input_file_path, output_file_path
             )
+            return output
         except Exception as e:
             logger.error(
                 f"Error occured while "

@@ -1,5 +1,5 @@
 import logging
-from typing import Any
+from typing import Any, Optional
 
 import requests
 from requests import Response
@@ -45,10 +45,11 @@ class UnstructuredHelper:
     def process_document(
         unstructured_adapter_config: dict[str, Any],
         input_file_path: str,
-        output_file_path: str,
-    ) -> None:
+        output_file_path: Optional[str] = None,
+    ) -> str:
         try:
-            files = {"file": open(input_file_path, "rb")}
+            input_f = open(input_file_path, "rb")
+            files = {"file": input_f}
             response = UnstructuredHelper.make_request(
                 unstructured_adapter_config,
                 UnstructuredHelper.PROCESS,
@@ -64,13 +65,22 @@ class UnstructuredHelper:
                 )
             else:
                 if response.content is not None:
-                    with open(output_file_path, "w", encoding="utf-8") as f:
-                        f.write(str(response.content))
+                    output = str(response.content)
+                    if output_file_path is not None:
+                        with open(output_file_path, "w", encoding="utf-8") as f:
+                            f.write(output)
+                            f.close()
+                    return output
+                else:
+                    raise AdapterError("No extracted content")
         except Exception as e:
             if not isinstance(e, AdapterError):
                 raise AdapterError(str(e))
             else:
                 raise e
+        finally:
+            if input_f is not None:
+                input_f.close()
 
     @staticmethod
     def make_request(

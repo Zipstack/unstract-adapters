@@ -1,4 +1,5 @@
 from abc import ABC
+from typing import Any, Optional
 
 from unstract.adapters.base import Adapter
 from unstract.adapters.enums import AdapterTypes
@@ -36,6 +37,11 @@ class X2TextAdapter(Adapter, ABC):
     def test_connection(self) -> bool:
         return False
 
-    def process(self, input_file_path: str, output_file_path: str) -> None:
+    def process(
+        self,
+        input_file_path: str,
+        output_file_path: Optional[str] = None,
+        **kwargs: dict[Any, Any],
+    ) -> str:
         # Overriding methods will have the actual implementation
-        pass
+        return ""

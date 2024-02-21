@@ -39,11 +39,17 @@ class UnstructuredEnterprise(X2TextAdapter):
         f.close()
         return schema
 
-    def process(self, input_file_path: str, output_file_path: str) -> None:
+    def process(
+        self,
+        input_file_path: str,
+        output_file_path: str,
+        **kwargs: dict[Any, Any],
+    ) -> str:
         try:
-            UnstructuredHelper.process_document(
+            output: str = UnstructuredHelper.process_document(
                 self.config, input_file_path, output_file_path
             )
+            return output
         except Exception as e:
             logger.error(
                 f"Error occured while "
