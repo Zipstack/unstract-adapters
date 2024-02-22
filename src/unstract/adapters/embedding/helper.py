@@ -2,6 +2,7 @@ import logging
 from typing import Any, Optional
 
 from llama_index.core.embeddings.base import BaseEmbedding
+
 from unstract.adapters.exceptions import AdapterError
 
 logger = logging.getLogger(__name__)
@@ -32,8 +33,10 @@ class EmbeddingHelper:
             if embedding is None:
                 return False
             response = embedding._get_text_embedding("This is a test")
-            if response is not None:
+            if len(response) != 0:
                 return True
+            else:
+                return False
         except Exception as e:
             logger.error(f"Error occured while testing adapter {e}")
             raise AdapterError(str(e))
