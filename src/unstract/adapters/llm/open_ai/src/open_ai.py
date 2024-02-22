@@ -15,6 +15,8 @@ class Constants:
     MAX_RETIRES = "max_retries"
     ADAPTER_NAME = "adapter_name"
     TIMEOUT = "timeout"
+    API_BASE = "api_base"
+    API_VERSION = "api_version"
 
 
 class OpenAILLM(LLMAdapter):
@@ -57,6 +59,8 @@ class OpenAILLM(LLMAdapter):
                 llm = OpenAI(
                     model=str(self.config.get(Constants.MODEL)),
                     api_key=str(self.config.get(Constants.API_KEY)),
+                    api_base=str(self.config.get(Constants.API_BASE)),
+                    api_version=str(self.config.get(Constants.API_VERSION)),
                     max_retries=int(self.config.get(Constants.MAX_RETIRES, 3)),
                     api_type="openai",
                     temperature=0,
@@ -66,6 +70,8 @@ class OpenAILLM(LLMAdapter):
                 llm = OpenAI(
                     model=str(self.config.get(Constants.MODEL)),
                     api_key=str(self.config.get(Constants.API_KEY)),
+                    api_base=str(self.config.get(Constants.API_BASE)),
+                    api_version=str(self.config.get(Constants.API_VERSION)),
                     api_type="openai",
                     temperature=0,
                     timeout=timeout,

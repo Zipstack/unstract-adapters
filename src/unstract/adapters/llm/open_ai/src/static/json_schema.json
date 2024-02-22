@@ -24,11 +24,24 @@
       "default": 5,
       "description": "The maximum number of times to retry a request if it fails."
     },
+    "api_base": {
+      "type": "string",
+      "format": "url",
+      "title": "API Base",
+      "default": "https://api.openai.com/v1",
+      "description": "Provide the OpenAI endpoint. Example: https://api.openai.com/v1"
+    },
     "api_key": {
       "type": "string",
       "title": "API Key",
       "format": "password",
-      "desciption": "Your OpenAI API key."
+      "description": "Your OpenAI API key."
+    },
+    "api_version": {
+      "type": "string",
+      "title": "API Version",
+      "default": "2023-05-15",
+      "description": "Provide the API version. Refer to the documentation provided by OpenAI. Example: 2023-05-15"
     },
     "timeout": {
       "type": "number",
