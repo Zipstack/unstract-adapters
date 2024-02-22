@@ -1,0 +1,25 @@
+{
+  "title": "LLM Whisperer X2Text",
+  "type": "object",
+  "required": [
+    "adapter_name",
+    "url",
+    "token"
+  ],
+  "properties": {
+    "adapter_name": {
+      "type": "string",
+      "title": "X2Text Adapter ID",
+      "default": "",
+      "description": "Provide a unique name for this adapter instance. Example: LLM Whisperer 1"
+    },
+
+    "url": {
+      "type": "string",
+      "title": "URL",
+      "format": "uri",
+      "default": "http://unstract-llm-whisperer:30005",
+      "description": "Provide the URL of the LLM Whisperer server."
+    }
+  }
+}
