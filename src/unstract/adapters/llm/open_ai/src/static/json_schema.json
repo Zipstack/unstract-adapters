@@ -13,17 +13,17 @@
       "default": "",
       "description": "Provide a unique name for this adapter instance. Example: openai-group-1"
     },
+    "api_key": {
+      "type": "string",
+      "title": "API Key",
+      "format": "password",
+      "description": "Your OpenAI API key."
+    },
     "model": {
       "type": "string",
       "title": "Model",
       "default": "gpt-3.5-turbo",
       "description": "The model to use for the API request. Refer to https://platform.openai.com/docs/models"
-    },
-    "max_retries": {
-      "type": "integer",
-      "title": "Max retries",
-      "default": 5,
-      "description": "The maximum number of times to retry a request if it fails."
     },
     "api_base": {
       "type": "string",
@@ -32,17 +32,17 @@
       "default": "https://api.openai.com/v1",
       "description": "Provide the OpenAI endpoint. Example: https://api.openai.com/v1"
     },
-    "api_key": {
-      "type": "string",
-      "title": "API Key",
-      "format": "password",
-      "description": "Your OpenAI API key."
-    },
     "api_version": {
       "type": "string",
       "title": "API Version",
       "default": "2023-05-15",
       "description": "Provide the API version. Refer to the documentation provided by OpenAI. Example: 2023-05-15"
+    },
+    "max_retries": {
+      "type": "integer",
+      "title": "Max retries",
+      "default": 5,
+      "description": "The maximum number of times to retry a request if it fails."
     },
     "timeout": {
       "type": "number",
