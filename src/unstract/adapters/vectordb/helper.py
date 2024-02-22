@@ -38,7 +38,14 @@ class VectorDBHelper:
             )
             local_path = f"{os.path.dirname(__file__)}/samples/"
             index = VectorStoreIndex.from_documents(
-                documents=SimpleDirectoryReader(local_path).load_data(),
+                # By default SimpleDirectoryReader discards paths which
+                # contain one or more parts that are hidden.
+                # In local, packages could be installed in a venv. This
+                # means a path can contain a ".venv" in it which will
+                # then be treated as hidden and subsequently discarded.
+                documents=SimpleDirectoryReader(
+                    local_path,exclude_hidden=False
+                ).load_data(),
                 storage_context=storage_context,
                 service_context=service_context,
             )
