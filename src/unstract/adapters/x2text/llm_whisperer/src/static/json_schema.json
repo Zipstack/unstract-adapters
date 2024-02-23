@@ -3,8 +3,7 @@
   "type": "object",
   "required": [
     "adapter_name",
-    "url",
-    "token"
+    "url"
   ],
   "properties": {
     "adapter_name": {
@@ -18,7 +17,7 @@
       "type": "string",
       "title": "URL",
       "format": "uri",
-      "default": "http://unstract-llm-whisperer:30005",
+      "default": "http://unstract-llm-whisperer:3005",
       "description": "Provide the URL of the LLM Whisperer server."
     }
   }
