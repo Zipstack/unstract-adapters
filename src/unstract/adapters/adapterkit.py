@@ -20,7 +20,7 @@ class Adapterkit:
             | llm_adapters
             | vectordb_adapters
             | x2text_adapters
-            |  ocr_adapters
+            | ocr_adapters
         )
 
     @property
