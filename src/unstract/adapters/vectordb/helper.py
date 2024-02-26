@@ -9,6 +9,7 @@ from llama_index import (
     VectorStoreIndex,
 )
 from llama_index.vector_stores.types import BasePydanticVectorStore, VectorStore
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.vectordb.constants import VectorDbConstants
 
@@ -37,15 +38,22 @@ class VectorDBHelper:
             )
             local_path = f"{os.path.dirname(__file__)}/samples/"
             index = VectorStoreIndex.from_documents(
-                documents=SimpleDirectoryReader(local_path).load_data(),
+                # By default SimpleDirectoryReader discards paths which
+                # contain one or more parts that are hidden.
+                # In local, packages could be installed in a venv. This
+                # means a path can contain a ".venv" in it which will
+                # then be treated as hidden and subsequently discarded.
+                documents=SimpleDirectoryReader(
+                    local_path,exclude_hidden=False
+                ).load_data(),
                 storage_context=storage_context,
                 service_context=service_context,
             )
             query_engine = index.as_query_engine()
 
-            response = query_engine.query("What did the author learn?")
-            if response is not None:
-                return True
+            query_engine.query("What did the author learn?")
+            return True
+
         except Exception as e:
             logger.error(f"Error occured while testing adapter {e}")
             raise AdapterError(str(e))

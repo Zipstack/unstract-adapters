@@ -7,3 +7,4 @@ class AdapterTypes(Enum):
     EMBEDDING = "EMBEDDING"
     VECTOR_DB = "VECTOR_DB"
     OCR = "OCR"
+    X2TEXT = "X2TEXT"
