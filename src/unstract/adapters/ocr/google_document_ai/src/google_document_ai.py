@@ -66,7 +66,9 @@ class GoogleDocumentAI(OCRAdapter):
         f.close()
         return schema
 
-    def __get_request_body(
+    """ Construct the request body to be sent to Google AI Document server """
+
+    def _get_request_body(
         self, file_type_mime: str, file_content_in_bytes: bytes
     ) -> dict[str, Any]:
         return {
@@ -80,7 +82,10 @@ class GoogleDocumentAI(OCRAdapter):
             GoogleDocumentAIKey.FIELD_MASK: "text",
         }
 
-    def __get_request_headers(self) -> dict[str, Any]:
+    """ Construct the request headers to be sent
+    to Google AI Document server """
+
+    def _get_request_headers(self) -> dict[str, Any]:
         credentials = Credentials.from_service_account_info(
             self.google_service_account, scopes=Constants.CREDENTIAL_SCOPES
         )
@@ -91,7 +96,9 @@ class GoogleDocumentAI(OCRAdapter):
             "Authorization": f"Bearer {credentials.token}",
         }
 
-    def __get_input_file_type_mime(self, input_file_path: str) -> str:
+    """ Detect the mime type from the file content """
+
+    def _get_input_file_type_mime(self, input_file_path: str) -> str:
         with open(input_file_path, mode="rb") as file_obj:
             sample_contents = file_obj.read(100)
             file_type = filetype.guess(sample_contents)
@@ -111,15 +118,15 @@ class GoogleDocumentAI(OCRAdapter):
         self, input_file_path: str, output_file_path: Optional[str] = None
     ) -> str:
         try:
-            file_type_mime = self.__get_input_file_type_mime(input_file_path)
+            file_type_mime = self._get_input_file_type_mime(input_file_path)
             if os.path.isfile(input_file_path):
                 with open(input_file_path, "rb") as fop:
                     file_content_in_bytes: bytes = fop.read()
             else:
                 raise AdapterError(f"File not found {input_file_path}")
             processor_url = self.config.get(Constants.URL, "") + ":process"
-            headers = self.__get_request_headers()
-            data = self.__get_request_body(
+            headers = self._get_request_headers()
+            data = self._get_request_body(
                 file_type_mime=file_type_mime,
                 file_content_in_bytes=file_content_in_bytes,
             )
@@ -148,7 +155,7 @@ class GoogleDocumentAI(OCRAdapter):
     def test_connection(self) -> bool:
         try:
             url = self.config.get(Constants.URL, "")
-            headers = self.__get_request_headers()
+            headers = self._get_request_headers()
             response = requests.get(url, headers=headers)
             if response.status_code != 200:
                 logger.error(

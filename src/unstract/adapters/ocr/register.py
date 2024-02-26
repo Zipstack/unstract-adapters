@@ -23,12 +23,12 @@ class OCRRegistry(AdapterRegistry):
             # Check if the item is a directory and not a
             # special directory like __pycache__
             if os.path.isdir(adapter_path) and not adapter.startswith("__"):
-                OCRRegistry.__build_adapter_list(adapter, package, adapters)
+                OCRRegistry._build_adapter_list(adapter, package, adapters)
         if len(adapters) == 0:
             logger.warning("No ocr adapter found.")
 
     @staticmethod
-    def __build_adapter_list(
+    def _build_adapter_list(
         adapter: str, package: str, adapters: dict[str, Any]
     ) -> None:
         try:

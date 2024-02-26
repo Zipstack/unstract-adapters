@@ -23,7 +23,8 @@
     "credentials": {
       "type": "string",
       "title": "Google Service Account",
-      "deafult": ""
+      "deafult": "",
+      "description": "Service Account in JSON format"
     }
   }
 }
