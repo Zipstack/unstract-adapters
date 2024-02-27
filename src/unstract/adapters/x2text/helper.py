@@ -65,7 +65,8 @@ class UnstructuredHelper:
                 )
             else:
                 if response.content is not None:
-                    output = str(response.content)
+                    if isinstance(response.content, bytes):
+                        output = response.content.decode("utf-8")
                     if output_file_path is not None:
                         with open(output_file_path, "w", encoding="utf-8") as f:
                             f.write(output)
