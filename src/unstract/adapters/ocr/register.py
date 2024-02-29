@@ -4,17 +4,17 @@ from importlib import import_module
 from typing import Any
 
 from unstract.adapters.constants import Common
+from unstract.adapters.ocr.ocr_adapter import OCRAdapter
 from unstract.adapters.registry import AdapterRegistry
-from unstract.adapters.x2text.x2text_adapter import X2TextAdapter
 
 logger = logging.getLogger(__name__)
 
 
-class X2TextRegistry(AdapterRegistry):
+class OCRRegistry(AdapterRegistry):
     @staticmethod
     def register_adapters(adapters: dict[str, Any]) -> None:
         current_directory = os.path.dirname(os.path.abspath(__file__))
-        package = "unstract.adapters.x2text"
+        package = "unstract.adapters.ocr"
 
         for adapter in os.listdir(current_directory):
             adapter_path = os.path.join(
@@ -23,9 +23,9 @@ class X2TextRegistry(AdapterRegistry):
             # Check if the item is a directory and not a
             # special directory like __pycache__
             if os.path.isdir(adapter_path) and not adapter.startswith("__"):
-                X2TextRegistry._build_adapter_list(adapter, package, adapters)
+                OCRRegistry._build_adapter_list(adapter, package, adapters)
         if len(adapters) == 0:
-            logger.warning("No X2Text adapter found.")
+            logger.warning("No ocr adapter found.")
 
     @staticmethod
     def _build_adapter_list(
@@ -36,7 +36,7 @@ class X2TextRegistry(AdapterRegistry):
             module = import_module(full_module_path)
             metadata = getattr(module, Common.METADATA, {})
             if metadata.get("is_active", False):
-                adapter_class: X2TextAdapter = metadata[Common.ADAPTER]
+                adapter_class: OCRAdapter = metadata[Common.ADAPTER]
                 adapter_id = adapter_class.get_id()
                 if not adapter_id or (adapter_id in adapters):
                     logger.warning(f"Duplicate Id : {adapter_id}")
@@ -46,4 +46,4 @@ class X2TextRegistry(AdapterRegistry):
                         Common.METADATA: metadata,
                     }
         except ModuleNotFoundError as exception:
-            logger.error(f"Error while importing X2Text adapters : {exception}")
+            logger.error(f"Error while importing ocr adapters : {exception}")
