@@ -3,11 +3,12 @@ import os
 from importlib import import_module
 from typing import Any
 
-from unstract.adapters.registry import AdapterRegistry
 from unstract.adapters.constants import Common
+from unstract.adapters.registry import AdapterRegistry
 from unstract.adapters.vectordb.vectordb_adapter import VectorDBAdapter
 
 logger = logging.getLogger(__name__)
+
 
 class VectorDBRegistry(AdapterRegistry):
     @staticmethod
@@ -16,15 +17,20 @@ class VectorDBRegistry(AdapterRegistry):
         package = "unstract.adapters.vectordb"
 
         for adapter in os.listdir(current_directory):
-            adapter_path = os.path.join(current_directory, adapter, Common.SRC_FOLDER)
-            # Check if the item is a directory and not a special directory like __pycache__
+            adapter_path = os.path.join(
+                current_directory, adapter, Common.SRC_FOLDER
+            )
+            # Check if the item is a directory and not a
+            # special directory like __pycache__
             if os.path.isdir(adapter_path) and not adapter.startswith("__"):
-                VectorDBRegistry.__build_adapter_list(adapter, package, adapters)
+                VectorDBRegistry._build_adapter_list(adapter, package, adapters)
         if len(adapters) == 0:
             logger.warning("No vectorDB adapter found.")
 
     @staticmethod
-    def __build_adapter_list(adapter: str, package: str, adapters: dict[str, Any]) -> None:
+    def _build_adapter_list(
+        adapter: str, package: str, adapters: dict[str, Any]
+    ) -> None:
         try:
             full_module_path = f"{package}.{adapter}.{Common.SRC_FOLDER}"
             module = import_module(full_module_path)
@@ -40,4 +46,6 @@ class VectorDBRegistry(AdapterRegistry):
                         Common.METADATA: metadata,
                     }
         except ModuleNotFoundError as exception:
-            logger.error(f"Error while importing vectorDB adapters : {exception}")
+            logger.error(
+                f"Error while importing vectorDB adapters : {exception}"
+            )

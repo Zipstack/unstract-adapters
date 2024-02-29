@@ -6,7 +6,9 @@ from unstract.adapters.base import Adapter
 from unstract.adapters.constants import Common
 from unstract.adapters.embedding import adapters as embedding_adapters
 from unstract.adapters.llm import adapters as llm_adapters
+from unstract.adapters.ocr import adapters as ocr_adapters
 from unstract.adapters.vectordb import adapters as vectordb_adapters
+from unstract.adapters.x2text import adapters as x2text_adapters
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +16,11 @@ logger = logging.getLogger(__name__)
 class Adapterkit:
     def __init__(self) -> None:
         self._adapters: AdapterDict = (
-            embedding_adapters | llm_adapters | vectordb_adapters
+            embedding_adapters
+            | llm_adapters
+            | vectordb_adapters
+            | x2text_adapters
+            | ocr_adapters
         )
 
     @property
