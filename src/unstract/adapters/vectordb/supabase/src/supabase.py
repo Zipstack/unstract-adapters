@@ -1,14 +1,14 @@
 import os
 from typing import Any, Optional
 
-import vecs
 from llama_index.vector_stores import SupabaseVectorStore
 from llama_index.vector_stores.types import VectorStore
+from vecs import Client
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.vectordb.constants import VectorDbConstants
 from unstract.adapters.vectordb.helper import VectorDBHelper
 from unstract.adapters.vectordb.vectordb_adapter import VectorDBAdapter
-from vecs import Client
 
 
 class Constants:
@@ -80,7 +80,7 @@ class Supabase(VectorDBAdapter):
                 collection_name=self.collection_name,
                 dimension=dimension,
             )
-            self.client = vecs.create_client(postgres_connection_string)
+            self.client = vector_db.client
             return vector_db
         except Exception as e:
             raise AdapterError(str(e))
