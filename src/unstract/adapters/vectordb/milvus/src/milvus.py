@@ -4,6 +4,7 @@ from typing import Any, Optional
 from llama_index.vector_stores import MilvusVectorStore
 from llama_index.vector_stores.types import VectorStore
 from pymilvus import MilvusClient
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.vectordb.constants import VectorDbConstants
 from unstract.adapters.vectordb.helper import VectorDBHelper
@@ -60,6 +61,7 @@ class Milvus(VectorDBAdapter):
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
             )
             vector_db = MilvusVectorStore(
+                uri=self.config.get(Constants.URI),
                 collection_name=self.collection_name,
                 dim=dimension,
             )
