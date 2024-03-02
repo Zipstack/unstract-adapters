@@ -61,8 +61,9 @@ class Milvus(VectorDBAdapter):
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
             )
             vector_db = MilvusVectorStore(
-                uri=self.config.get(Constants.URI),
+                uri=self.config.get(Constants.URI, ""),
                 collection_name=self.collection_name,
+                token=self.config.get(Constants.TOKEN, ""),
                 dim=dimension,
             )
             self.client = vector_db.client
