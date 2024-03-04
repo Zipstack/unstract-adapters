@@ -5,7 +5,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "unstract-adapters"
-version = "0.3.1"
+version = "0.4.0"
 description = "Unstract Adapters"
 authors = [
     {name = "Zipstack Inc.", email = "devsupport@zipstack.com"},
@@ -24,10 +24,7 @@ dependencies = [
         # VectorDBs
         "pymilvus==2.3.4",
         #Required by Supabase
-        "vecs==0.1.0",
-        "flupy==1.2.0",
-        #vecs=0.1.0 can only use pgvector==0.1.*
-        "pgvector==0.1.*",
+        "vecs==0.4.3",
         "pinecone-client==2.2.4",
         "psycopg2-binary==2.9.9",
         "qdrant-client==1.7.0",

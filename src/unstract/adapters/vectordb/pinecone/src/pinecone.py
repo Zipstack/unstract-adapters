@@ -5,6 +5,7 @@ from typing import Any, Optional
 import pinecone
 from llama_index.vector_stores.pinecone import PineconeVectorStore
 from llama_index.vector_stores.types import BasePydanticVectorStore
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.vectordb.constants import VectorDbConstants
 from unstract.adapters.vectordb.helper import VectorDBHelper

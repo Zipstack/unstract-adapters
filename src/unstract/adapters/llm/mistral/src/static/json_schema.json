@@ -1,15 +1,4 @@
 {
-  "definitions": {
-    "models": {
-      "type": "string",
-      "enum": [
-        "mistral-tiny",
-        "mistral-small",
-        "mistral-medium",
-        "mistral-large-latest"
-      ]
-    }
-  },
   "title": "Mistral AI LLM",
   "type": "object",
   "required": [
@@ -25,8 +14,10 @@
       "description": "Provide a unique name for this adapter instance. Example: mistral-group-1"
     },
     "model": {
+      "type": "string",
       "title": "Model",
-      "$ref": "#/definitions/models"
+      "default": "mistral-large-latest",
+      "description": "Provide the model name to be used. Example: mistral-tiny, mistral-small, mistral-medium, mistral-large-latest"
     },
     "api_key": {
       "type": "string",

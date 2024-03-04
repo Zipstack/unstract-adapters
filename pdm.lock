@@ -4,8 +4,8 @@
 [metadata]
 groups = ["default", "lint"]
 strategy = ["cross_platform"]
-lock_version = "4.4"
-content_hash = "sha256:f5814780e0620b3927d4107ef96ab9d9f6b732e190faad6eb4b99845d3d0cafe"
+lock_version = "4.4.1"
+content_hash = "sha256:01ba867d254fda732bb06f6a7e62df0180b8d9d39f8b1d65af69c032ab2d3e59"
 
 [[package]]
 name = "absolufy-imports"
@@ -2932,7 +2932,7 @@ version = "2.0.26"
 requires_python = ">=3.7"
 summary = "Database Abstraction Library"
 dependencies = [
-    "greenlet!=0.4.17; platform_machine == \"aarch64\" or (platform_machine == \"ppc64le\" or (platform_machine == \"x86_64\" or (platform_machine == \"amd64\" or (platform_machine == \"AMD64\" or (platform_machine == \"win32\" or platform_machine == \"WIN32\")))))",
+    "greenlet!=0.4.17; platform_machine == \"win32\" or platform_machine == \"WIN32\" or platform_machine == \"AMD64\" or platform_machine == \"amd64\" or platform_machine == \"x86_64\" or platform_machine == \"ppc64le\" or platform_machine == \"aarch64\"",
     "typing-extensions>=4.6.0",
 ]
 files = [
@@ -3452,14 +3452,17 @@ files = [
 
 [[package]]
 name = "vecs"
-version = "0.1.0"
+version = "0.4.3"
 summary = "pgvector client"
 dependencies = [
+    "deprecated==1.2.*",
+    "flupy==1.*",
     "pgvector==0.1.*",
+    "psycopg2-binary==2.9.*",
     "sqlalchemy==2.*",
 ]
 files = [
-    {file = "vecs-0.1.0.tar.gz", hash = "sha256:a651c349b7bbbdcaf8f19cd3319fc438308617fdf6e664db09fdaa4752985e42"},
+    {file = "vecs-0.4.3.tar.gz", hash = "sha256:0a60294143aec43bd0344bb9235b6e57f8f919d102538f6b989d7b85095a31ce"},
 ]
 
 [[package]]
