@@ -6,9 +6,10 @@ import requests
 from requests import Response
 
 from unstract.adapters.exceptions import AdapterError
-from unstract.adapters.x2text.constants import (
-    LLMWhispererSupportedModes,
-    X2TextConstants,
+from unstract.adapters.x2text.constants import X2TextConstants
+from unstract.adapters.x2text.llm_whisperer.src.constants import (
+    ExtractionModes,
+    OCRModes,
 )
 from unstract.adapters.x2text.x2text_adapter import X2TextAdapter
 
@@ -19,6 +20,8 @@ class Constants:
     URL = "url"
     TEST_CONNECTION = "test-connection"
     PROCESS = "process"
+    EXTRACTION_MODE = "extraction_mode"
+    OCR_MODE = "ocr_mode"
 
 
 class LLMWhisperer(X2TextAdapter):
@@ -52,7 +55,7 @@ class LLMWhisperer(X2TextAdapter):
         f.close()
         return schema
 
-    def __make_request(
+    def _make_request(
         self, request_type: str, **kwargs: Optional[dict[Any, Any]]
     ) -> Response:
         llm_whisperer_svc_url = (
@@ -72,18 +75,15 @@ class LLMWhisperer(X2TextAdapter):
         files = None
         if "files" in kwargs:
             files = kwargs["files"] if kwargs["files"] is not None else None
-        body = None
-        if "mode" in kwargs:
-            mode = kwargs["mode"] if kwargs["mode"] is not None else None
-            if mode is not None:
-                values = tuple(
-                    item.value for item in LLMWhispererSupportedModes
-                )
-                if mode not in values:
-                    raise AdapterError("Mode not supported")
-                body = {
-                    "mode": mode,
-                }
+
+        body = {
+            Constants.EXTRACTION_MODE: self.config.get(
+                Constants.EXTRACTION_MODE, ExtractionModes.TEXT.value
+            ),
+            Constants.OCR_MODE: self.config.get(
+                Constants.OCR_MODE, OCRModes.LINE_PRINTER.value
+            ),
+        }
 
         response = requests.post(
             llm_whisperer_svc_url, headers=headers, files=files, data=body
@@ -99,11 +99,8 @@ class LLMWhisperer(X2TextAdapter):
         try:
             input_f = open(input_file_path, "rb")
             files = {"file": input_f}
-            mode = None
-            if "mode" in kwargs:
-                mode = kwargs["mode"] if kwargs["mode"] is not None else None
-            response = self.__make_request(
-                Constants.PROCESS, files=files, mode=mode
+            response = self._make_request(
+                request_type=Constants.PROCESS, files=files, **kwargs
             )
             if response.status_code != 200:
                 logger.error(
@@ -134,7 +131,7 @@ class LLMWhisperer(X2TextAdapter):
 
     def test_connection(self) -> bool:
         try:
-            response = self.__make_request(Constants.TEST_CONNECTION)
+            response = self._make_request(Constants.TEST_CONNECTION)
             if response.status_code != 200:
                 logger.error(
                     "Error in LLM Whisperer test-connection: "

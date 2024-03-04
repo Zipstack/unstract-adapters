@@ -12,13 +12,26 @@
       "default": "",
       "description": "Provide a unique name for this adapter instance. Example: LLM Whisperer 1"
     },
-
     "url": {
       "type": "string",
       "title": "URL",
       "format": "uri",
       "default": "http://unstract-llm-whisperer:3005",
       "description": "Provide the URL of the LLM Whisperer server."
+    },
+    "extraction_mode": {
+      "type": "string",
+      "title": "Extraction Mode",
+      "enum": ["text", "ocr"],
+      "default": "text",
+      "description": "Text mode tries to extract text from PDF and falls to OCR if the PDF is a scanned image PDF. This should be your default selection. Use OCR mode if you want to force OCR to extract text. This could be useful if you are dealing with malformed PDFs."
+    },
+    "ocr_mode": {
+      "type": "string",
+      "title": "OCR Mode",
+      "enum": ["line-printer", "text-dump"],
+      "default": "line-printer",
+      "description": "Line printer mode tries to maintain the layout of the original document. This should be your default option. If the document contains tables and other complex layouts this option works very well with large LLMs. Text dump mode extracts all the text without considering layout."
     }
   }
 }
