@@ -5,7 +5,7 @@ build-backend = "pdm.backend"
 
 [project]
 name = "unstract-adapters"
-version = "0.4.0"
+dynamic = ["version"]
 description = "Unstract Adapters"
 authors = [
     {name = "Zipstack Inc.", email = "devsupport@zipstack.com"},
@@ -45,6 +45,10 @@ classifiers = [
   "Programming Language :: Python"
 ]
 license = {text = "MIT"}
+
+[tool.pdm.version]
+source = "file"
+path = "src/unstract/adapters/__init__.py"
 
 [tool.pdm.dev-dependencies]
 lint = [
