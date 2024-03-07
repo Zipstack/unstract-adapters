@@ -19,19 +19,57 @@
       "default": "http://unstract-llm-whisperer:3005",
       "description": "Provide the URL of the LLM Whisperer server."
     },
-    "extraction_mode": {
+    "processing_mode": {
       "type": "string",
-      "title": "Extraction Mode",
+      "title": "Processing Mode",
       "enum": ["text", "ocr"],
       "default": "text",
       "description": "Text mode tries to extract text from PDF and falls to OCR if the PDF is a scanned image PDF. This should be your default selection. Use OCR mode if you want to force OCR to extract text. This could be useful if you are dealing with malformed PDFs."
     },
-    "ocr_mode": {
+    "output_mode": {
       "type": "string",
-      "title": "OCR Mode",
+      "title": "Output Mode",
       "enum": ["line-printer", "text-dump"],
       "default": "line-printer",
       "description": "Line printer mode tries to maintain the layout of the original document. This should be your default option. If the document contains tables and other complex layouts this option works very well with large LLMs. Text dump mode extracts all the text without considering layout."
-    }
+    },
+    "oneOf": [
+      {
+        "properties": {
+          "processing_mode": {
+            "type": "string",
+            "title": "Processing Mode",
+            "enum": ["ocr"],
+            "default": "text",
+            "description": "OCR mode forces OCR to extract text. This could be useful if you are dealing with malformed PDFs."
+          },
+          "median_filter_size": {
+            "type": "number",
+            "title": "Median Filter Size",
+            "default": 3,
+            "description": "The median filter is used to remove noise from the image. The default value is 3."
+          },
+          "gaussian_blur_radius": {
+            "type": "number",
+            "title": "Gaussian Blur Radius",
+            "default": 1.0,
+            "description": "The Gaussian blur is used for smoothing images and reducing noise. The default value is 1.0."
+          }
+        },
+        "required": ["processing_mode", "median_filter_size", "gaussian_blur_radius"]
+      },
+      {
+        "properties": {
+          "processing_mode": {
+            "type": "string",
+            "title": "Processing Mode",
+            "enum": ["text"],
+            "default": "text",
+            "description": "Text mode tries to extract text from PDF and falls to OCR if the PDF is a scanned image PDF. This should be your default selection."
+          }
+        },
+        "required": ["processing_mode"]
+      }
+    ]
   }
 }

@@ -1,6 +1,7 @@
 import logging
 import os
 from typing import Any, Optional
+from urllib.parse import urlencode
 
 import requests
 from requests import Response
@@ -8,8 +9,9 @@ from requests import Response
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.x2text.constants import X2TextConstants
 from unstract.adapters.x2text.llm_whisperer.src.constants import (
-    ExtractionModes,
-    OCRModes,
+    OCRFilters,
+    OutputModes,
+    ProcessingModes,
 )
 from unstract.adapters.x2text.x2text_adapter import X2TextAdapter
 
@@ -19,9 +21,9 @@ logger = logging.getLogger(__name__)
 class Constants:
     URL = "url"
     TEST_CONNECTION = "test-connection"
-    PROCESS = "process"
-    EXTRACTION_MODE = "extraction_mode"
-    OCR_MODE = "ocr_mode"
+    WHISPER = "whisper"
+    PROCESSING_MODE = "processing_mode"
+    OUTPUT_MODE = "output_mode"
 
 
 class LLMWhisperer(X2TextAdapter):
@@ -56,7 +58,10 @@ class LLMWhisperer(X2TextAdapter):
         return schema
 
     def _make_request(
-        self, request_type: str, **kwargs: Optional[dict[Any, Any]]
+        self,
+        request_type: str,
+        files: Optional[dict[Any, Any]] = None,
+        **kwargs: Optional[dict[Any, Any]],
     ) -> Response:
         llm_whisperer_svc_url = (
             f"{self.config.get(Constants.URL)}"
@@ -71,26 +76,41 @@ class LLMWhisperer(X2TextAdapter):
             "Authorization": f"Bearer {platform_service_api_key}",
         }
 
-        # Add files only if the request is for process
-        files = None
-        if "files" in kwargs:
-            files = kwargs["files"] if kwargs["files"] is not None else None
+        # Add files only if the request is for whisper
+        data = None
+        params = None
+        if request_type == Constants.WHISPER and files is not None:
+            f = files["file"]
+            data = f.read()
+            headers["Content-Type"] = "application/octet-stream"
 
-        body = {
-            Constants.EXTRACTION_MODE: self.config.get(
-                Constants.EXTRACTION_MODE, ExtractionModes.TEXT.value
-            ),
-            Constants.OCR_MODE: self.config.get(
-                Constants.OCR_MODE, OCRModes.LINE_PRINTER.value
-            ),
-        }
+            processing_mode_value = self.config.get(
+                Constants.PROCESSING_MODE, ProcessingModes.TEXT.value
+            )
+            if processing_mode_value == ProcessingModes.OCR.value:
+                processing_mode_value = (
+                    f"{processing_mode_value}?median_filter_size="
+                    f"{OCRFilters.MEDIAN_FILTER_SIZE.value}"
+                    f"&gaussian_blur_radius="
+                    f"{OCRFilters.GAUSSIAN_BLUR_RADIUS.value}"
+                )
+
+            params = {
+                Constants.PROCESSING_MODE: processing_mode_value,
+                Constants.OUTPUT_MODE: self.config.get(
+                    Constants.OUTPUT_MODE, OutputModes.LINE_PRINTER.value
+                ),
+            }
+
+        query_string = urlencode(params) if params else ""
+        llm_whisperer_svc_url += f"?{query_string}" if query_string else ""
 
         response = requests.post(
-            llm_whisperer_svc_url, headers=headers, files=files, data=body
+            llm_whisperer_svc_url, headers=headers, data=data
         )
         return response
 
-    def process(
+    def whisper(
         self,
         input_file_path: str,
         output_file_path: Optional[str] = None,
@@ -100,11 +120,11 @@ class LLMWhisperer(X2TextAdapter):
             input_f = open(input_file_path, "rb")
             files = {"file": input_f}
             response = self._make_request(
-                request_type=Constants.PROCESS, files=files, **kwargs
+                request_type=Constants.WHISPER, files=files, **kwargs
             )
             if response.status_code != 200:
                 logger.error(
-                    "Error in LLM Whisperer process document: "
+                    "Error in LLM Whisperer whisper document: "
                     f"[{response.status_code}] {response.reason}"
                 )
                 raise AdapterError(
