@@ -2,7 +2,8 @@ import logging
 from abc import ABC
 from typing import Any, Optional
 
-from llama_index.llms.llm import LLM
+from llama_index.core.llms import LLM
+
 from unstract.adapters.base import Adapter
 from unstract.adapters.enums import AdapterTypes
 

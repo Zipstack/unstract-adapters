@@ -1,7 +1,8 @@
 from abc import ABC
 from typing import Any, Optional
 
-from llama_index.core.embeddings.base import BaseEmbedding
+from llama_index.core.embeddings import BaseEmbedding
+
 from unstract.adapters.base import Adapter
 from unstract.adapters.enums import AdapterTypes
 

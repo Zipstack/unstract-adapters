@@ -1,8 +1,9 @@
 import os
 from typing import Any, Optional
 
-from llama_index.llms.llm import LLM
+from llama_index.core.llms import LLM
 from llama_index.llms.palm import PaLM
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.llm.helper import LLMHelper
 from unstract.adapters.llm.llm_adapter import LLMAdapter
@@ -48,21 +49,18 @@ class PaLMLLM(LLMAdapter):
 
     def get_llm_instance(self) -> Optional[LLM]:
         try:
-            if self.config.get(Constants.NUM_OUTPUT) is not None:
-                llm = PaLM(
-                    model=str(self.config.get(Constants.MODEL)),
-                    api_key=str(self.config.get(Constants.API_KEY)),
-                    num_output=int(self.config.get(Constants.NUM_OUTPUT, 50)),
-                    api_type=Constants.API_TYPE,
-                    temperature=0,
-                )
-            else:
-                llm = PaLM(
-                    model=str(self.config.get(Constants.MODEL)),
-                    api_key=str(self.config.get(Constants.API_KEY)),
-                    api_type=Constants.API_TYPE,
-                    temperature=0,
-                )
+            num_output = (
+                int(self.config.get(Constants.NUM_OUTPUT, 50))
+                if self.config.get(Constants.NUM_OUTPUT) is not None
+                else None
+            )
+            llm: Optional[LLM] = PaLM(
+                model=str(self.config.get(Constants.MODEL)),
+                api_key=str(self.config.get(Constants.API_KEY)),
+                num_output=num_output,
+                api_type=Constants.API_TYPE,
+                temperature=0,
+            )
             return llm
         except Exception as e:
             raise AdapterError(str(e))

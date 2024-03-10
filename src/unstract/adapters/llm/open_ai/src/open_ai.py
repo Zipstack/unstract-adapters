@@ -1,8 +1,9 @@
 import os
 from typing import Any, Optional
 
-from llama_index.llms import OpenAI
-from llama_index.llms.llm import LLM
+from llama_index.core.llms import LLM
+from llama_index.llms.openai import OpenAI
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.llm.constants import LLMKeys
 from unstract.adapters.llm.helper import LLMHelper
@@ -52,30 +53,22 @@ class OpenAILLM(LLMAdapter):
 
     def get_llm_instance(self) -> Optional[LLM]:
         try:
-            timeout = float(
-                self.config.get(Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT)
+            llm: Optional[LLM] = OpenAI(
+                model=str(self.config.get(Constants.MODEL)),
+                api_key=str(self.config.get(Constants.API_KEY)),
+                api_base=str(self.config.get(Constants.API_BASE)),
+                api_version=str(self.config.get(Constants.API_VERSION)),
+                max_retries=int(
+                    self.config.get(
+                        Constants.MAX_RETIRES, LLMKeys.DEFAULT_MAX_RETRIES
+                    )
+                ),
+                api_type="openai",
+                temperature=0,
+                timeout=float(
+                    self.config.get(Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT)
+                ),
             )
-            if self.config.get(Constants.MAX_RETIRES) is not None:
-                llm = OpenAI(
-                    model=str(self.config.get(Constants.MODEL)),
-                    api_key=str(self.config.get(Constants.API_KEY)),
-                    api_base=str(self.config.get(Constants.API_BASE)),
-                    api_version=str(self.config.get(Constants.API_VERSION)),
-                    max_retries=int(self.config.get(Constants.MAX_RETIRES, 3)),
-                    api_type="openai",
-                    temperature=0,
-                    timeout=timeout,
-                )
-            else:
-                llm = OpenAI(
-                    model=str(self.config.get(Constants.MODEL)),
-                    api_key=str(self.config.get(Constants.API_KEY)),
-                    api_base=str(self.config.get(Constants.API_BASE)),
-                    api_version=str(self.config.get(Constants.API_VERSION)),
-                    api_type="openai",
-                    temperature=0,
-                    timeout=timeout,
-                )
             return llm
         except Exception as e:
             raise AdapterError(str(e))

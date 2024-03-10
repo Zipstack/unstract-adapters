@@ -1,8 +1,8 @@
 import os
 from typing import Any, Optional
 
-from llama_index.vector_stores import SupabaseVectorStore
-from llama_index.vector_stores.types import VectorStore
+from llama_index.core.vector_stores.types import VectorStore
+from llama_index.vector_stores.supabase import SupabaseVectorStore
 from vecs import Client
 
 from unstract.adapters.exceptions import AdapterError
@@ -75,12 +75,13 @@ class Supabase(VectorDBAdapter):
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
             )
-            vector_db = SupabaseVectorStore(
+            vector_db: Optional[VectorStore] = SupabaseVectorStore(
                 postgres_connection_string=postgres_connection_string,
                 collection_name=self.collection_name,
                 dimension=dimension,
             )
-            self.client = vector_db.client
+            if vector_db is not None:
+                self.client = vector_db.client
             return vector_db
         except Exception as e:
             raise AdapterError(str(e))

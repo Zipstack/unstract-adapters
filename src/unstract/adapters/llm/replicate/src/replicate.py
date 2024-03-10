@@ -1,8 +1,9 @@
 import os
 from typing import Any, Optional
 
-from llama_index.llms.llm import LLM
+from llama_index.core.llms import LLM
 from llama_index.llms.replicate import Replicate
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.llm.helper import LLMHelper
 from unstract.adapters.llm.llm_adapter import LLMAdapter
@@ -54,7 +55,7 @@ class ReplicateLLM(LLMAdapter):
 
     def get_llm_instance(self) -> Optional[LLM]:
         try:
-            llm = Replicate(
+            llm: Optional[LLM] = Replicate(
                 model=str(self.config.get(Constants.MODEL)),
                 prompt_key=str(self.config.get(Constants.API_KEY)),
                 temperature=0,

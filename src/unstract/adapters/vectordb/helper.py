@@ -2,13 +2,16 @@ import logging
 import os
 from typing import Union
 
-from llama_index import (
+from llama_index.core import (
     ServiceContext,
     SimpleDirectoryReader,
     StorageContext,
     VectorStoreIndex,
 )
-from llama_index.vector_stores.types import BasePydanticVectorStore, VectorStore
+from llama_index.core.vector_stores.types import (
+    BasePydanticVectorStore,
+    VectorStore,
+)
 
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.vectordb.constants import VectorDbConstants
@@ -44,7 +47,7 @@ class VectorDBHelper:
                 # means a path can contain a ".venv" in it which will
                 # then be treated as hidden and subsequently discarded.
                 documents=SimpleDirectoryReader(
-                    local_path,exclude_hidden=False
+                    local_path, exclude_hidden=False
                 ).load_data(),
                 storage_context=storage_context,
                 service_context=service_context,

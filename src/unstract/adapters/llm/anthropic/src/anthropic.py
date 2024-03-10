@@ -1,8 +1,9 @@
 import os
 from typing import Any, Optional
 
-from llama_index.llms import Anthropic
-from llama_index.llms.llm import LLM
+from llama_index.core.llms import LLM
+from llama_index.llms.anthropic import Anthropic
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.llm.constants import LLMKeys
 from unstract.adapters.llm.helper import LLMHelper
@@ -49,24 +50,19 @@ class AnthropicLLM(LLMAdapter):
 
     def get_llm_instance(self) -> Optional[LLM]:
         try:
-            timeout = float(
-                self.config.get(Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT)
+            llm: Optional[LLM] = Anthropic(
+                model=str(self.config.get(Constants.MODEL)),
+                api_key=str(self.config.get(Constants.API_KEY)),
+                timeout=float(
+                    self.config.get(Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT)
+                ),
+                max_retries=int(
+                    self.config.get(
+                        Constants.MAX_RETIRES, LLMKeys.DEFAULT_MAX_RETRIES
+                    )
+                ),
+                temperature=0,
             )
-            if self.config.get(Constants.MAX_RETIRES) is not None:
-                llm = Anthropic(
-                    model=str(self.config.get(Constants.MODEL)),
-                    api_key=str(self.config.get(Constants.API_KEY)),
-                    timeout=timeout,
-                    max_retries=int(self.config.get(Constants.MAX_RETIRES, 3)),
-                    temperature=0,
-                )
-            else:
-                llm = Anthropic(
-                    model=str(self.config.get(Constants.MODEL)),
-                    api_key=str(self.config.get(Constants.API_KEY)),
-                    timeout=timeout,
-                    temperature=0,
-                )
             return llm
         except Exception as e:
             raise AdapterError(str(e))

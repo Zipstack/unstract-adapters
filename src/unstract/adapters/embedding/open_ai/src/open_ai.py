@@ -2,8 +2,9 @@ import json
 import os
 from typing import Any, Optional
 
-from llama_index.embeddings import OpenAIEmbedding
-from llama_index.embeddings.base import BaseEmbedding
+from llama_index.core.embeddings import BaseEmbedding
+from llama_index.embeddings.openai import OpenAIEmbedding
+
 from unstract.adapters.embedding.embedding_adapter import EmbeddingAdapter
 from unstract.adapters.embedding.helper import EmbeddingHelper
 from unstract.adapters.exceptions import AdapterError
@@ -53,7 +54,7 @@ class OpenAI(EmbeddingAdapter):
 
     def get_embedding_instance(self) -> Optional[BaseEmbedding]:
         try:
-            embedding = OpenAIEmbedding(
+            embedding: Optional[BaseEmbedding] = OpenAIEmbedding(
                 api_key=str(self.config.get(Constants.API_KEY)),
                 api_base=str(
                     self.config.get(

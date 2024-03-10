@@ -2,8 +2,9 @@ import json
 import os
 from typing import Any, Optional
 
-from llama_index.embeddings.base import BaseEmbedding
+from llama_index.core.embeddings import BaseEmbedding
 from llama_index.embeddings.fastembed import FastEmbedEmbedding
+
 from unstract.adapters.embedding.embedding_adapter import EmbeddingAdapter
 from unstract.adapters.embedding.helper import EmbeddingHelper
 from unstract.adapters.exceptions import AdapterError
@@ -50,7 +51,7 @@ class QdrantFastEmbedM(EmbeddingAdapter):
 
     def get_embedding_instance(self) -> Optional[BaseEmbedding]:
         try:
-            embedding = FastEmbedEmbedding(
+            embedding: Optional[BaseEmbedding] = FastEmbedEmbedding(
                 model_name=str(self.config.get(Constants.MODEL))
             )
             return embedding
