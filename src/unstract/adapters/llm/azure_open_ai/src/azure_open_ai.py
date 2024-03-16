@@ -1,8 +1,8 @@
 import os
 from typing import Any, Optional
 
-from llama_index.core.llm.azure_openai import AzureOpenAI
 from llama_index.core.llms import LLM
+from llama_index.llms.azure_openai import AzureOpenAI
 
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.llm.constants import LLMKeys
