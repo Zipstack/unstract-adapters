@@ -12,7 +12,7 @@ from unstract.adapters.exceptions import AdapterError
 
 class Constants:
     ADAPTER_NAME = "adapter_name"
-    MODEL = "model"
+    MODEL = "model_name"
     TOKENIZER_NAME = "tokenizer_name"
     MAX_LENGTH = "max_length"
     NORMALIZE = "normalize"
