@@ -1,8 +1,8 @@
 import os
 from typing import Any, Optional
 
-from llama_index.vector_stores import MilvusVectorStore
-from llama_index.vector_stores.types import VectorStore
+from llama_index.core.vector_stores.types import VectorStore
+from llama_index.vector_stores.milvus import MilvusVectorStore
 from pymilvus import MilvusClient
 
 from unstract.adapters.exceptions import AdapterError
@@ -60,13 +60,14 @@ class Milvus(VectorDBAdapter):
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
             )
-            vector_db = MilvusVectorStore(
+            vector_db: Optional[VectorStore] = MilvusVectorStore(
                 uri=self.config.get(Constants.URI, ""),
                 collection_name=self.collection_name,
                 token=self.config.get(Constants.TOKEN, ""),
                 dim=dimension,
             )
-            self.client = vector_db.client
+            if vector_db is not None:
+                self.client = vector_db.client
             return vector_db
         except Exception as e:
             raise AdapterError(str(e))

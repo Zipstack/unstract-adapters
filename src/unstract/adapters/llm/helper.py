@@ -2,7 +2,8 @@ import logging
 import re
 from typing import Optional
 
-from llama_index.llms import LLM
+from llama_index.core.llms import LLM
+
 from unstract.adapters.exceptions import AdapterError
 
 logger = logging.getLogger(__name__)

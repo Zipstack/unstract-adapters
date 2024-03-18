@@ -6,7 +6,8 @@
     "model",
     "deployment_name",
     "api_key",
-    "azure_endpoint"
+    "azure_endpoint",
+    "api_version"
   ],
   "properties": {
     "adapter_name": {

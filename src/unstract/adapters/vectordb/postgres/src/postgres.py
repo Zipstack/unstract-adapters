@@ -2,9 +2,10 @@ import os
 from typing import Any, Optional
 
 import psycopg2
-from llama_index.vector_stores import PGVectorStore
-from llama_index.vector_stores.types import BasePydanticVectorStore
+from llama_index.core.vector_stores.types import BasePydanticVectorStore
+from llama_index.vector_stores.postgres import PGVectorStore
 from psycopg2._psycopg import connection
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.vectordb.constants import VectorDbConstants
 from unstract.adapters.vectordb.helper import VectorDBHelper
@@ -68,7 +69,9 @@ class Postgres(VectorDBAdapter):
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
             )
-            vector_db = PGVectorStore.from_params(
+            vector_db: Optional[
+                BasePydanticVectorStore
+            ] = PGVectorStore.from_params(
                 database=self.config.get(Constants.DATABASE),
                 schema_name=self.schema_name,
                 host=self.config.get(Constants.HOST),

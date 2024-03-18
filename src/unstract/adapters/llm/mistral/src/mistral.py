@@ -1,8 +1,9 @@
 import os
 from typing import Any, Optional
 
-from llama_index.llms.llm import LLM
-from llama_index.llms.mistral import MistralAI
+from llama_index.core.llms import LLM
+from llama_index.llms.mistralai import MistralAI
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.llm.constants import LLMKeys
 from unstract.adapters.llm.helper import LLMHelper
@@ -48,7 +49,7 @@ class MistralLLM(LLMAdapter):
 
     def get_llm_instance(self) -> Optional[LLM]:
         try:
-            llm = MistralAI(
+            llm: Optional[LLM] = MistralAI(
                 model=str(self.config.get(Constants.MODEL)),
                 api_key=str(self.config.get(Constants.API_KEY)),
                 temperature=0,

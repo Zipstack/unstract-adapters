@@ -1,7 +1,7 @@
 import logging
 from typing import Any, Optional
 
-from llama_index.core.embeddings.base import BaseEmbedding
+from llama_index.core.embeddings import BaseEmbedding
 
 from unstract.adapters.exceptions import AdapterError
 

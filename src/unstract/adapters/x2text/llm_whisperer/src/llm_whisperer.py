@@ -87,12 +87,12 @@ class LLMWhisperer(X2TextAdapter):
             response: Response
             if request_method == HTTPMethod.GET:
                 response = requests.get(
-                    url=llm_whisperer_svc_url, headers=headers  # type: ignore
+                    url=llm_whisperer_svc_url, headers=headers
                 )
             elif request_method == HTTPMethod.POST:
                 response = requests.post(
                     url=llm_whisperer_svc_url,
-                    headers=headers,  # type: ignore
+                    headers=headers,
                     params=params,
                     data=data,
                 )

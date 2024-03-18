@@ -2,9 +2,10 @@ import logging
 import os
 from typing import Any, Optional
 
+from llama_index.core.vector_stores.types import BasePydanticVectorStore
 from llama_index.vector_stores.qdrant import QdrantVectorStore
-from llama_index.vector_stores.types import BasePydanticVectorStore
 from qdrant_client import QdrantClient
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.vectordb.constants import VectorDbConstants
 from unstract.adapters.vectordb.helper import VectorDBHelper
@@ -58,23 +59,21 @@ class Qdrant(VectorDBAdapter):
                 self.config.get(VectorDbConstants.EMBEDDING_DIMENSION),
             )
             url = self.config.get(Constants.URL)
-            if (
-                self.config.get(Constants.API_KEY) is not None
-                or self.config.get(Constants.API_KEY) == ""
-            ):
-                self.client = QdrantClient(
-                    url=url, api_key=self.config.get(Constants.API_KEY)
-                )
-                vector_db = QdrantVectorStore(
-                    collection_name=self.collection_name,
-                    client=self.client,
-                    api_key=self.config.get(Constants.API_KEY),
-                )
-            else:
-                self.client = QdrantClient(url=url)
-                vector_db = QdrantVectorStore(
-                    collection_name=self.collection_name, client=self.client
-                )
+            user_api_key: Optional[str] = self.config.get(
+                Constants.API_KEY, None
+            )
+            api_key: Optional[str] = (
+                user_api_key
+                if (user_api_key is not None and user_api_key != "")
+                else None
+            )
+            if api_key is not None:
+                self.client = QdrantClient(url=url, api_key=api_key)
+            vector_db: Optional[BasePydanticVectorStore] = QdrantVectorStore(
+                collection_name=self.collection_name,
+                client=self.client,
+                api_key=api_key,
+            )
             return vector_db
         except Exception as e:
             raise AdapterError(str(e))

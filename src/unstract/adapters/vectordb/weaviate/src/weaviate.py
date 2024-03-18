@@ -3,13 +3,14 @@ import os
 from typing import Any, Optional
 
 import weaviate
-from llama_index.vector_stores import WeaviateVectorStore
-from llama_index.vector_stores.types import BasePydanticVectorStore
+from llama_index.core.vector_stores.types import BasePydanticVectorStore
+from llama_index.vector_stores.weaviate import WeaviateVectorStore
+from weaviate import UnexpectedStatusCodeException
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.vectordb.constants import VectorDbConstants
 from unstract.adapters.vectordb.helper import VectorDBHelper
 from unstract.adapters.vectordb.vectordb_adapter import VectorDBAdapter
-from weaviate import UnexpectedStatusCodeException
 
 logger = logging.getLogger(__name__)
 
@@ -84,7 +85,7 @@ class Weaviate(VectorDBAdapter):
                         logger.warning(f"Collection already exists: {e}")
                 else:
                     raise e
-            vector_db = WeaviateVectorStore(
+            vector_db: Optional[BasePydanticVectorStore] = WeaviateVectorStore(
                 weaviate_client=self.client,
                 index_name=self.collection_name,
             )

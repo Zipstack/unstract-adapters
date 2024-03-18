@@ -4,8 +4,9 @@ from typing import Any, Optional
 
 from google.auth.transport import requests as google_requests
 from google.oauth2 import service_account
-from llama_index.llms.llm import LLM
+from llama_index.core.llms import LLM
 from llama_index.llms.vertex import Vertex
+
 from unstract.adapters.llm.helper import LLMHelper
 from unstract.adapters.llm.llm_adapter import LLMAdapter
 
@@ -57,7 +58,7 @@ class VertexAILLM(LLMAdapter):
             scopes=["https://www.googleapis.com/auth/cloud-platform"],
         )
         credentials.refresh(google_requests.Request())
-        llm = Vertex(
+        llm: Optional[LLM] = Vertex(
             project=str(self.config.get(Constants.PROJECT)),
             model=str(self.config.get(Constants.MODEL)),
             credentials=credentials,

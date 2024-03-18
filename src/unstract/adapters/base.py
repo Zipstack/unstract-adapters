@@ -2,9 +2,13 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Any, Optional, Union
 
-from llama_index.embeddings.base import BaseEmbedding
-from llama_index.llms.llm import LLM
-from llama_index.vector_stores.types import BasePydanticVectorStore, VectorStore
+from llama_index.core.embeddings import BaseEmbedding
+from llama_index.core.llms import LLM
+from llama_index.core.vector_stores.types import (
+    BasePydanticVectorStore,
+    VectorStore,
+)
+
 from unstract.adapters.enums import AdapterTypes
 
 logger = logging.getLogger(__name__)

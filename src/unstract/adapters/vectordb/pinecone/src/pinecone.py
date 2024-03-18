@@ -3,8 +3,8 @@ import time
 from typing import Any, Optional
 
 import pinecone
+from llama_index.core.vector_stores.types import BasePydanticVectorStore
 from llama_index.vector_stores.pinecone import PineconeVectorStore
-from llama_index.vector_stores.types import BasePydanticVectorStore
 
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.vectordb.constants import VectorDbConstants
@@ -74,7 +74,7 @@ class Pinecone(VectorDBAdapter):
                 metric=Constants.METRIC,
             )
             time.sleep(10)
-            vector_db = PineconeVectorStore(
+            vector_db: Optional[BasePydanticVectorStore] = PineconeVectorStore(
                 index_name=self.collection_name,
                 api_key=str(self.config.get(Constants.API_KEY)),
                 environment=str(self.config.get(Constants.ENVIRONMENT)),
