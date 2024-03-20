@@ -40,7 +40,7 @@ class OpenAI(EmbeddingAdapter):
     @staticmethod
     def get_icon() -> str:
         return (
-            "https://storage.googleapis.com/pandora-static/"
+            "/api/v1/static/icons/"
             "adapter-icons/OpenAI.png"
         )
 
