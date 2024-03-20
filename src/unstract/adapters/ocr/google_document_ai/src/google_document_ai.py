@@ -55,7 +55,7 @@ class GoogleDocumentAI(OCRAdapter):
     @staticmethod
     def get_icon() -> str:
         return (
-            "/api/v1/static/icons/"
+            "/icons/"
             "adapter-icons/GoogleDocumentAI.png"
         )
 
