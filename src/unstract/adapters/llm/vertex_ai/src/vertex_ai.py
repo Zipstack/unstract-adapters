@@ -36,7 +36,7 @@ class VertexAILLM(LLMAdapter):
     @staticmethod
     def get_icon() -> str:
         return (
-            "/api/v1/static/icons/"
+            "/icons/"
             "adapter-icons/VertexAI.png"
         )
 
