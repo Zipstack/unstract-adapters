@@ -37,7 +37,7 @@ class QdrantFastEmbedM(EmbeddingAdapter):
     @staticmethod
     def get_icon() -> str:
         return (
-            "/api/v1/static/icons/"
+            "/icons/"
             "adapter-icons/qdrant.png"
         )
 

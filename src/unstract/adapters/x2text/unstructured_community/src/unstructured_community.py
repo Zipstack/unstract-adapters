@@ -28,7 +28,7 @@ class UnstructuredCommunity(X2TextAdapter):
     @staticmethod
     def get_icon() -> str:
         return (
-            "/api/v1/static/icons/"
+            "/icons/"
             "adapter-icons/UnstructuredIO.png"
         )
 
