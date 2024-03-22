@@ -21,6 +21,8 @@ dependencies = [
         # Embeddings
         "fastembed==0.1.3",
         "huggingface==0.0.1",
+        # torch is required by HuggingFace
+        "torch==2.2.1",
         # VectorDBs
         "pymilvus==2.3.4",
         #Required by Supabase

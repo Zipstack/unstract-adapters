@@ -1,3 +1,4 @@
+import logging
 import os
 import time
 from typing import Any, Optional
@@ -5,12 +6,14 @@ from typing import Any, Optional
 import pinecone
 from llama_index.vector_stores.pinecone import PineconeVectorStore
 from llama_index.vector_stores.types import BasePydanticVectorStore
+from pinecone import NotFoundException
 
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.vectordb.constants import VectorDbConstants
 from unstract.adapters.vectordb.helper import VectorDBHelper
 from unstract.adapters.vectordb.vectordb_adapter import VectorDBAdapter
 
+logger = logging.getLogger(__name__)
 
 class Constants:
     API_KEY = "api_key"
@@ -68,12 +71,15 @@ class Pinecone(VectorDBAdapter):
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
             )
-            pinecone.create_index(
+            try:
+                pinecone.describe_index(name=self.collection_name)
+            except NotFoundException as e:
+                logger.info(f"Index:{self.collection_name} does not exist. Creating it.")
+                pinecone.create_index(
                 name=self.collection_name,
                 dimension=dimension,
                 metric=Constants.METRIC,
             )
-            time.sleep(10)
             vector_db = PineconeVectorStore(
                 index_name=self.collection_name,
                 api_key=str(self.config.get(Constants.API_KEY)),
