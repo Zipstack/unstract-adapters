@@ -43,7 +43,7 @@ class Postgres(VectorDBAdapter):
     @staticmethod
     def get_icon() -> str:
         return (
-            "https://storage.googleapis.com/pandora-static/"
+            "/icons/"
             "adapter-icons/postgres.png"
         )
 

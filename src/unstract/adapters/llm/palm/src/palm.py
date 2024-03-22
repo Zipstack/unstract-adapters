@@ -35,7 +35,7 @@ class PaLMLLM(LLMAdapter):
     @staticmethod
     def get_icon() -> str:
         return (
-            "https://storage.googleapis.com/pandora-static/"
+            "/icons/"
             "adapter-icons/PaLM.png"
         )
 
