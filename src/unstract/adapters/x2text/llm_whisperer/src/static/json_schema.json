@@ -36,6 +36,12 @@
       "default": "text",
       "description": "Text mode tries to extract text from PDF and falls to OCR if the PDF is a scanned image PDF. This should be your default selection. Use OCR mode if you want to force OCR to extract text. This could be useful if you are dealing with malformed PDFs."
     },
+    "force_text_processing": {
+      "type": "boolean",
+      "title": "Force Text Processing",
+      "default": false,
+      "description": "If checked, ensures that only text processing runs and there is no OCR involved. This differs from the default behaviour where we fall back to OCR processing in case of failures with text processing."
+    },
     "output_mode": {
       "type": "string",
       "title": "Output Mode",
@@ -58,6 +64,21 @@
       "title": "Gaussian Blur Radius",
       "default": 0.0,
       "description": "The radius of the gaussian blur to use for pre-processing the image during OCR based extraction. Useful to eliminate noise from the image. Default is 0.0 if the value is not explicitly set."
+    }
+  },
+  "if": {
+    "properties": {
+      "force_text_processing": {
+        "const": "false"
+      }
+    }
+  },
+  "then": {
+    "properties": {
+      "required": [
+        "median_filter_size",
+        "gaussian_blur_radius"
+      ]
     }
   }
 }
