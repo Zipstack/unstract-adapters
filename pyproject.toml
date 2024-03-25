@@ -38,6 +38,8 @@ dependencies = [
         "replicate==0.22.0",
         "anyscale==0.5.165",
         "mistralai==0.0.8",
+        #OCR
+        "filetype",
 ]
 requires-python = ">=3.9,<3.12"
 readme = "README.md"
