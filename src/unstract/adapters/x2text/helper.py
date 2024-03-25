@@ -3,14 +3,46 @@ from typing import Any, Optional
 
 import requests
 from requests import Response
+from requests.exceptions import ConnectionError, HTTPError, Timeout
 
 from unstract.adapters.exceptions import AdapterError
+from unstract.adapters.utils import AdapterUtils
 from unstract.adapters.x2text.constants import X2TextConstants
 
 logger = logging.getLogger(__name__)
 
 
+class X2TextHelper:
+    """Helpers meant for x2text adapters."""
+
+    @staticmethod
+    def parse_response(
+        response: Response, out_file_path: Optional[str] = None
+    ) -> tuple[str, bool]:
+        """Parses the response from a request.
+
+        Optionally it can write the output to a file
+
+        Args:
+            response (Response): Response to parse
+            out_file_path (Optional[str], optional): Output file path to write
+                 to, skipped if None or emtpy. Defaults to None.
+        Returns:
+            tuple[str, bool]: Response's content and status of parsing
+        """
+        if not response.ok and not response.content:
+            return "", False
+        if isinstance(response.content, bytes):
+            output = response.content.decode("utf-8")
+        if out_file_path:
+            with open(out_file_path, "w", encoding="utf-8") as f:
+                f.write(output)
+        return output, True
+
+
 class UnstructuredHelper:
+    """Helpers meant for unstructured-community and unstructured-enterprise."""
+
     URL = "url"
     API_KEY = "api_key"
     TEST_CONNECTION = "test-connection"
@@ -20,26 +52,10 @@ class UnstructuredHelper:
     def test_server_connection(
         unstructured_adapter_config: dict[str, Any]
     ) -> bool:
-        try:
-            response = UnstructuredHelper.make_request(
-                unstructured_adapter_config, UnstructuredHelper.TEST_CONNECTION
-            )
-            if response.status_code != 200:
-                logger.error(
-                    "Error in unstructured IO test-connection: "
-                    f"[{response.status_code}] {response.reason}"
-                )
-
-                raise AdapterError(
-                    f"{response.status_code} - {response.reason}"
-                )
-            else:
-                return True
-        except Exception as e:
-            if not isinstance(e, AdapterError):
-                raise AdapterError(str(e))
-            else:
-                raise e
+        UnstructuredHelper.make_request(
+            unstructured_adapter_config, UnstructuredHelper.TEST_CONNECTION
+        )
+        return True
 
     @staticmethod
     def process_document(
@@ -48,40 +64,30 @@ class UnstructuredHelper:
         output_file_path: Optional[str] = None,
     ) -> str:
         try:
-            input_f = open(input_file_path, "rb")
-            files = {"file": input_f}
-            response = UnstructuredHelper.make_request(
-                unstructured_adapter_config,
-                UnstructuredHelper.PROCESS,
-                files=files,
+            response: Response
+            with open(input_file_path, "rb") as input_f:
+                mime_type = AdapterUtils.get_file_mime_type(
+                    input_file=input_file_path
+                )
+                files = {"file": (input_file_path, input_f, mime_type)}
+                response = UnstructuredHelper.make_request(
+                    unstructured_adapter_config=unstructured_adapter_config,
+                    request_type=UnstructuredHelper.PROCESS,
+                    files=files,
+                )
+            output, is_success = X2TextHelper.parse_response(
+                response=response, out_file_path=output_file_path
             )
-            if response.status_code != 200:
-                logger.error(
-                    "Error in unstructured IO process document: "
-                    f"[{response.status_code}] {response.reason}"
-                )
-                raise AdapterError(
-                    f"{response.status_code} - {response.reason}"
-                )
-            else:
-                if response.content is not None:
-                    if isinstance(response.content, bytes):
-                        output = response.content.decode("utf-8")
-                    if output_file_path is not None:
-                        with open(output_file_path, "w", encoding="utf-8") as f:
-                            f.write(output)
-                            f.close()
-                    return output
-                else:
-                    raise AdapterError("No extracted content")
-        except Exception as e:
-            if not isinstance(e, AdapterError):
-                raise AdapterError(str(e))
-            else:
-                raise e
-        finally:
-            if input_f is not None:
-                input_f.close()
+            if not is_success:
+                raise AdapterError("Couldn't extract text from file")
+            return output
+        except OSError as e:
+            msg = f"OS error while reading {input_file_path} "
+            if output_file_path:
+                msg += f"and writing {output_file_path}"
+            msg += f": {str(e)}"
+            logger.error(msg)
+            raise AdapterError(str(e))
 
     @staticmethod
     def make_request(
@@ -111,7 +117,7 @@ class UnstructuredHelper:
         }
         # Add api key only if present
         api_key = unstructured_adapter_config.get(UnstructuredHelper.API_KEY)
-        if api_key is not None and api_key != "":
+        if api_key:
             body["unstructured-api-key"] = api_key
 
         x2text_url = (
@@ -122,7 +128,26 @@ class UnstructuredHelper:
         files = None
         if "files" in kwargs:
             files = kwargs["files"] if kwargs["files"] is not None else None
-        response = requests.post(
-            x2text_url, headers=headers, data=body, files=files
-        )
+        try:
+            response = requests.post(
+                x2text_url, headers=headers, data=body, files=files
+            )
+            response.raise_for_status()
+        except ConnectionError as e:
+            logger.error(f"Adapter error: {e}")
+            raise AdapterError(
+                "Unable to connect to unstructured-io's service, "
+                "please check the URL"
+            )
+        except Timeout as e:
+            msg = "Request to unstructured-io's service has timed out"
+            logger.error(f"{msg}: {e}")
+            raise AdapterError(msg)
+        except HTTPError as e:
+            logger.error(f"Adapter error: {e}")
+            default_err = "Error while calling the unstructured-io service"
+            msg = AdapterUtils.get_msg_from_request_exc(
+                err=e, message_key="detail", default_err=default_err
+            )
+            raise AdapterError("unstructured-io: " + msg)
         return response
