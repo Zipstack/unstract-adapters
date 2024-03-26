@@ -27,7 +27,8 @@ dependencies = [
         "vecs==0.4.3",
         "pinecone-client==2.2.4",
         "psycopg2-binary==2.9.9",
-        "qdrant-client==1.7.0",
+        #Any change
+        "qdrant-client~=1.8.0",
         "supabase==2.2.1",
         "weaviate-client==3.25.3",
         #Required by postgres
