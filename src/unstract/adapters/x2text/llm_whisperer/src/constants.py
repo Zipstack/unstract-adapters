@@ -37,10 +37,12 @@ class WhispererConfig:
     UNSTRACT_KEY = "unstract_key"
     MEDIAN_FILTER_SIZE = "median_filter_size"
     GAUSSIAN_BLUR_RADIUS = "gaussian_blur_radius"
+    FORCE_TEXT_PROCESSING = "force_text_processing"
 
 
-class OCRDefaults:
+class WhispererDefaults:
     """Defaults meant for OCR mode."""
 
-    MEDIAN_FILTER_SIZE = 3
-    GAUSSIAN_BLUR_RADIUS = 1.0
+    MEDIAN_FILTER_SIZE = 0
+    GAUSSIAN_BLUR_RADIUS = 0.0
+    FORCE_TEXT_PROCESSING = False
