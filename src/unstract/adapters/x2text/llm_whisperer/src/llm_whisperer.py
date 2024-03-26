@@ -11,10 +11,10 @@ from unstract.adapters.utils import AdapterUtils
 from unstract.adapters.x2text.constants import X2TextConstants
 from unstract.adapters.x2text.llm_whisperer.src.constants import (
     HTTPMethod,
-    OCRDefaults,
     OutputModes,
     ProcessingModes,
     WhispererConfig,
+    WhispererDefaults,
     WhispererEndpoint,
     WhispererHeader,
 )
@@ -42,10 +42,7 @@ class LLMWhisperer(X2TextAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "/icons/"
-            "adapter-icons/LLMWhisperer.png"
-        )
+        return "/icons/" "adapter-icons/LLMWhisperer.png"
 
     @staticmethod
     def get_json_schema() -> str:
@@ -133,20 +130,21 @@ class LLMWhisperer(X2TextAdapter):
                 WhispererConfig.OUTPUT_MODE: self.config.get(
                     WhispererConfig.OUTPUT_MODE, OutputModes.LINE_PRINTER.value
                 ),
+                WhispererConfig.FORCE_TEXT_PROCESSING: self.config.get(
+                    WhispererConfig.FORCE_TEXT_PROCESSING,
+                    WhispererDefaults.FORCE_TEXT_PROCESSING,
+                ),
             }
-            if (
-                params[WhispererConfig.PROCESSING_MODE]
-                == ProcessingModes.OCR.value
-            ):
+            if not params[WhispererConfig.FORCE_TEXT_PROCESSING]:
                 params.update(
                     {
                         WhispererConfig.MEDIAN_FILTER_SIZE: self.config.get(
                             WhispererConfig.MEDIAN_FILTER_SIZE,
-                            OCRDefaults.MEDIAN_FILTER_SIZE,
+                            WhispererDefaults.MEDIAN_FILTER_SIZE,
                         ),
                         WhispererConfig.GAUSSIAN_BLUR_RADIUS: self.config.get(
                             WhispererConfig.GAUSSIAN_BLUR_RADIUS,
-                            OCRDefaults.GAUSSIAN_BLUR_RADIUS,
+                            WhispererDefaults.GAUSSIAN_BLUR_RADIUS,
                         ),
                     }
                 )
