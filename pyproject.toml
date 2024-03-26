@@ -6,10 +6,7 @@ build-backend = "pdm.backend"
 [project]
 name = "unstract-adapters"
 dynamic = ["version"]
-description = "Unstract Adapters"
-authors = [
-    {name = "Zipstack Inc.", email = "devsupport@zipstack.com"},
-]
+description = "Unstract interface for LLMs, Embeddings and VectorDBs"
 dependencies = [
         "llama-index==0.9.28",
         # OpenAI Embedding & LLM
@@ -41,12 +38,24 @@ dependencies = [
         # OCR
         "filetype~=1.2.0",
 ]
-requires-python = ">=3.9,<3.12"
 readme = "README.md"
-classifiers = [
-  "Programming Language :: Python"
+urls = { Homepage = "https://unstract.com", "Release notes" = "https://github.com/Zipstack/unstract-adapters/releases", Source = "https://github.com/Zipstack/unstract-adapters" }
+license = {text = "AGPL v3"}
+authors = [
+    {name = "Zipstack Inc.", email = "devsupport@zipstack.com"},
 ]
-license = {text = "MIT"}
+requires-python = ">=3.9,<3.12"
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: GNU Affero General Public License v3",
+    "Operating System :: POSIX :: Linux",
+    "Operating System :: MacOS :: MacOS X",
+    "Programming Language :: Python",
+    "Programming Language :: Python :: 3.9",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+]
 
 [tool.pdm.version]
 source = "file"
