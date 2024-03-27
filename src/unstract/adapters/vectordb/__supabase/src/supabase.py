@@ -41,10 +41,7 @@ class Supabase(VectorDBAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "https://storage.googleapis.com/pandora-static/"
-            "adapter-icons/supabase.png"
-        )
+        return "/icons/" "adapter-icons/supabase.png"
 
     @staticmethod
     def get_json_schema() -> str:

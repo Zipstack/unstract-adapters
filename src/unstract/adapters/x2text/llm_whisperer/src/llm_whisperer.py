@@ -4,16 +4,17 @@ from typing import Any, Optional
 
 import requests
 from requests import Response
-from requests.exceptions import RequestException
+from requests.exceptions import ConnectionError, RequestException
 
 from unstract.adapters.exceptions import AdapterError
+from unstract.adapters.utils import AdapterUtils
 from unstract.adapters.x2text.constants import X2TextConstants
 from unstract.adapters.x2text.llm_whisperer.src.constants import (
     HTTPMethod,
-    OCRDefaults,
     OutputModes,
     ProcessingModes,
     WhispererConfig,
+    WhispererDefaults,
     WhispererEndpoint,
     WhispererHeader,
 )
@@ -41,10 +42,7 @@ class LLMWhisperer(X2TextAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "https://storage.googleapis.com/pandora-static/"
-            "adapter-icons/LLMWhisperer.png"
-        )
+        return "/icons/" "adapter-icons/LLMWhisperer.png"
 
     @staticmethod
     def get_json_schema() -> str:
@@ -55,7 +53,7 @@ class LLMWhisperer(X2TextAdapter):
 
     def _make_request(
         self,
-        request_verb: HTTPMethod,
+        request_method: HTTPMethod,
         request_endpoint: str,
         params: Optional[dict[str, Any]] = None,
         files: Optional[dict[Any, Any]] = None,
@@ -83,28 +81,36 @@ class LLMWhisperer(X2TextAdapter):
             headers["Content-Type"] = "application/octet-stream"
 
         try:
-            if request_verb == HTTPMethod.GET:
+            response: Response
+            if request_method == HTTPMethod.GET:
                 response = requests.get(
                     url=llm_whisperer_svc_url, headers=headers
                 )
-            elif request_verb == HTTPMethod.POST:
+            elif request_method == HTTPMethod.POST:
                 response = requests.post(
                     url=llm_whisperer_svc_url,
                     headers=headers,
                     params=params,
                     data=data,
                 )
-            response.raise_for_status()
-        except RequestException as e:
-            err_response: Response = e.response  # type: ignore
-            if err_response.headers["Content-Type"] == "application/json":
-                err_json = err_response.json()
-                if "message" in err_json:
-                    raise AdapterError(err_json["message"])
-            elif err_response.headers["Content-Type"] == "text/plain":
-                raise AdapterError(err_response.text())  # type: ignore
             else:
-                raise AdapterError
+                raise AdapterError(
+                    f"Unsupported request method: {request_method}"
+                )
+            response.raise_for_status()
+        except ConnectionError as e:
+            logger.error(f"Adapter error: {e}")
+            raise AdapterError(
+                "Unable to connect to LLM Whisperer service, "
+                "please check the URL"
+            )
+        except RequestException as e:
+            logger.error(f"Adapter error: {e}")
+            default_err = "Error while calling the LLM Whisperer service"
+            msg = AdapterUtils.get_msg_from_request_exc(
+                err=e, message_key="message", default_err=default_err
+            )
+            raise AdapterError(msg)
         return response
 
     def process(
@@ -124,26 +130,27 @@ class LLMWhisperer(X2TextAdapter):
                 WhispererConfig.OUTPUT_MODE: self.config.get(
                     WhispererConfig.OUTPUT_MODE, OutputModes.LINE_PRINTER.value
                 ),
+                WhispererConfig.FORCE_TEXT_PROCESSING: self.config.get(
+                    WhispererConfig.FORCE_TEXT_PROCESSING,
+                    WhispererDefaults.FORCE_TEXT_PROCESSING,
+                ),
             }
-            if (
-                params[WhispererConfig.PROCESSING_MODE]
-                == ProcessingModes.OCR.value
-            ):
+            if not params[WhispererConfig.FORCE_TEXT_PROCESSING]:
                 params.update(
                     {
                         WhispererConfig.MEDIAN_FILTER_SIZE: self.config.get(
                             WhispererConfig.MEDIAN_FILTER_SIZE,
-                            OCRDefaults.MEDIAN_FILTER_SIZE,
+                            WhispererDefaults.MEDIAN_FILTER_SIZE,
                         ),
                         WhispererConfig.GAUSSIAN_BLUR_RADIUS: self.config.get(
                             WhispererConfig.GAUSSIAN_BLUR_RADIUS,
-                            OCRDefaults.GAUSSIAN_BLUR_RADIUS,
+                            WhispererDefaults.GAUSSIAN_BLUR_RADIUS,
                         ),
                     }
                 )
 
             response = self._make_request(
-                request_verb=HTTPMethod.POST,
+                request_method=HTTPMethod.POST,
                 request_endpoint=WhispererEndpoint.WHISPER,
                 params=params,
                 files=files,
@@ -168,11 +175,8 @@ class LLMWhisperer(X2TextAdapter):
                 input_f.close()
 
     def test_connection(self) -> bool:
-        try:
-            self._make_request(
-                request_verb=HTTPMethod.GET,
-                request_endpoint=WhispererEndpoint.TEST_CONNECTION,
-            )
-        except AdapterError:
-            raise
+        self._make_request(
+            request_method=HTTPMethod.GET,
+            request_endpoint=WhispererEndpoint.TEST_CONNECTION,
+        )
         return True

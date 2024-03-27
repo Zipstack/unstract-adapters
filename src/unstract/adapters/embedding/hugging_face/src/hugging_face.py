@@ -40,10 +40,7 @@ class HuggingFace(EmbeddingAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "https://storage.googleapis.com/pandora-static/"
-            "adapter-icons/huggingface.png"
-        )
+        return "/icons/" "adapter-icons/huggingface.png"
 
     @staticmethod
     def get_json_schema() -> str:

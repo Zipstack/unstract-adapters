@@ -1,7 +1,8 @@
-class AdapterError(Exception):
-    DEFAULT_MESSAGE = "Something went wrong"
+from unstract.adapters.constants import Common
 
-    def __init__(self, message: str = DEFAULT_MESSAGE):
+
+class AdapterError(Exception):
+    def __init__(self, message: str = Common.DEFAULT_ERR_MESSAGE):
         super().__init__(message)
         # Make it user friendly wherever possible
         self.message = message

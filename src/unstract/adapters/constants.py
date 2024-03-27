@@ -7,3 +7,4 @@ class Common:
     ICON = "icon"
     ADAPTER_ID = "adapter_id"
     ADAPTER_TYPE = "adapter_type"
+    DEFAULT_ERR_MESSAGE = "Something went wrong"

@@ -27,10 +27,7 @@ class UnstructuredCommunity(X2TextAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "https://storage.googleapis.com/pandora-static/"
-            "adapter-icons/UnstructuredIO.png"
-        )
+        return "/icons/" "adapter-icons/UnstructuredIO.png"
 
     @staticmethod
     def get_json_schema() -> str:

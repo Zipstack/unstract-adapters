@@ -33,10 +33,7 @@ class ReplicateLLM(LLMAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "https://storage.googleapis.com/pandora-static/"
-            "adapter-icons/Replicate.png"
-        )
+        return "/icons/" "adapter-icons/Replicate.png"
 
     @staticmethod
     def get_json_schema() -> str:
