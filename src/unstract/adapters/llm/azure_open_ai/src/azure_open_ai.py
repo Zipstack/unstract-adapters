@@ -3,6 +3,7 @@ from typing import Any, Optional
 
 from llama_index.llms.azure_openai import AzureOpenAI
 from llama_index.llms.llm import LLM
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.llm.constants import LLMKeys
 from unstract.adapters.llm.helper import LLMHelper
@@ -39,10 +40,7 @@ class AzureOpenAILLM(LLMAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "/icons/"
-            "adapter-icons/AzureopenAI.png"
-        )
+        return "/icons/" "adapter-icons/AzureopenAI.png"
 
     @staticmethod
     def get_json_schema() -> str:
@@ -75,3 +73,7 @@ class AzureOpenAILLM(LLMAdapter):
         llm = self.get_llm_instance()
         test_result: bool = LLMHelper.test_llm_instance(llm=llm)
         return test_result
+
+    def get_context_window_size(self) -> int:
+
+        return 0

@@ -3,6 +3,7 @@ from abc import ABC
 from typing import Any, Optional
 
 from llama_index.llms.llm import LLM
+
 from unstract.adapters.base import Adapter
 from unstract.adapters.enums import AdapterTypes
 
@@ -48,3 +49,16 @@ class LLMAdapter(Adapter, ABC):
 
     def test_connection(self, llm_metadata: dict[str, Any]) -> bool:
         return False
+
+    def get_context_window_size(self) -> int:
+        """Get the context window size supported by the LLM.
+
+        Returns:
+            int: Context window size supported by the LLM
+        """
+        context_window_size: int = 0
+        llm = self.get_llm_instance()
+        if llm is not None:
+            context_window_size = llm.metadata.context_window
+            return context_window_size
+        return context_window_size
