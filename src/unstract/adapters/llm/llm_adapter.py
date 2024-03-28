@@ -60,5 +60,4 @@ class LLMAdapter(Adapter, ABC):
         llm = self.get_llm_instance()
         if llm is not None:
             context_window_size = llm.metadata.context_window
-            return context_window_size
         return context_window_size
