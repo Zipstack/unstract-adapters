@@ -73,7 +73,3 @@ class AzureOpenAILLM(LLMAdapter):
         llm = self.get_llm_instance()
         test_result: bool = LLMHelper.test_llm_instance(llm=llm)
         return test_result
-
-    def get_context_window_size(self) -> int:
-
-        return 0
