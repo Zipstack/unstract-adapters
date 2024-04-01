@@ -53,11 +53,13 @@ class LLMAdapter(Adapter, ABC):
     def get_context_window_size(self) -> int:
         """Get the context window size supported by the LLM.
 
+        Note: None of the derived classes implement this method
+
         Returns:
             int: Context window size supported by the LLM
         """
         context_window_size: int = 0
         llm = self.get_llm_instance()
-        if llm is not None:
+        if llm:
             context_window_size = llm.metadata.context_window
         return context_window_size
