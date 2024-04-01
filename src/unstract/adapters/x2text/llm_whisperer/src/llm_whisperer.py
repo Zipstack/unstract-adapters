@@ -12,10 +12,10 @@ from unstract.adapters.x2text.constants import X2TextConstants
 from unstract.adapters.x2text.helper import X2TextHelper
 from unstract.adapters.x2text.llm_whisperer.src.constants import (
     HTTPMethod,
-    OCRDefaults,
     OutputModes,
     ProcessingModes,
     WhispererConfig,
+    WhispererDefaults,
     WhispererEndpoint,
     WhispererHeader,
 )
@@ -85,12 +85,12 @@ class LLMWhisperer(X2TextAdapter):
             response: Response
             if request_method == HTTPMethod.GET:
                 response = requests.get(
-                    url=llm_whisperer_svc_url, headers=headers  # type: ignore
+                    url=llm_whisperer_svc_url, headers=headers
                 )
             elif request_method == HTTPMethod.POST:
                 response = requests.post(
                     url=llm_whisperer_svc_url,
-                    headers=headers,  # type: ignore
+                    headers=headers,
                     params=params,
                     data=data,
                 )
@@ -135,20 +135,21 @@ class LLMWhisperer(X2TextAdapter):
                 WhispererConfig.OUTPUT_MODE: self.config.get(
                     WhispererConfig.OUTPUT_MODE, OutputModes.LINE_PRINTER.value
                 ),
+                WhispererConfig.FORCE_TEXT_PROCESSING: self.config.get(
+                    WhispererConfig.FORCE_TEXT_PROCESSING,
+                    WhispererDefaults.FORCE_TEXT_PROCESSING,
+                ),
             }
-            if (
-                params[WhispererConfig.PROCESSING_MODE]
-                == ProcessingModes.OCR.value
-            ):
+            if not params[WhispererConfig.FORCE_TEXT_PROCESSING]:
                 params.update(
                     {
                         WhispererConfig.MEDIAN_FILTER_SIZE: self.config.get(
                             WhispererConfig.MEDIAN_FILTER_SIZE,
-                            OCRDefaults.MEDIAN_FILTER_SIZE,
+                            WhispererDefaults.MEDIAN_FILTER_SIZE,
                         ),
                         WhispererConfig.GAUSSIAN_BLUR_RADIUS: self.config.get(
                             WhispererConfig.GAUSSIAN_BLUR_RADIUS,
-                            OCRDefaults.GAUSSIAN_BLUR_RADIUS,
+                            WhispererDefaults.GAUSSIAN_BLUR_RADIUS,
                         ),
                     }
                 )
