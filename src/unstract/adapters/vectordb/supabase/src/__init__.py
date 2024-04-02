@@ -5,5 +5,5 @@ metadata = {
     "version": "1.0.0",
     "adapter": Supabase,
     "description": "Supabase VectorDB adapter",
-    "is_active": True,
+    "is_active": False,
 }
