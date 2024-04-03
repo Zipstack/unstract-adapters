@@ -65,8 +65,9 @@ class Pinecone(VectorDBAdapter):
                 self.config.get(VectorDbConstants.VECTOR_DB_NAME),
                 self.config.get(VectorDbConstants.EMBEDDING_DIMENSION),
             )
-            # Piecone allows only alphanumeric & hyphens for collection naming
-            self.collection_name = collection_name.replace("_", "-")
+            # Pinecone allows only lowercase alphanumeric & hyphens for
+            # collection name
+            self.collection_name = collection_name.replace("_", "-").lower()
             dimension = self.config.get(
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
