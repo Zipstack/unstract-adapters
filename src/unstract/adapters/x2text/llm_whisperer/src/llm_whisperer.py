@@ -4,11 +4,12 @@ from typing import Any, Optional
 
 import requests
 from requests import Response
-from requests.exceptions import ConnectionError, RequestException
+from requests.exceptions import ConnectionError, HTTPError, Timeout
 
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.utils import AdapterUtils
 from unstract.adapters.x2text.constants import X2TextConstants
+from unstract.adapters.x2text.helper import X2TextHelper
 from unstract.adapters.x2text.llm_whisperer.src.constants import (
     HTTPMethod,
     OutputModes,
@@ -104,7 +105,11 @@ class LLMWhisperer(X2TextAdapter):
                 "Unable to connect to LLM Whisperer service, "
                 "please check the URL"
             )
-        except RequestException as e:
+        except Timeout as e:
+            msg = "Request to LLM whisperer has timed out"
+            logger.error(f"{msg}: {e}")
+            raise AdapterError(msg)
+        except HTTPError as e:
             logger.error(f"Adapter error: {e}")
             default_err = "Error while calling the LLM Whisperer service"
             msg = AdapterUtils.get_msg_from_request_exc(
@@ -155,17 +160,19 @@ class LLMWhisperer(X2TextAdapter):
                 params=params,
                 files=files,
             )
-            if response.ok and response.content is not None:
-                if isinstance(response.content, bytes):
-                    output = response.content.decode("utf-8")
-                if output_file_path is not None:
-                    with open(output_file_path, "w", encoding="utf-8") as f:
-                        f.write(output)
-                        f.close()
-                return output
-            return ""
-        except AdapterError:
-            raise
+            output, is_success = X2TextHelper.parse_response(
+                response=response, out_file_path=output_file_path
+            )
+            if not is_success:
+                raise AdapterError("Couldn't extract text from file")
+            return output  # type: ignore
+        except OSError as e:
+            msg = f"OS error while reading {input_file_path} "
+            if output_file_path:
+                msg += f"and writing {output_file_path}"
+            msg += f": {str(e)}"
+            logger.error(msg)
+            raise AdapterError(str(e))
         # TODO: Review this practice and remove if unnecessary
         except Exception as e:
             logger.error(f"Error occured while processing document: {e}")

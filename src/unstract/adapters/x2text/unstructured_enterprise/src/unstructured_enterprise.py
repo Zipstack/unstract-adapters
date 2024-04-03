@@ -42,27 +42,11 @@ class UnstructuredEnterprise(X2TextAdapter):
         output_file_path: Optional[str] = None,
         **kwargs: dict[Any, Any],
     ) -> str:
-        try:
-            output: str = UnstructuredHelper.process_document(
-                self.config, input_file_path, output_file_path
-            )
-            return output
-        except Exception as e:
-            logger.error(
-                f"Error occured while "
-                f"unstructured IO Enterprise process document {e}"
-            )
-            raise e
+        output: str = UnstructuredHelper.process_document(
+            self.config, input_file_path, output_file_path
+        )
+        return output
 
     def test_connection(self) -> bool:
-        try:
-            result: bool = UnstructuredHelper.test_server_connection(
-                self.config
-            )
-            return result
-        except Exception as e:
-            logger.error(
-                f"Error occured while testing "
-                f"unstructured IO Enterprise adapter {e}"
-            )
-            raise e
+        result: bool = UnstructuredHelper.test_server_connection(self.config)
+        return result
