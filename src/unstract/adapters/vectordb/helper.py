@@ -39,7 +39,7 @@ class VectorDBHelper:
             #     chunk_size - 512
             #     llm=None
             llm = MockLLM()
-            embed_model = MockEmbedding(embed_dim=1536)
+            embed_model = MockEmbedding(embed_dim=1)
             index = VectorStoreIndex.from_documents(
                 # By default, SimpleDirectoryReader discards paths which
                 # contain one or more parts that are hidden.
