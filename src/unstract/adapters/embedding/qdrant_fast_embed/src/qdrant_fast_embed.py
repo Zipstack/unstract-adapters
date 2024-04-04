@@ -37,7 +37,7 @@ class QdrantFastEmbedM(EmbeddingAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return "/icons/" "adapter-icons/qdrant.png"
+        return "/icons/adapter-icons/qdrant.png"
 
     @staticmethod
     def get_json_schema() -> str:

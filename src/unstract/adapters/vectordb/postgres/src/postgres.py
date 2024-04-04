@@ -43,7 +43,7 @@ class Postgres(VectorDBAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return "/icons/" "adapter-icons/postgres.png"
+        return "/icons/adapter-icons/postgres.png"
 
     @staticmethod
     def get_json_schema() -> str:
@@ -66,17 +66,17 @@ class Postgres(VectorDBAdapter):
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
             )
-            vector_db: Optional[
-                BasePydanticVectorStore
-            ] = PGVectorStore.from_params(
-                database=self.config.get(Constants.DATABASE),
-                schema_name=self.schema_name,
-                host=self.config.get(Constants.HOST),
-                password=self.config.get(Constants.PASSWORD),
-                port=str(self.config.get(Constants.PORT)),
-                user=self.config.get(Constants.USER),
-                table_name=self.collection_name,
-                embed_dim=dimension,
+            vector_db: Optional[BasePydanticVectorStore] = (
+                PGVectorStore.from_params(
+                    database=self.config.get(Constants.DATABASE),
+                    schema_name=self.schema_name,
+                    host=self.config.get(Constants.HOST),
+                    password=self.config.get(Constants.PASSWORD),
+                    port=str(self.config.get(Constants.PORT)),
+                    user=self.config.get(Constants.USER),
+                    table_name=self.collection_name,
+                    embed_dim=dimension,
+                )
             )
             self.client = psycopg2.connect(
                 database=self.config.get(Constants.DATABASE),
@@ -91,9 +91,9 @@ class Postgres(VectorDBAdapter):
             raise AdapterError(str(e))
 
     def test_connection(self) -> bool:
-        self.config[
-            VectorDbConstants.EMBEDDING_DIMENSION
-        ] = VectorDbConstants.TEST_CONNECTION_EMBEDDING_SIZE
+        self.config[VectorDbConstants.EMBEDDING_DIMENSION] = (
+            VectorDbConstants.TEST_CONNECTION_EMBEDDING_SIZE
+        )
         vector_db = self.get_vector_db_instance()
         test_result: bool = VectorDBHelper.test_vector_db_instance(
             vector_store=vector_db

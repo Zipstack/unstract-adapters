@@ -42,7 +42,7 @@ class AzureOpenAI(EmbeddingAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return "/icons/" "adapter-icons/AzureopenAI.png"
+        return "/icons/adapter-icons/AzureopenAI.png"
 
     @staticmethod
     def get_json_schema() -> str:

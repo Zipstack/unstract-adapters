@@ -38,7 +38,7 @@ class Milvus(VectorDBAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return "/icons/" "adapter-icons/Milvus.png"
+        return "/icons/adapter-icons/Milvus.png"
 
     @staticmethod
     def get_json_schema() -> str:
@@ -70,9 +70,9 @@ class Milvus(VectorDBAdapter):
             raise AdapterError(str(e))
 
     def test_connection(self) -> bool:
-        self.config[
-            VectorDbConstants.EMBEDDING_DIMENSION
-        ] = VectorDbConstants.TEST_CONNECTION_EMBEDDING_SIZE
+        self.config[VectorDbConstants.EMBEDDING_DIMENSION] = (
+            VectorDbConstants.TEST_CONNECTION_EMBEDDING_SIZE
+        )
         vector_db = self.get_vector_db_instance()
         test_result: bool = VectorDBHelper.test_vector_db_instance(
             vector_store=vector_db

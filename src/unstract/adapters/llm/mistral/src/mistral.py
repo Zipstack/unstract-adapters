@@ -35,7 +35,7 @@ class MistralLLM(LLMAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return "/icons/" "adapter-icons/Mistral%20AI.png"
+        return "/icons/adapter-icons/Mistral%20AI.png"
 
     @staticmethod
     def get_json_schema() -> str:

@@ -40,7 +40,7 @@ class Qdrant(VectorDBAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return "/icons/" "adapter-icons/qdrant.png"
+        return "/icons/adapter-icons/qdrant.png"
 
     @staticmethod
     def get_json_schema() -> str:
@@ -59,12 +59,8 @@ class Qdrant(VectorDBAdapter):
             user_api_key: Optional[str] = self.config.get(
                 Constants.API_KEY, None
             )
-            api_key: Optional[str] = (
-                user_api_key
-                if (user_api_key is not None and user_api_key != "")
-                else None
-            )
-            if api_key is not None:
+            api_key: Optional[str] = user_api_key if user_api_key else None
+            if api_key:
                 self.client = QdrantClient(url=url, api_key=api_key)
             vector_db: Optional[BasePydanticVectorStore] = QdrantVectorStore(
                 collection_name=self.collection_name,

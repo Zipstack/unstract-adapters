@@ -43,7 +43,7 @@ class LLMWhisperer(X2TextAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return "/icons/" "adapter-icons/LLMWhisperer.png"
+        return "/icons/adapter-icons/LLMWhisperer.png"
 
     @staticmethod
     def get_json_schema() -> str:
