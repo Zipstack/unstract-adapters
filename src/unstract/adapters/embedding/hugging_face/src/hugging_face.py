@@ -54,7 +54,11 @@ class HuggingFace(EmbeddingAdapter):
             embedding_batch_size = EmbeddingHelper.get_embedding_batch_size(
                 config=self.config
             )
-            max_length: Optional[int] = self.config.get(Constants.MAX_LENGTH)
+            max_length: Optional[int] = (
+                int(self.config.get(Constants.MAX_LENGTH, 0))
+                if self.config.get(Constants.MAX_LENGTH)
+                else None
+            )
             embedding: Optional[BaseEmbedding] = HuggingFaceEmbedding(
                 model_name=str(self.config.get(Constants.MODEL)),
                 tokenizer_name=str(self.config.get(Constants.TOKENIZER_NAME)),
