@@ -3,11 +3,12 @@ import os
 from typing import Union
 
 from llama_index.core import (
-    ServiceContext,
+    MockEmbedding,
     SimpleDirectoryReader,
     StorageContext,
     VectorStoreIndex,
 )
+from llama_index.core.llms import MockLLM
 from llama_index.core.vector_stores.types import (
     BasePydanticVectorStore,
     VectorStore,
@@ -28,20 +29,19 @@ class VectorDBHelper:
             if vector_store is None:
                 return False
 
-            # For custom embedding args will be:
-            #     embed_model - InstructorEmbeddings(embed_batch_size=2)
-            #     chunk_size - 512
-            #     llm=None
-            service_context = ServiceContext.from_defaults(
-                llm=None, embed_model=None
-            )
-
             storage_context = StorageContext.from_defaults(
                 vector_store=vector_store
             )
             local_path = f"{os.path.dirname(__file__)}/samples/"
+            # Using mock llm and embedding here.
+            # For custom embedding args will be:
+            #     embed_model - InstructorEmbeddings(embed_batch_size=2)
+            #     chunk_size - 512
+            #     llm=None
+            llm = MockLLM()
+            embed_model = MockEmbedding(embed_dim=1536)
             index = VectorStoreIndex.from_documents(
-                # By default SimpleDirectoryReader discards paths which
+                # By default, SimpleDirectoryReader discards paths which
                 # contain one or more parts that are hidden.
                 # In local, packages could be installed in a venv. This
                 # means a path can contain a ".venv" in it which will
@@ -50,9 +50,10 @@ class VectorDBHelper:
                     local_path, exclude_hidden=False
                 ).load_data(),
                 storage_context=storage_context,
-                service_context=service_context,
+                llm=llm,
+                embed_model=embed_model,
             )
-            query_engine = index.as_query_engine()
+            query_engine = index.as_query_engine(llm=llm)
 
             query_engine.query("What did the author learn?")
             return True
