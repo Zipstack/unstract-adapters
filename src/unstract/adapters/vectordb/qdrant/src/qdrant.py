@@ -56,10 +56,7 @@ class Qdrant(VectorDBAdapter):
                 self.config.get(VectorDbConstants.EMBEDDING_DIMENSION),
             )
             url = self.config.get(Constants.URL)
-            user_api_key: Optional[str] = self.config.get(
-                Constants.API_KEY, None
-            )
-            api_key: Optional[str] = user_api_key if user_api_key else None
+            api_key: Optional[str] = self.config.get(Constants.API_KEY, None)
             if api_key:
                 self.client = QdrantClient(url=url, api_key=api_key)
             vector_db: Optional[BasePydanticVectorStore] = QdrantVectorStore(
