@@ -49,7 +49,7 @@ class Qdrant(VectorDBAdapter):
         f.close()
         return schema
 
-    def get_vector_db_instance(self) -> Optional[BasePydanticVectorStore]:
+    def get_vector_db_instance(self) -> BasePydanticVectorStore:
         try:
             self.collection_name = VectorDBHelper.get_collection_name(
                 self.config.get(VectorDbConstants.VECTOR_DB_NAME),
@@ -61,7 +61,7 @@ class Qdrant(VectorDBAdapter):
                 self.client = QdrantClient(url=url, api_key=api_key)
             else:
                 self.client = QdrantClient(url=url)
-            vector_db: Optional[BasePydanticVectorStore] = QdrantVectorStore(
+            vector_db: BasePydanticVectorStore = QdrantVectorStore(
                 collection_name=self.collection_name,
                 client=self.client,
                 url=url,

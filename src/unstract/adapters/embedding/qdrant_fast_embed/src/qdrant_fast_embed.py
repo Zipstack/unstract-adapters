@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Any, Optional
+from typing import Any
 
 from llama_index.core.embeddings import BaseEmbedding
 from llama_index.embeddings.fastembed import FastEmbedEmbedding
@@ -46,9 +46,9 @@ class QdrantFastEmbedM(EmbeddingAdapter):
         f.close()
         return schema
 
-    def get_embedding_instance(self) -> Optional[BaseEmbedding]:
+    def get_embedding_instance(self) -> BaseEmbedding:
         try:
-            embedding: Optional[BaseEmbedding] = FastEmbedEmbedding(
+            embedding: BaseEmbedding = FastEmbedEmbedding(
                 model_name=str(self.config.get(Constants.MODEL))
             )
             return embedding

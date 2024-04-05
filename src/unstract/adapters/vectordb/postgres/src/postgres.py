@@ -52,7 +52,7 @@ class Postgres(VectorDBAdapter):
         f.close()
         return schema
 
-    def get_vector_db_instance(self) -> Optional[BasePydanticVectorStore]:
+    def get_vector_db_instance(self) -> BasePydanticVectorStore:
         try:
             self.collection_name = VectorDBHelper.get_collection_name(
                 self.config.get(VectorDbConstants.VECTOR_DB_NAME),
@@ -66,17 +66,15 @@ class Postgres(VectorDBAdapter):
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
             )
-            vector_db: Optional[BasePydanticVectorStore] = (
-                PGVectorStore.from_params(
-                    database=self.config.get(Constants.DATABASE),
-                    schema_name=self.schema_name,
-                    host=self.config.get(Constants.HOST),
-                    password=self.config.get(Constants.PASSWORD),
-                    port=str(self.config.get(Constants.PORT)),
-                    user=self.config.get(Constants.USER),
-                    table_name=self.collection_name,
-                    embed_dim=dimension,
-                )
+            vector_db: BasePydanticVectorStore = PGVectorStore.from_params(
+                database=self.config.get(Constants.DATABASE),
+                schema_name=self.schema_name,
+                host=self.config.get(Constants.HOST),
+                password=self.config.get(Constants.PASSWORD),
+                port=str(self.config.get(Constants.PORT)),
+                user=self.config.get(Constants.USER),
+                table_name=self.collection_name,
+                embed_dim=dimension,
             )
             self.client = psycopg2.connect(
                 database=self.config.get(Constants.DATABASE),

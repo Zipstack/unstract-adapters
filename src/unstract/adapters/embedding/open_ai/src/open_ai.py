@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Any, Optional
+from typing import Any
 
 from llama_index.core.embeddings import BaseEmbedding
 from llama_index.embeddings.openai import OpenAIEmbedding
@@ -49,9 +49,9 @@ class OpenAI(EmbeddingAdapter):
         f.close()
         return schema
 
-    def get_embedding_instance(self) -> Optional[BaseEmbedding]:
+    def get_embedding_instance(self) -> BaseEmbedding:
         try:
-            embedding: Optional[BaseEmbedding] = OpenAIEmbedding(
+            embedding: BaseEmbedding = OpenAIEmbedding(
                 api_key=str(self.config.get(Constants.API_KEY)),
                 api_base=str(
                     self.config.get(

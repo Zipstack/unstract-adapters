@@ -50,7 +50,7 @@ class Weaviate(VectorDBAdapter):
         f.close()
         return schema
 
-    def get_vector_db_instance(self) -> Optional[BasePydanticVectorStore]:
+    def get_vector_db_instance(self) -> BasePydanticVectorStore:
         try:
             collection_name = VectorDBHelper.get_collection_name(
                 self.config.get(VectorDbConstants.VECTOR_DB_NAME),
@@ -82,7 +82,7 @@ class Weaviate(VectorDBAdapter):
                         logger.warning(f"Collection already exists: {e}")
                 else:
                     raise e
-            vector_db: Optional[BasePydanticVectorStore] = WeaviateVectorStore(
+            vector_db: BasePydanticVectorStore = WeaviateVectorStore(
                 weaviate_client=self.client,
                 index_name=self.collection_name,
             )

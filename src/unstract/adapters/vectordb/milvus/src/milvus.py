@@ -47,7 +47,7 @@ class Milvus(VectorDBAdapter):
         f.close()
         return schema
 
-    def get_vector_db_instance(self) -> Optional[VectorStore]:
+    def get_vector_db_instance(self) -> VectorStore:
         try:
             self.collection_name = VectorDBHelper.get_collection_name(
                 self.config.get(VectorDbConstants.VECTOR_DB_NAME),
@@ -57,7 +57,7 @@ class Milvus(VectorDBAdapter):
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
             )
-            vector_db: Optional[VectorStore] = MilvusVectorStore(
+            vector_db: VectorStore = MilvusVectorStore(
                 uri=self.config.get(Constants.URI, ""),
                 collection_name=self.collection_name,
                 token=self.config.get(Constants.TOKEN, ""),

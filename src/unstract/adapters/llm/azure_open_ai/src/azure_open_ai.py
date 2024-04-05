@@ -1,5 +1,5 @@
 import os
-from typing import Any, Optional
+from typing import Any
 
 from llama_index.core.llms import LLM
 from llama_index.llms.azure_openai import AzureOpenAI
@@ -50,9 +50,9 @@ class AzureOpenAILLM(LLMAdapter):
         f.close()
         return schema
 
-    def get_llm_instance(self) -> Optional[LLM]:
+    def get_llm_instance(self) -> LLM:
         try:
-            llm: Optional[LLM] = AzureOpenAI(
+            llm: LLM = AzureOpenAI(
                 model=self.config.get(Constants.MODEL, Constants.DEFAULT_MODEL),
                 deployment_name=str(self.config.get(Constants.DEPLOYMENT_NAME)),
                 api_key=str(self.config.get(Constants.API_KEY)),

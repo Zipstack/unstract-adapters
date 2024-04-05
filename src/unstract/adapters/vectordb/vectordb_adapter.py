@@ -1,4 +1,4 @@
-from abc import ABC
+from abc import ABC, abstractmethod
 from typing import Any, Union
 
 from llama_index.core.vector_stores.types import (
@@ -39,7 +39,16 @@ class VectorDBAdapter(Adapter, ABC):
     def get_adapter_type() -> AdapterTypes:
         return AdapterTypes.VECTOR_DB
 
+    @abstractmethod
     def get_vector_db_instance(
         self, vector_db_config: dict[str, Any]
-    ) -> Union[BasePydanticVectorStore, VectorStore, None]:
-        return None
+    ) -> Union[BasePydanticVectorStore, VectorStore]:
+        """Instantiate the llama index VectorStore / BasePydanticVectorStore
+        class.
+
+        Returns:
+            BasePydanticVectorStore / VectorStore:
+                            llama index implementation of the vector store
+            Raises exceptions for any error
+        """
+        pass

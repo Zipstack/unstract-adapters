@@ -11,12 +11,12 @@ dependencies = [
         "llama-index==0.10.23",
         "llama-index-embeddings-google==0.1.4",
         "llama-index-embeddings-azure-openai==0.1.6",
-        "llama-index-embeddings-fastembed==0.1.4",
         # llama-index itself has a dependency on open-ai.
         # Hence, not explicitly pinning any version
 #        "llama-index-embeddings-openai==0.1.7",
-        # Disabling Hugging Face as the dependencies
-        # increase image size
+        # Disabling Hugging Face & dependencies to
+        # keep the image size under check
+#        "llama-index-embeddings-fastembed==0.1.4",
 #        "llama-index-embeddings-huggingface==0.2.0",
         "llama-index-embeddings-azure-openai==0.1.6",
         "llama-index-vector-stores-postgres==0.1.3",

@@ -1,5 +1,5 @@
 import os
-from typing import Any, Optional
+from typing import Any
 
 from llama_index.core.llms import LLM
 from llama_index.llms.replicate import Replicate
@@ -50,9 +50,9 @@ class ReplicateLLM(LLMAdapter):
     def can_read() -> bool:
         return True
 
-    def get_llm_instance(self) -> Optional[LLM]:
+    def get_llm_instance(self) -> LLM:
         try:
-            llm: Optional[LLM] = Replicate(
+            llm: LLM = Replicate(
                 model=str(self.config.get(Constants.MODEL)),
                 prompt_key=str(self.config.get(Constants.API_KEY)),
                 temperature=0,

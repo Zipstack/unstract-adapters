@@ -1,5 +1,5 @@
 import os
-from typing import Any, Optional
+from typing import Any
 
 from llama_index.core.llms import LLM
 from llama_index.llms.mistralai import MistralAI
@@ -44,9 +44,9 @@ class MistralLLM(LLMAdapter):
         f.close()
         return schema
 
-    def get_llm_instance(self) -> Optional[LLM]:
+    def get_llm_instance(self) -> LLM:
         try:
-            llm: Optional[LLM] = MistralAI(
+            llm: LLM = MistralAI(
                 model=str(self.config.get(Constants.MODEL)),
                 api_key=str(self.config.get(Constants.API_KEY)),
                 temperature=0,

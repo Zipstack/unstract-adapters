@@ -1,5 +1,5 @@
 import os
-from typing import Any, Optional
+from typing import Any
 
 from llama_index.core.llms import LLM
 from llama_index.llms.openai import OpenAI
@@ -48,9 +48,9 @@ class OpenAILLM(LLMAdapter):
         f.close()
         return schema
 
-    def get_llm_instance(self) -> Optional[LLM]:
+    def get_llm_instance(self) -> LLM:
         try:
-            llm: Optional[LLM] = OpenAI(
+            llm: LLM = OpenAI(
                 model=str(self.config.get(Constants.MODEL)),
                 api_key=str(self.config.get(Constants.API_KEY)),
                 api_base=str(self.config.get(Constants.API_BASE)),

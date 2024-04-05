@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Any, Optional
+from typing import Any
 
 from llama_index.core.embeddings import BaseEmbedding
 from llama_index.embeddings.azure_openai import AzureOpenAIEmbedding
@@ -51,12 +51,12 @@ class AzureOpenAI(EmbeddingAdapter):
         f.close()
         return schema
 
-    def get_embedding_instance(self) -> Optional[BaseEmbedding]:
+    def get_embedding_instance(self) -> BaseEmbedding:
         try:
             embedding_batch_size = EmbeddingHelper.get_embedding_batch_size(
                 config=self.config
             )
-            embedding: Optional[BaseEmbedding] = AzureOpenAIEmbedding(
+            embedding: BaseEmbedding = AzureOpenAIEmbedding(
                 model=str(self.config.get(Constants.MODEL)),
                 deployment_name=str(self.config.get(Constants.DEPLOYMENT_NAME)),
                 api_key=str(self.config.get(Constants.API_KEY)),

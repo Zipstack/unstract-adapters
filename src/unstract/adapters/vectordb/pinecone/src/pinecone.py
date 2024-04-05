@@ -1,6 +1,6 @@
 import logging
 import os
-from typing import Any, Optional
+from typing import Any
 
 import pinecone
 from llama_index.core.vector_stores.types import BasePydanticVectorStore
@@ -52,7 +52,7 @@ class Pinecone(VectorDBAdapter):
         f.close()
         return schema
 
-    def get_vector_db_instance(self) -> Optional[BasePydanticVectorStore]:
+    def get_vector_db_instance(self) -> BasePydanticVectorStore:
         try:
             pinecone.init(
                 api_key=str(self.config.get(Constants.API_KEY)),

@@ -50,7 +50,7 @@ class Supabase(VectorDBAdapter):
         f.close()
         return schema
 
-    def get_vector_db_instance(self) -> Optional[VectorStore]:
+    def get_vector_db_instance(self) -> VectorStore:
         try:
             self.collection_name = VectorDBHelper.get_collection_name(
                 self.config.get(VectorDbConstants.VECTOR_DB_NAME),
@@ -72,7 +72,7 @@ class Supabase(VectorDBAdapter):
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
             )
-            vector_db: Optional[VectorStore] = SupabaseVectorStore(
+            vector_db: VectorStore = SupabaseVectorStore(
                 postgres_connection_string=postgres_connection_string,
                 collection_name=self.collection_name,
                 dimension=dimension,

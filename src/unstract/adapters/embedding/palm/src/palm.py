@@ -1,6 +1,6 @@
 import json
 import os
-from typing import Any, Optional
+from typing import Any
 
 from llama_index.core.embeddings import BaseEmbedding
 from llama_index.embeddings.google import GooglePaLMEmbedding
@@ -47,12 +47,12 @@ class PaLM(EmbeddingAdapter):
         f.close()
         return schema
 
-    def get_embedding_instance(self) -> Optional[BaseEmbedding]:
+    def get_embedding_instance(self) -> BaseEmbedding:
         try:
             embedding_batch_size = EmbeddingHelper.get_embedding_batch_size(
                 config=self.config
             )
-            embedding: Optional[BaseEmbedding] = GooglePaLMEmbedding(
+            embedding: BaseEmbedding = GooglePaLMEmbedding(
                 model_name=str(self.config.get(Constants.MODEL)),
                 api_key=str(self.config.get(Constants.API_KEY)),
                 embed_batch_size=embedding_batch_size,
