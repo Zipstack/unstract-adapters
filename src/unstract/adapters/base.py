@@ -2,8 +2,10 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Any, Union
 
+from llama_index.core import MockEmbedding
 from llama_index.core.embeddings import BaseEmbedding
-from llama_index.core.llms import LLM
+from llama_index.core.llms import LLM, MockLLM
+from llama_index.core.vector_stores import SimpleVectorStore
 from llama_index.core.vector_stores.types import (
     BasePydanticVectorStore,
     VectorStore,
@@ -48,24 +50,21 @@ class Adapter(ABC):
     def get_adapter_type() -> AdapterTypes:
         return ""
 
-    @abstractmethod
     def get_llm_instance(self, llm_config: dict[str, Any]) -> LLM:
         # Overriding implementations use llm_config
-        pass
+        return MockLLM()
 
-    @abstractmethod
     def get_vector_db_instance(
         self, vector_db_config: dict[str, Any]
     ) -> Union[BasePydanticVectorStore, VectorStore]:
         # Overriding implementations use vector_db_config
-        pass
+        return SimpleVectorStore()
 
-    @abstractmethod
     def get_embedding_instance(
         self, embed_config: dict[str, Any]
     ) -> BaseEmbedding:
         # Overriding implementations use embed_config
-        pass
+        return MockEmbedding(embed_dim=1)
 
     @abstractmethod
     def test_connection(self) -> bool:

@@ -1,6 +1,7 @@
-from abc import ABC, abstractmethod
+from abc import ABC
 from typing import Any
 
+from llama_index.core import MockEmbedding
 from llama_index.core.embeddings import BaseEmbedding
 
 from unstract.adapters.base import Adapter
@@ -36,7 +37,6 @@ class EmbeddingAdapter(Adapter, ABC):
     def get_adapter_type() -> AdapterTypes:
         return AdapterTypes.EMBEDDING
 
-    @abstractmethod
     def get_embedding_instance(
         self, embed_config: dict[str, Any]
     ) -> BaseEmbedding:
@@ -46,4 +46,4 @@ class EmbeddingAdapter(Adapter, ABC):
             BaseEmbedding: llama index implementation of the Embedding
             Raises exceptions for any error
         """
-        pass
+        return MockEmbedding(embed_dim=1)
