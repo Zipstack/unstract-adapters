@@ -53,13 +53,10 @@ class VectorDBHelper:
                 llm=llm,
                 embed_model=embed_model,
             )
+            query_engine = index.as_query_engine(llm=llm)
 
-            retriever = index.as_retriever()
-            nodes = retriever.retrieve("What did the author learn?")
-            if len(nodes) > 0:
-                return True
-            else:
-                return False
+            query_engine.query("What did the author learn?")
+            return True
 
         except Exception as e:
             logger.error(f"Error occured while testing adapter {e}")

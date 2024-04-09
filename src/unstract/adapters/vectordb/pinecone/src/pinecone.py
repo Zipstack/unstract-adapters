@@ -1,11 +1,12 @@
 import logging
 import os
-from typing import Any
+from typing import Any, Optional
 
-import pinecone
 from llama_index.core.vector_stores.types import BasePydanticVectorStore
 from llama_index.vector_stores.pinecone import PineconeVectorStore
 from pinecone import NotFoundException
+from pinecone import Pinecone as LLamaIndexPinecone
+from pinecone import PodSpec
 
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.vectordb.constants import VectorDbConstants
@@ -27,6 +28,7 @@ class Pinecone(VectorDBAdapter):
     def __init__(self, settings: dict[str, Any]):
         super().__init__("Pinecone")
         self.config = settings
+        self.client: Optional[LLamaIndexPinecone] = None
         self.collection_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
 
     @staticmethod
@@ -54,31 +56,35 @@ class Pinecone(VectorDBAdapter):
 
     def get_vector_db_instance(self) -> BasePydanticVectorStore:
         try:
-            pinecone.init(
-                api_key=str(self.config.get(Constants.API_KEY)),
-                environment=str(self.config.get(Constants.ENVIRONMENT)),
+            self.client = LLamaIndexPinecone(
+                api_key=str(self.config.get(Constants.API_KEY))
             )
+            # pinecone.init(
+            #     api_key=str(self.config.get(Constants.API_KEY)),
+            #     environment=str(self.config.get(Constants.ENVIRONMENT)),
+            # )
             collection_name = VectorDBHelper.get_collection_name(
                 self.config.get(VectorDbConstants.VECTOR_DB_NAME),
                 self.config.get(VectorDbConstants.EMBEDDING_DIMENSION),
             )
-            # Pinecone allows only lowercase alphanumeric & hyphens for
-            # collection name
             self.collection_name = collection_name.replace("_", "-").lower()
             dimension = self.config.get(
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
             )
             try:
-                pinecone.describe_index(name=self.collection_name)
+                self.client.describe_index(name=self.collection_name)
             except NotFoundException:
                 logger.info(
                     f"Index:{self.collection_name} does not exist. Creating it."
                 )
-                pinecone.create_index(
+                self.client.create_index(
                     name=self.collection_name,
                     dimension=dimension,
                     metric=Constants.METRIC,
+                    spec=PodSpec(
+                        environment=str(self.config.get(Constants.ENVIRONMENT))
+                    ),
                 )
             vector_db: BasePydanticVectorStore = PineconeVectorStore(
                 index_name=self.collection_name,
@@ -98,5 +104,6 @@ class Pinecone(VectorDBAdapter):
             vector_store=vector_db
         )
         # Delete the collection that was created for testing
-        pinecone.delete_index(self.collection_name)
+        if self.client:
+            self.client.delete_index(self.collection_name)
         return test_result
