@@ -1,6 +1,8 @@
 import logging
 from typing import Any
 
+from singleton_decorator import singleton
+
 from unstract.adapters import AdapterDict
 from unstract.adapters.base import Adapter
 from unstract.adapters.constants import Common
@@ -13,6 +15,9 @@ from unstract.adapters.x2text import adapters as x2text_adapters
 logger = logging.getLogger(__name__)
 
 
+# Declaring this class as a Singleton to avoid initialising
+# adapters list everytime
+@singleton
 class Adapterkit:
     def __init__(self) -> None:
         self._adapters: AdapterDict = (

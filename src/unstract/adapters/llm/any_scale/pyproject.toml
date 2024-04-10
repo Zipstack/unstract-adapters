@@ -11,7 +11,6 @@ authors = [
     {name = "Zipstack Inc.", email = "devsupport@zipstack.com"},
 ]
 dependencies = [
-    "anyscale==0.5.165",
 ]
 requires-python = ">=3.9"
 readme = "README.md"

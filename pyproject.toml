@@ -8,7 +8,7 @@ name = "unstract-adapters"
 dynamic = ["version"]
 description = "Unstract interface for LLMs, Embeddings and VectorDBs"
 dependencies = [
-        "llama-index==0.10.23",
+        "llama-index==0.10.28",
         "llama-index-embeddings-google==0.1.4",
         "llama-index-embeddings-azure-openai==0.1.6",
         # llama-index itself has a dependency on open-ai.
@@ -32,15 +32,15 @@ dependencies = [
         "llama-index-llms-mistralai==0.1.10",
         "llama-index-llms-anyscale==0.1.3",
         "llama-index-llms-anthropic==0.1.5",
-        # Llama-index 0.10.x implcitly includes open ai for LLM
-        # Pinning it here to this version as higher versions
-        # throw RunTime error os ChatCompletionTask not being defined
-        "llama-index-llms-openai==0.1.8",
+        # Llama-index 0.10.x implcitly includes openai for LLM
         "llama-index-llms-azure-openai==0.1.5",
         "llama-index-llms-vertex==0.1.5",
         "llama-index-llms-replicate==0.1.3",
         # OCR
         "filetype~=1.2.0",
+        # Others
+        # For singleton classes
+        "singleton-decorator~=1.0.0",
 ]
 readme = "README.md"
 urls = { Homepage = "https://unstract.com", "Release notes" = "https://github.com/Zipstack/unstract-adapters/releases", Source = "https://github.com/Zipstack/unstract-adapters" }
@@ -98,3 +98,6 @@ profile = "black"
 includes = ["src"]
 package-dir = "src"
 # source-includes = ["tests"]
+
+[tool.pdm.resolution.overrides]
+grpcio = ">=1.62.1"
