@@ -2,6 +2,7 @@ import logging
 from abc import ABC, abstractmethod
 from typing import Any, Union
 
+from llama_index.core import MockEmbedding
 from llama_index.core.embeddings import BaseEmbedding
 from llama_index.core.llms import LLM, MockLLM
 from llama_index.core.vector_stores import SimpleVectorStore
@@ -62,13 +63,7 @@ class Adapter(ABC):
     def get_embedding_instance(
         self, embed_config: dict[str, Any]
     ) -> BaseEmbedding:
-        # TODO: Return mock embedding, Rempve type ignore
-        # Non-matching return type here to avoid the below error
-        # RuntimeError: There is no current event loop in
-        # thread 'ThreadPoolExecutor-0_0'
-
-        # Overriding implementations use embed_config
-        return  # type: ignore
+        return MockEmbedding(embed_dim=1)
 
     @abstractmethod
     def test_connection(self) -> bool:

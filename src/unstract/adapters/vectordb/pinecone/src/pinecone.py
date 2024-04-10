@@ -59,10 +59,6 @@ class Pinecone(VectorDBAdapter):
             self.client = LLamaIndexPinecone(
                 api_key=str(self.config.get(Constants.API_KEY))
             )
-            # pinecone.init(
-            #     api_key=str(self.config.get(Constants.API_KEY)),
-            #     environment=str(self.config.get(Constants.ENVIRONMENT)),
-            # )
             collection_name = VectorDBHelper.get_collection_name(
                 self.config.get(VectorDbConstants.VECTOR_DB_NAME),
                 self.config.get(VectorDbConstants.EMBEDDING_DIMENSION),
