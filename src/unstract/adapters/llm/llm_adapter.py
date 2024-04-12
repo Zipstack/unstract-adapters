@@ -1,8 +1,8 @@
 import logging
 from abc import ABC
-from typing import Any, Optional
+from typing import Any
 
-from llama_index.llms.llm import LLM
+from llama_index.core.llms import LLM, MockLLM
 
 from unstract.adapters.base import Adapter
 from unstract.adapters.enums import AdapterTypes
@@ -39,13 +39,14 @@ class LLMAdapter(Adapter, ABC):
     def get_adapter_type() -> AdapterTypes:
         return AdapterTypes.LLM
 
-    def get_llm_instance(self) -> Optional[LLM]:
+    def get_llm_instance(self) -> LLM:
         """Instantiate the llama index LLM class.
 
         Returns:
-            Optional[LLM]: llama index implementation of the LLM
+            LLM: llama index implementation of the LLM
+            Raises exceptions for any error
         """
-        return None
+        return MockLLM()
 
     def test_connection(self, llm_metadata: dict[str, Any]) -> bool:
         return False

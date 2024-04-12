@@ -1,8 +1,8 @@
 import os
 from typing import Any, Optional
 
-from llama_index.vector_stores import MilvusVectorStore
-from llama_index.vector_stores.types import VectorStore
+from llama_index.core.vector_stores.types import VectorStore
+from llama_index.vector_stores.milvus import MilvusVectorStore
 from pymilvus import MilvusClient
 
 from unstract.adapters.exceptions import AdapterError
@@ -38,10 +38,7 @@ class Milvus(VectorDBAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "/icons/"
-            "adapter-icons/Milvus.png"
-        )
+        return "/icons/adapter-icons/Milvus.png"
 
     @staticmethod
     def get_json_schema() -> str:
@@ -50,7 +47,7 @@ class Milvus(VectorDBAdapter):
         f.close()
         return schema
 
-    def get_vector_db_instance(self) -> Optional[VectorStore]:
+    def get_vector_db_instance(self) -> VectorStore:
         try:
             self.collection_name = VectorDBHelper.get_collection_name(
                 self.config.get(VectorDbConstants.VECTOR_DB_NAME),
@@ -60,21 +57,22 @@ class Milvus(VectorDBAdapter):
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
             )
-            vector_db = MilvusVectorStore(
+            vector_db: VectorStore = MilvusVectorStore(
                 uri=self.config.get(Constants.URI, ""),
                 collection_name=self.collection_name,
                 token=self.config.get(Constants.TOKEN, ""),
                 dim=dimension,
             )
-            self.client = vector_db.client
+            if vector_db is not None:
+                self.client = vector_db.client
             return vector_db
         except Exception as e:
             raise AdapterError(str(e))
 
     def test_connection(self) -> bool:
-        self.config[
-            VectorDbConstants.EMBEDDING_DIMENSION
-        ] = VectorDbConstants.TEST_CONNECTION_EMBEDDING_SIZE
+        self.config[VectorDbConstants.EMBEDDING_DIMENSION] = (
+            VectorDbConstants.TEST_CONNECTION_EMBEDDING_SIZE
+        )
         vector_db = self.get_vector_db_instance()
         test_result: bool = VectorDBHelper.test_vector_db_instance(
             vector_store=vector_db

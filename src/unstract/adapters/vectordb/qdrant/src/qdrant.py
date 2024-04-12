@@ -2,9 +2,10 @@ import logging
 import os
 from typing import Any, Optional
 
+from llama_index.core.vector_stores.types import BasePydanticVectorStore
 from llama_index.vector_stores.qdrant import QdrantVectorStore
-from llama_index.vector_stores.types import BasePydanticVectorStore
 from qdrant_client import QdrantClient
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.vectordb.constants import VectorDbConstants
 from unstract.adapters.vectordb.helper import VectorDBHelper
@@ -39,10 +40,7 @@ class Qdrant(VectorDBAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "/icons/"
-            "adapter-icons/qdrant.png"
-        )
+        return "/icons/adapter-icons/qdrant.png"
 
     @staticmethod
     def get_json_schema() -> str:
@@ -51,30 +49,24 @@ class Qdrant(VectorDBAdapter):
         f.close()
         return schema
 
-    def get_vector_db_instance(self) -> Optional[BasePydanticVectorStore]:
+    def get_vector_db_instance(self) -> BasePydanticVectorStore:
         try:
             self.collection_name = VectorDBHelper.get_collection_name(
                 self.config.get(VectorDbConstants.VECTOR_DB_NAME),
                 self.config.get(VectorDbConstants.EMBEDDING_DIMENSION),
             )
             url = self.config.get(Constants.URL)
-            if (
-                self.config.get(Constants.API_KEY) is not None
-                or self.config.get(Constants.API_KEY) == ""
-            ):
-                self.client = QdrantClient(
-                    url=url, api_key=self.config.get(Constants.API_KEY)
-                )
-                vector_db = QdrantVectorStore(
-                    collection_name=self.collection_name,
-                    client=self.client,
-                    api_key=self.config.get(Constants.API_KEY),
-                )
+            api_key: Optional[str] = self.config.get(Constants.API_KEY, None)
+            if api_key:
+                self.client = QdrantClient(url=url, api_key=api_key)
             else:
                 self.client = QdrantClient(url=url)
-                vector_db = QdrantVectorStore(
-                    collection_name=self.collection_name, client=self.client
-                )
+            vector_db: BasePydanticVectorStore = QdrantVectorStore(
+                collection_name=self.collection_name,
+                client=self.client,
+                url=url,
+                api_key=api_key,
+            )
             return vector_db
         except Exception as e:
             raise AdapterError(str(e))

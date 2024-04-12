@@ -3,13 +3,14 @@ import os
 from typing import Any, Optional
 
 import weaviate
-from llama_index.vector_stores import WeaviateVectorStore
-from llama_index.vector_stores.types import BasePydanticVectorStore
+from llama_index.core.vector_stores.types import BasePydanticVectorStore
+from llama_index.vector_stores.weaviate import WeaviateVectorStore
+from weaviate import UnexpectedStatusCodeException
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.vectordb.constants import VectorDbConstants
 from unstract.adapters.vectordb.helper import VectorDBHelper
 from unstract.adapters.vectordb.vectordb_adapter import VectorDBAdapter
-from weaviate import UnexpectedStatusCodeException
 
 logger = logging.getLogger(__name__)
 
@@ -40,10 +41,7 @@ class Weaviate(VectorDBAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "/icons/"
-            "adapter-icons/Weaviate.png"
-        )
+        return "/icons/adapter-icons/Weaviate.png"
 
     @staticmethod
     def get_json_schema() -> str:
@@ -52,7 +50,7 @@ class Weaviate(VectorDBAdapter):
         f.close()
         return schema
 
-    def get_vector_db_instance(self) -> Optional[BasePydanticVectorStore]:
+    def get_vector_db_instance(self) -> BasePydanticVectorStore:
         try:
             collection_name = VectorDBHelper.get_collection_name(
                 self.config.get(VectorDbConstants.VECTOR_DB_NAME),
@@ -84,7 +82,7 @@ class Weaviate(VectorDBAdapter):
                         logger.warning(f"Collection already exists: {e}")
                 else:
                     raise e
-            vector_db = WeaviateVectorStore(
+            vector_db: BasePydanticVectorStore = WeaviateVectorStore(
                 weaviate_client=self.client,
                 index_name=self.collection_name,
             )
@@ -93,9 +91,9 @@ class Weaviate(VectorDBAdapter):
             raise AdapterError(str(e))
 
     def test_connection(self) -> bool:
-        self.config[
-            VectorDbConstants.EMBEDDING_DIMENSION
-        ] = VectorDbConstants.TEST_CONNECTION_EMBEDDING_SIZE
+        self.config[VectorDbConstants.EMBEDDING_DIMENSION] = (
+            VectorDbConstants.TEST_CONNECTION_EMBEDDING_SIZE
+        )
         vector_db = self.get_vector_db_instance()
         test_result: bool = VectorDBHelper.test_vector_db_instance(
             vector_store=vector_db

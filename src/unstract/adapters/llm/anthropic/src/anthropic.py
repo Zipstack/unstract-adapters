@@ -1,8 +1,9 @@
 import os
-from typing import Any, Optional
+from typing import Any
 
-from llama_index.llms import Anthropic
-from llama_index.llms.llm import LLM
+from llama_index.core.llms import LLM
+from llama_index.llms.anthropic import Anthropic
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.llm.constants import LLMKeys
 from unstract.adapters.llm.helper import LLMHelper
@@ -35,10 +36,7 @@ class AnthropicLLM(LLMAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "/icons/"
-            "adapter-icons/Anthropic.png"
-        )
+        return "/icons/adapter-icons/Anthropic.png"
 
     @staticmethod
     def get_json_schema() -> str:
@@ -47,26 +45,21 @@ class AnthropicLLM(LLMAdapter):
         f.close()
         return schema
 
-    def get_llm_instance(self) -> Optional[LLM]:
+    def get_llm_instance(self) -> LLM:
         try:
-            timeout = float(
-                self.config.get(Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT)
+            llm: LLM = Anthropic(
+                model=str(self.config.get(Constants.MODEL)),
+                api_key=str(self.config.get(Constants.API_KEY)),
+                timeout=float(
+                    self.config.get(Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT)
+                ),
+                max_retries=int(
+                    self.config.get(
+                        Constants.MAX_RETIRES, LLMKeys.DEFAULT_MAX_RETRIES
+                    )
+                ),
+                temperature=0,
             )
-            if self.config.get(Constants.MAX_RETIRES) is not None:
-                llm = Anthropic(
-                    model=str(self.config.get(Constants.MODEL)),
-                    api_key=str(self.config.get(Constants.API_KEY)),
-                    timeout=timeout,
-                    max_retries=int(self.config.get(Constants.MAX_RETIRES, 3)),
-                    temperature=0,
-                )
-            else:
-                llm = Anthropic(
-                    model=str(self.config.get(Constants.MODEL)),
-                    api_key=str(self.config.get(Constants.API_KEY)),
-                    timeout=timeout,
-                    temperature=0,
-                )
             return llm
         except Exception as e:
             raise AdapterError(str(e))

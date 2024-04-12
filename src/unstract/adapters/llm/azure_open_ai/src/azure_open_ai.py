@@ -1,8 +1,8 @@
 import os
-from typing import Any, Optional
+from typing import Any
 
+from llama_index.core.llms import LLM
 from llama_index.llms.azure_openai import AzureOpenAI
-from llama_index.llms.llm import LLM
 
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.llm.constants import LLMKeys
@@ -19,6 +19,7 @@ class Constants:
     AZURE_ENDPONT = "azure_endpoint"
     API_TYPE = "azure"
     TIMEOUT = "timeout"
+    DEFAULT_MODEL = "gpt-35-turbo"
 
 
 class AzureOpenAILLM(LLMAdapter):
@@ -49,10 +50,10 @@ class AzureOpenAILLM(LLMAdapter):
         f.close()
         return schema
 
-    def get_llm_instance(self) -> Optional[LLM]:
+    def get_llm_instance(self) -> LLM:
         try:
-            model: Optional[str] = self.config.get(Constants.MODEL)
-            llm = AzureOpenAI(
+            llm: LLM = AzureOpenAI(
+                model=self.config.get(Constants.MODEL, Constants.DEFAULT_MODEL),
                 deployment_name=str(self.config.get(Constants.DEPLOYMENT_NAME)),
                 api_key=str(self.config.get(Constants.API_KEY)),
                 api_version=str(self.config.get(Constants.API_VERSION)),
@@ -63,8 +64,6 @@ class AzureOpenAILLM(LLMAdapter):
                     Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT
                 ),
             )
-            if model:
-                llm.model = model
             return llm
         except Exception as e:
             raise AdapterError(str(e))

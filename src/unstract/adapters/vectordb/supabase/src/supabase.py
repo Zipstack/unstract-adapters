@@ -1,8 +1,8 @@
 import os
 from typing import Any, Optional
 
-from llama_index.vector_stores import SupabaseVectorStore
-from llama_index.vector_stores.types import VectorStore
+from llama_index.core.vector_stores.types import VectorStore
+from llama_index.vector_stores.supabase import SupabaseVectorStore
 from vecs import Client
 
 from unstract.adapters.exceptions import AdapterError
@@ -41,10 +41,7 @@ class Supabase(VectorDBAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "/icons/"
-            "adapter-icons/supabase.png"
-        )
+        return "/icons/adapter-icons/supabase.png"
 
     @staticmethod
     def get_json_schema() -> str:
@@ -53,7 +50,7 @@ class Supabase(VectorDBAdapter):
         f.close()
         return schema
 
-    def get_vector_db_instance(self) -> Optional[VectorStore]:
+    def get_vector_db_instance(self) -> VectorStore:
         try:
             self.collection_name = VectorDBHelper.get_collection_name(
                 self.config.get(VectorDbConstants.VECTOR_DB_NAME),
@@ -75,20 +72,21 @@ class Supabase(VectorDBAdapter):
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
             )
-            vector_db = SupabaseVectorStore(
+            vector_db: VectorStore = SupabaseVectorStore(
                 postgres_connection_string=postgres_connection_string,
                 collection_name=self.collection_name,
                 dimension=dimension,
             )
-            self.client = vector_db.client
+            if vector_db is not None:
+                self.client = vector_db.client
             return vector_db
         except Exception as e:
             raise AdapterError(str(e))
 
     def test_connection(self) -> bool:
-        self.config[
-            VectorDbConstants.EMBEDDING_DIMENSION
-        ] = VectorDbConstants.TEST_CONNECTION_EMBEDDING_SIZE
+        self.config[VectorDbConstants.EMBEDDING_DIMENSION] = (
+            VectorDbConstants.TEST_CONNECTION_EMBEDDING_SIZE
+        )
         vector_db = self.get_vector_db_instance()
         test_result: bool = VectorDBHelper.test_vector_db_instance(
             vector_store=vector_db

@@ -11,7 +11,6 @@ authors = [
     {name = "Zipstack Inc.", email = "devsupport@zipstack.com"},
 ]
 dependencies = [
-    "pymilvus==2.3.4",
 ]
 requires-python = ">=3.9"
 readme = "README.md"

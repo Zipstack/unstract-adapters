@@ -2,8 +2,9 @@ import json
 import os
 from typing import Any, Optional
 
-from llama_index.embeddings.base import BaseEmbedding
+from llama_index.core.embeddings import BaseEmbedding
 from llama_index.embeddings.huggingface import HuggingFaceEmbedding
+
 from unstract.adapters.embedding.embedding_adapter import EmbeddingAdapter
 from unstract.adapters.embedding.helper import EmbeddingHelper
 from unstract.adapters.exceptions import AdapterError
@@ -39,10 +40,7 @@ class HuggingFace(EmbeddingAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "/icons/"
-            "adapter-icons/huggingface.png"
-        )
+        return "/icons/adapter-icons/huggingface.png"
 
     @staticmethod
     def get_json_schema() -> str:
@@ -51,30 +49,24 @@ class HuggingFace(EmbeddingAdapter):
         f.close()
         return schema
 
-    def get_embedding_instance(self) -> Optional[BaseEmbedding]:
+    def get_embedding_instance(self) -> BaseEmbedding:
         try:
             embedding_batch_size = EmbeddingHelper.get_embedding_batch_size(
                 config=self.config
             )
-            if (self.config.get(Constants.MAX_LENGTH)) is not None:
-                embedding = HuggingFaceEmbedding(
-                    model_name=str(self.config.get(Constants.MODEL)),
-                    tokenizer_name=str(
-                        self.config.get(Constants.TOKENIZER_NAME)
-                    ),
-                    normalize=bool(self.config.get(Constants.NORMALIZE)),
-                    embed_batch_size=embedding_batch_size,
-                    max_length=int(self.config.get(Constants.MAX_LENGTH, 10)),
-                )
-            else:
-                embedding = HuggingFaceEmbedding(
-                    model_name=str(self.config.get(Constants.MODEL)),
-                    tokenizer_name=str(
-                        self.config.get(Constants.TOKENIZER_NAME)
-                    ),
-                    normalize=bool(self.config.get(Constants.NORMALIZE)),
-                    embed_batch_size=embedding_batch_size,
-                )
+            max_length: Optional[int] = (
+                int(self.config.get(Constants.MAX_LENGTH, 0))
+                if self.config.get(Constants.MAX_LENGTH)
+                else None
+            )
+            embedding: BaseEmbedding = HuggingFaceEmbedding(
+                model_name=str(self.config.get(Constants.MODEL)),
+                tokenizer_name=str(self.config.get(Constants.TOKENIZER_NAME)),
+                normalize=bool(self.config.get(Constants.NORMALIZE)),
+                embed_batch_size=embedding_batch_size,
+                max_length=max_length,
+            )
+
             return embedding
         except Exception as e:
             raise AdapterError(str(e))

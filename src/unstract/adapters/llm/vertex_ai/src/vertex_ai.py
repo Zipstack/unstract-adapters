@@ -1,11 +1,12 @@
 import json
 import os
-from typing import Any, Optional
+from typing import Any
 
 from google.auth.transport import requests as google_requests
 from google.oauth2 import service_account
-from llama_index.llms.llm import LLM
+from llama_index.core.llms import LLM
 from llama_index.llms.vertex import Vertex
+
 from unstract.adapters.llm.helper import LLMHelper
 from unstract.adapters.llm.llm_adapter import LLMAdapter
 
@@ -35,10 +36,7 @@ class VertexAILLM(LLMAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "/icons/"
-            "adapter-icons/VertexAI.png"
-        )
+        return "/icons/adapter-icons/VertexAI.png"
 
     @staticmethod
     def get_json_schema() -> str:
@@ -47,7 +45,7 @@ class VertexAILLM(LLMAdapter):
         f.close()
         return schema
 
-    def get_llm_instance(self) -> Optional[LLM]:
+    def get_llm_instance(self) -> LLM:
         input_credentials = self.config.get(Constants.JSON_CREDENTIALS)
         if not input_credentials:
             input_credentials = "{}"
@@ -57,7 +55,7 @@ class VertexAILLM(LLMAdapter):
             scopes=["https://www.googleapis.com/auth/cloud-platform"],
         )
         credentials.refresh(google_requests.Request())
-        llm = Vertex(
+        llm: LLM = Vertex(
             project=str(self.config.get(Constants.PROJECT)),
             model=str(self.config.get(Constants.MODEL)),
             credentials=credentials,

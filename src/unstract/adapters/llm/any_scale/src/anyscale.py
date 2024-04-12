@@ -1,9 +1,11 @@
 import os
-from typing import Any, Optional
+from typing import Any
 
-from llama_index.llms import Anyscale
-from llama_index.llms.llm import LLM
+from llama_index.core.llms import LLM
+from llama_index.llms.anyscale import Anyscale
+
 from unstract.adapters.exceptions import AdapterError
+from unstract.adapters.llm.constants import LLMKeys
 from unstract.adapters.llm.helper import LLMHelper
 from unstract.adapters.llm.llm_adapter import LLMAdapter
 
@@ -35,10 +37,7 @@ class AnyScaleLLM(LLMAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "/icons/"
-            "adapter-icons/anyscale.png"
-        )
+        return "/icons/adapter-icons/anyscale.png"
 
     @staticmethod
     def get_json_schema() -> str:
@@ -47,30 +46,20 @@ class AnyScaleLLM(LLMAdapter):
         f.close()
         return schema
 
-    def get_llm_instance(self) -> Optional[LLM]:
+    def get_llm_instance(self) -> LLM:
         try:
-            if self.config.get(Constants.MAX_RETIRES) is not None:
-                llm = Anyscale(
-                    model=str(self.config.get(Constants.MODEL)),
-                    api_key=str(self.config.get(Constants.API_KEY)),
-                    api_base=str(self.config.get(Constants.API_BASE)),
-                    additional_kwargs=self.config.get(
-                        Constants.ADDITIONAL_KWARGS
-                    ),
-                    max_retries=int(self.config.get(Constants.MAX_RETIRES, 10)),
-                    temperature=0,
-                )
-            else:
-                llm = Anyscale(
-                    model=str(self.config.get(Constants.MODEL)),
-                    api_key=str(self.config.get(Constants.API_KEY)),
-                    api_base=str(self.config.get(Constants.API_BASE)),
-                    additional_kwargs=self.config.get(
-                        Constants.ADDITIONAL_KWARGS
-                    ),
-                    temperature=0,
-                )
-
+            llm: LLM = Anyscale(
+                model=str(self.config.get(Constants.MODEL)),
+                api_key=str(self.config.get(Constants.API_KEY)),
+                api_base=str(self.config.get(Constants.API_BASE)),
+                additional_kwargs=self.config.get(Constants.ADDITIONAL_KWARGS),
+                max_retries=int(
+                    self.config.get(
+                        Constants.MAX_RETIRES, LLMKeys.DEFAULT_MAX_RETRIES
+                    )
+                ),
+                temperature=0,
+            )
             return llm
         except Exception as e:
             raise AdapterError(str(e))

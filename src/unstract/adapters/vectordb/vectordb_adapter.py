@@ -1,7 +1,12 @@
 from abc import ABC
 from typing import Any, Union
 
-from llama_index.vector_stores.types import BasePydanticVectorStore, VectorStore
+from llama_index.core.vector_stores import SimpleVectorStore
+from llama_index.core.vector_stores.types import (
+    BasePydanticVectorStore,
+    VectorStore,
+)
+
 from unstract.adapters.base import Adapter
 from unstract.adapters.enums import AdapterTypes
 
@@ -37,5 +42,13 @@ class VectorDBAdapter(Adapter, ABC):
 
     def get_vector_db_instance(
         self, vector_db_config: dict[str, Any]
-    ) -> Union[BasePydanticVectorStore, VectorStore, None]:
-        return None
+    ) -> Union[BasePydanticVectorStore, VectorStore]:
+        """Instantiate the llama index VectorStore / BasePydanticVectorStore
+        class.
+
+        Returns:
+            BasePydanticVectorStore / VectorStore:
+                            llama index implementation of the vector store
+            Raises exceptions for any error
+        """
+        return SimpleVectorStore()

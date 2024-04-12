@@ -5,5 +5,5 @@ metadata = {
     "version": "1.0.0",
     "adapter": HuggingFace,
     "description": "HuggingFace embedding adapter",
-    "is_active": True,
+    "is_active": False,
 }

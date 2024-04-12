@@ -1,9 +1,10 @@
 import json
 import os
-from typing import Any, Optional
+from typing import Any
 
-from llama_index.embeddings import OpenAIEmbedding
-from llama_index.embeddings.base import BaseEmbedding
+from llama_index.core.embeddings import BaseEmbedding
+from llama_index.embeddings.openai import OpenAIEmbedding
+
 from unstract.adapters.embedding.embedding_adapter import EmbeddingAdapter
 from unstract.adapters.embedding.helper import EmbeddingHelper
 from unstract.adapters.exceptions import AdapterError
@@ -39,10 +40,7 @@ class OpenAI(EmbeddingAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "/icons/"
-            "adapter-icons/OpenAI.png"
-        )
+        return "/icons/adapter-icons/OpenAI.png"
 
     @staticmethod
     def get_json_schema() -> str:
@@ -51,9 +49,9 @@ class OpenAI(EmbeddingAdapter):
         f.close()
         return schema
 
-    def get_embedding_instance(self) -> Optional[BaseEmbedding]:
+    def get_embedding_instance(self) -> BaseEmbedding:
         try:
-            embedding = OpenAIEmbedding(
+            embedding: BaseEmbedding = OpenAIEmbedding(
                 api_key=str(self.config.get(Constants.API_KEY)),
                 api_base=str(
                     self.config.get(

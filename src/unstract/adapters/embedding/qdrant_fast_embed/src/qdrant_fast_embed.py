@@ -1,9 +1,10 @@
 import json
 import os
-from typing import Any, Optional
+from typing import Any
 
-from llama_index.embeddings.base import BaseEmbedding
+from llama_index.core.embeddings import BaseEmbedding
 from llama_index.embeddings.fastembed import FastEmbedEmbedding
+
 from unstract.adapters.embedding.embedding_adapter import EmbeddingAdapter
 from unstract.adapters.embedding.helper import EmbeddingHelper
 from unstract.adapters.exceptions import AdapterError
@@ -36,10 +37,7 @@ class QdrantFastEmbedM(EmbeddingAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "/icons/"
-            "adapter-icons/qdrant.png"
-        )
+        return "/icons/adapter-icons/qdrant.png"
 
     @staticmethod
     def get_json_schema() -> str:
@@ -48,9 +46,9 @@ class QdrantFastEmbedM(EmbeddingAdapter):
         f.close()
         return schema
 
-    def get_embedding_instance(self) -> Optional[BaseEmbedding]:
+    def get_embedding_instance(self) -> BaseEmbedding:
         try:
-            embedding = FastEmbedEmbedding(
+            embedding: BaseEmbedding = FastEmbedEmbedding(
                 model_name=str(self.config.get(Constants.MODEL))
             )
             return embedding

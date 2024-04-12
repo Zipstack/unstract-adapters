@@ -11,7 +11,6 @@ authors = [
     {name = "Zipstack Inc.", email = "devsupport@zipstack.com"},
 ]
 dependencies = [
-    "supabase==2.2.1",
 ]
 requires-python = ">=3.9"
 readme = "README.md"

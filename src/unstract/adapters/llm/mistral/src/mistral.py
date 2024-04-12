@@ -1,8 +1,9 @@
 import os
-from typing import Any, Optional
+from typing import Any
 
-from llama_index.llms.llm import LLM
-from llama_index.llms.mistral import MistralAI
+from llama_index.core.llms import LLM
+from llama_index.llms.mistralai import MistralAI
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.llm.constants import LLMKeys
 from unstract.adapters.llm.helper import LLMHelper
@@ -34,10 +35,7 @@ class MistralLLM(LLMAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return (
-            "/icons/"
-            "adapter-icons/Mistral%20AI.png"
-        )
+        return "/icons/adapter-icons/Mistral%20AI.png"
 
     @staticmethod
     def get_json_schema() -> str:
@@ -46,9 +44,9 @@ class MistralLLM(LLMAdapter):
         f.close()
         return schema
 
-    def get_llm_instance(self) -> Optional[LLM]:
+    def get_llm_instance(self) -> LLM:
         try:
-            llm = MistralAI(
+            llm: LLM = MistralAI(
                 model=str(self.config.get(Constants.MODEL)),
                 api_key=str(self.config.get(Constants.API_KEY)),
                 temperature=0,

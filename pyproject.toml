@@ -8,36 +8,39 @@ name = "unstract-adapters"
 dynamic = ["version"]
 description = "Unstract interface for LLMs, Embeddings and VectorDBs"
 dependencies = [
-    "llama-index==0.9.28",
-    "requests>=2.31.0",
-    # OpenAI Embedding & LLM
-    "openai==1.3.9",
-    # Google PaLM Embedding & LLM
-    "google-generativeai==0.3.1",
-    # vertex ai
-    "google-cloud-aiplatform==1.40.0",
-    # Embeddings
-    "fastembed==0.1.3",
-    "huggingface==0.0.1",
-    # VectorDBs
-    "pymilvus==2.3.4",
-    # Required by Supabase
-    "vecs==0.4.3",
-    "pinecone-client==2.2.4",
-    "psycopg2-binary==2.9.9",
-    "qdrant-client~=1.8.0",
-    "supabase==2.2.1",
-    "weaviate-client==3.25.3",
-    # Required by postgres
-    "asyncpg==0.29.0",
-    "SQLAlchemy==2.0.26",
-    # LLM
-    "anthropic==0.7.8",
-    "replicate==0.22.0",
-    "anyscale==0.5.165",
-    "mistralai==0.0.8",
-    # OCR
-    "filetype~=1.2.0",
+        "llama-index==0.10.28",
+        "llama-index-embeddings-google==0.1.4",
+        "llama-index-embeddings-azure-openai==0.1.6",
+        # llama-index itself has a dependency on open-ai.
+        # Hence, not explicitly pinning any version
+#        "llama-index-embeddings-openai==0.1.7",
+        # Disabling Hugging Face & FastEmbed to
+        # keep the image size under check
+#        "llama-index-embeddings-huggingface==0.2.0",
+        # Disabling fast embed due to high processing power
+#        "llama-index-embeddings-fastembed==0.1.4",
+        "llama-index-embeddings-azure-openai==0.1.6",
+        "llama-index-vector-stores-postgres==0.1.3",
+        # Including Supabase conflicts with postgres on pg-vector.
+        # Hence, commenting it out at the moment
+#        "llama-index-vector-stores-supabase==0.1.3",
+        "llama-index-vector-stores-milvus==0.1.6",
+        "llama-index-vector-stores-weaviate==0.1.4",
+        "llama-index-vector-stores-pinecone==0.1.4",
+        "llama-index-vector-stores-qdrant==0.1.4",
+        "llama-index-llms-palm==0.1.4",
+        "llama-index-llms-mistralai==0.1.10",
+        "llama-index-llms-anyscale==0.1.3",
+        "llama-index-llms-anthropic==0.1.5",
+        # Llama-index 0.10.x implcitly includes openai for LLM
+        "llama-index-llms-azure-openai==0.1.5",
+        "llama-index-llms-vertex==0.1.5",
+        "llama-index-llms-replicate==0.1.3",
+        # OCR
+        "filetype~=1.2.0",
+        # Others
+        # For singleton classes
+        "singleton-decorator~=1.0.0",
 ]
 readme = "README.md"
 urls = { Homepage = "https://unstract.com", "Release notes" = "https://github.com/Zipstack/unstract-adapters/releases", Source = "https://github.com/Zipstack/unstract-adapters" }
@@ -82,6 +85,15 @@ lint = [
     "yamllint>=1.35.1",
 ]
 
+[tool.isort]
+line_length = 80
+multi_line_output = 3
+include_trailing_comma = true
+force_grid_wrap = 0
+use_parentheses = true
+ensure_newline_before_comments = true
+profile = "black"
+
 [tool.pdm.build]
 includes = ["src"]
 package-dir = "src"
@@ -89,4 +101,3 @@ package-dir = "src"
 
 [tool.pdm.resolution.overrides]
 grpcio = ">=1.62.1"
-urllib3 = "<3,>=1.21.1"
