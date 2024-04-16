@@ -1,5 +1,5 @@
 <div align="center">
-<img src="docs/assets/unstract_u_logo.png" style="height: 120px">
+<img src="https://raw.githubusercontent.com/Zipstack/unstract-adapters/main/docs/assets/unstract_u_logo.png" style="height: 120px">
 
 # Unstract
 
