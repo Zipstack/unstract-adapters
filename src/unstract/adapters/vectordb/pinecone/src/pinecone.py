@@ -6,7 +6,7 @@ from llama_index.core.vector_stores.types import BasePydanticVectorStore
 from llama_index.vector_stores.pinecone import PineconeVectorStore
 from pinecone import NotFoundException
 from pinecone import Pinecone as LLamaIndexPinecone
-from pinecone import PodSpec
+from pinecone import PodSpec, ServerlessSpec
 
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.vectordb.constants import VectorDbConstants
@@ -22,6 +22,13 @@ class Constants:
     NAMESPACE = "namespace"
     DIMENSION = 1536
     METRIC = "euclidean"
+    SPECIFICATION = "spec"
+    SPEC_POD = "pod"
+    SPEC_SERVERLESS = "serverless"
+    CLOUD = "cloud"
+    REGION = "region"
+    DEFAULT_SPEC_COUNT_VALUE = 1
+    DEFAULT_POD_TYPE = "p1.x1"
 
 
 class Pinecone(VectorDBAdapter):
@@ -68,6 +75,22 @@ class Pinecone(VectorDBAdapter):
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
             )
+
+            specification = self.config.get(Constants.SPECIFICATION)
+            if specification == Constants.SPEC_POD:
+                environment = self.config.get(Constants.ENVIRONMENT)
+                spec = PodSpec(
+                    environment=environment,
+                    replicas=Constants.DEFAULT_SPEC_COUNT_VALUE,
+                    shards=Constants.DEFAULT_SPEC_COUNT_VALUE,
+                    pods=Constants.DEFAULT_SPEC_COUNT_VALUE,
+                    pod_type=Constants.DEFAULT_POD_TYPE,
+                )
+            elif specification == Constants.SPEC_SERVERLESS:
+                cloud = self.config.get(Constants.CLOUD)
+                region = self.config.get(Constants.REGION)
+                spec = ServerlessSpec(cloud=cloud, region=region)
+            logger.info(f"Setting up Pinecone spec for {spec}")
             try:
                 self.client.describe_index(name=self.collection_name)
             except NotFoundException:
@@ -78,9 +101,7 @@ class Pinecone(VectorDBAdapter):
                     name=self.collection_name,
                     dimension=dimension,
                     metric=Constants.METRIC,
-                    spec=PodSpec(
-                        environment=str(self.config.get(Constants.ENVIRONMENT))
-                    ),
+                    spec=spec,
                 )
             vector_db: BasePydanticVectorStore = PineconeVectorStore(
                 index_name=self.collection_name,
