@@ -1,9 +1,10 @@
-from llama_parse import LlamaParse
+from .llama_parse import LlamaParseAdapter
+
 
 metadata = {
-    "name": LlamaParse.__name__,
+    "name": LlamaParseAdapter.__name__,
     "version": "1.0.0",
-    "adapter": LlamaParse,
+    "adapter": LlamaParseAdapter,
     "description": "LlamaParse X2Text adapter",
     "is_active": True,
 }

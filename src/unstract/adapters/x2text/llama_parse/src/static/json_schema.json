@@ -5,6 +5,12 @@
       "api_key"
     ],
     "properties": {
+      "adapter_name": {
+        "type": "string",
+        "title": "Llama Parse Adapter ID",
+        "default": "",
+        "description": "Provide a unique name for this adapter instance. Example: Llama parse1"
+      },
         "api_key": {
             "type": "string",
             "title": "API Key",
@@ -40,16 +46,6 @@
         "title": "Verbose",
         "default": true,
         "description": "If set, verbose result is included."
-      },
-      "language": {
-        "type": "string",
-        "title": "Language",
-        "default": "en",
-        "enum": [
-            "text",
-            "markdown"
-          ],
-        "description": "Optionally you can define a language, default=en"
       }
     }
   }

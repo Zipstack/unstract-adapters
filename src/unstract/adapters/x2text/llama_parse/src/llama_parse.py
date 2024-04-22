@@ -11,7 +11,7 @@ from unstract.adapters.x2text.x2text_adapter import X2TextAdapter
 logger = logging.getLogger(__name__)
 
 
-class LlamaParse(X2TextAdapter):
+class LlamaParseAdapter(X2TextAdapter):
     def __init__(self, settings: dict[str, Any]):
         super().__init__("LlamaParse")
         self.config = settings
@@ -50,7 +50,7 @@ class LlamaParse(X2TextAdapter):
         result_type=self.config.get(LlamaParseConfig.RESULT_TYPE), 
         num_workers=self.config.get(LlamaParseConfig.NUM_WORKERS),
         verbose=self.config.get(LlamaParseConfig.VERBOSE), 
-        language=self.config.get(LlamaParseConfig.LANGUAGE),
+        language="en",
         ignore_errors=False
         )
         
