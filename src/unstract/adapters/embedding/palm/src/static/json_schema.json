@@ -9,7 +9,7 @@
   "properties": {
     "adapter_name": {
       "type": "string",
-      "title": "Embedding Adapter ID",
+      "title": "Name",
       "default": "",
       "description": "Provide a unique name for this adapter instance. Example: palm-emb-1"
     },
