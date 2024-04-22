@@ -1,0 +1,56 @@
+{
+    "title": "Llama Parse X2Text",
+    "type": "object",
+    "required": [
+      "api_key"
+    ],
+    "properties": {
+        "api_key": {
+            "type": "string",
+            "title": "API Key",
+            "format": "password",
+            "default": "",
+            "description": "Provide the token (API Key) of the Llama Parse server"
+        },
+      "url": {
+        "type": "string",
+        "title": "URL",
+        "format": "url",
+        "default": "https://api.cloud.llamaindex.ai",
+        "description": "Provide the Base URL of llama Parse server."
+      },
+      "result_type": {
+        "type": "string",
+        "title": "Result Type",
+        "enum": [
+          "text",
+          "markdown"
+        ],
+        "default": "text",
+        "description": "Choose the type of result. Markdown or text."
+      },
+      "num_workers": {
+        "type": "integer",
+        "title": "Number of Workers",
+        "default": 4,
+        "description": "Used for multiple files to split the API calls between the workers."
+      },
+      "verbose": {
+        "type": "boolean",
+        "title": "Verbose",
+        "default": true,
+        "description": "If set, verbose result is included."
+      },
+      "language": {
+        "type": "string",
+        "title": "Language",
+        "default": "en",
+        "enum": [
+            "text",
+            "markdown"
+          ],
+        "description": "Optionally you can define a language, default=en"
+      }
+    }
+  }
+  
