@@ -7,7 +7,7 @@
     "properties": {
       "adapter_name": {
         "type": "string",
-        "title": "Llama Parse Adapter ID",
+        "title": "Name",
         "default": "",
         "description": "Provide a unique name for this adapter instance. Example: Llama parse1"
       },
