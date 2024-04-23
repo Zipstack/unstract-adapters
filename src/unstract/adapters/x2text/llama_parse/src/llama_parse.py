@@ -78,6 +78,9 @@ class LlamaParseAdapter(X2TextAdapter):
     ) -> str:
         
         response_text=self._call_parser(input_file_path=input_file_path)
+        if output_file_path:
+            with open(output_file_path, "w", encoding="utf-8") as f:
+                f.write(response_text)
         return response_text
 
 
