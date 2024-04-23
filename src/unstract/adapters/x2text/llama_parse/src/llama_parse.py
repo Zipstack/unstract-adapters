@@ -49,7 +49,6 @@ class LlamaParseAdapter(X2TextAdapter):
         api_key=self.config.get(LlamaParseConfig.API_KEY),
         base_url=self.config.get(LlamaParseConfig.BASE_URL),
         result_type=self.config.get(LlamaParseConfig.RESULT_TYPE), 
-        num_workers=self.config.get(LlamaParseConfig.NUM_WORKERS),
         verbose=self.config.get(LlamaParseConfig.VERBOSE), 
         language="en",
         ignore_errors=False
