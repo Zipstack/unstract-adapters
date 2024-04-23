@@ -5,7 +5,7 @@
 groups = ["default", "lint"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:0b6391cb9aa9eb70688df3297d8b8f8dce519bf92bd2533f1de3bb705e1b0372"
+content_hash = "sha256:a2a2f978debfbbd4f4d4044ef713f96340d787e33e6572a41b8a8199783acf57"
 
 [[package]]
 name = "absolufy-imports"
@@ -1472,7 +1472,7 @@ files = [
 
 [[package]]
 name = "llama-index-core"
-version = "0.10.28"
+version = "0.10.30"
 requires_python = "<4.0,>=3.8.1"
 summary = "Interface between LLMs and your data"
 groups = ["default"]
@@ -1485,7 +1485,7 @@ dependencies = [
     "dirtyjson<2.0.0,>=1.0.8",
     "fsspec>=2023.5.0",
     "httpx",
-    "llamaindex-py-client<0.2.0,>=0.1.16",
+    "llamaindex-py-client<0.2.0,>=0.1.18",
     "nest-asyncio<2.0.0,>=1.5.8",
     "networkx>=3.0",
     "nltk<4.0.0,>=3.8.1",
@@ -1502,8 +1502,8 @@ dependencies = [
     "wrapt",
 ]
 files = [
-    {file = "llama_index_core-0.10.28-py3-none-any.whl", hash = "sha256:73e2ec86ea42a0efdc73dcfe46e03ba39ab7725699dcd791464c160d24a02cb1"},
-    {file = "llama_index_core-0.10.28.tar.gz", hash = "sha256:b454640396daa2678b638299e2a5e2539fa3548afd280d45d224fd3b303c20f4"},
+    {file = "llama_index_core-0.10.30-py3-none-any.whl", hash = "sha256:2f291ce2975f9dbf0ea87d684d3d8122ce216265f468f32baa2cf4ecfb34ed2a"},
+    {file = "llama_index_core-0.10.30.tar.gz", hash = "sha256:bed3f683606a0b0eb0839677c935a4b57b7bae509a95d380e51c6225630660e0"},
 ]
 
 [[package]]
@@ -1878,22 +1878,22 @@ files = [
 
 [[package]]
 name = "llama-parse"
-version = "0.4.0"
+version = "0.4.1"
 requires_python = "<4.0,>=3.8.1"
 summary = "Parse files into RAG-Optimized formats."
 groups = ["default"]
 dependencies = [
-    "llama-index-core>=0.10.7",
+    "llama-index-core>=0.10.29",
 ]
 files = [
-    {file = "llama_parse-0.4.0-py3-none-any.whl", hash = "sha256:52b450c9bb94746c5f86867f54fd2e74670d89b385dcb879eb93490a42fda628"},
-    {file = "llama_parse-0.4.0.tar.gz", hash = "sha256:ee521e9422db48dbdf00303cb6e90f1066131960b5ca4e14f5b5a6db6b7917e2"},
+    {file = "llama_parse-0.4.1-py3-none-any.whl", hash = "sha256:2c08962b66791c61fc360ae2042f953729c7b8decc3590d01fea5a98ca1f6676"},
+    {file = "llama_parse-0.4.1.tar.gz", hash = "sha256:d723af84d6a1fc99eb431915d21865d20b76d8a246dbaa124d1f96c956a644f7"},
 ]
 
 [[package]]
 name = "llamaindex-py-client"
-version = "0.1.16"
-requires_python = "<4.0,>=3.8"
+version = "0.1.18"
+requires_python = "<4,>=3.8"
 summary = ""
 groups = ["default"]
 dependencies = [
@@ -1901,8 +1901,8 @@ dependencies = [
     "pydantic>=1.10",
 ]
 files = [
-    {file = "llamaindex_py_client-0.1.16-py3-none-any.whl", hash = "sha256:b34e0a14984468f46ff5eebfe4b2b88598a24ff9459338a5621eee78e58bf0db"},
-    {file = "llamaindex_py_client-0.1.16.tar.gz", hash = "sha256:e99bbc0855e6caaa75eba219cdb3cf6c943ae94fa15ccbb68a3a08d452fd6380"},
+    {file = "llamaindex_py_client-0.1.18-py3-none-any.whl", hash = "sha256:5417e41666504a77ecf5bdd9b403ffff1d714880ee30d49e234fb7686177eeeb"},
+    {file = "llamaindex_py_client-0.1.18.tar.gz", hash = "sha256:091ee49a92592e3894777ade12516c2137093f9d6441a549f406461917ce9b7e"},
 ]
 
 [[package]]
