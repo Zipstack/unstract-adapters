@@ -5,7 +5,7 @@
 groups = ["default", "lint"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:a2a2f978debfbbd4f4d4044ef713f96340d787e33e6572a41b8a8199783acf57"
+content_hash = "sha256:e439de6485b7440fa08f093a4636a94519f35043ec2936befde5c7d0fb5bd950"
 
 [[package]]
 name = "absolufy-imports"
