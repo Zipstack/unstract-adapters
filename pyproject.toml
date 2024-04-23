@@ -41,6 +41,8 @@ dependencies = [
         # Others
         # For singleton classes
         "singleton-decorator~=1.0.0",
+        # For Llama Parse X2Text
+        "llama-parse>=0.4.1",
 ]
 readme = "README.md"
 urls = { Homepage = "https://unstract.com", "Release notes" = "https://github.com/Zipstack/unstract-adapters/releases", Source = "https://github.com/Zipstack/unstract-adapters" }
