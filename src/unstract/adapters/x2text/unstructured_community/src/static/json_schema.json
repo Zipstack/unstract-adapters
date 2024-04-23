@@ -8,7 +8,7 @@
   "properties": {
     "adapter_name": {
       "type": "string",
-      "title": "X2Text Adapter ID",
+      "title": "Name",
       "default": "",
       "description": "Provide a unique name for this adapter instance. Example: Unstructured IO 1"
     },
