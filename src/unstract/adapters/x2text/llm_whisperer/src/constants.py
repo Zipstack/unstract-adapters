@@ -1,3 +1,4 @@
+import os
 from enum import Enum
 
 
@@ -26,6 +27,24 @@ class WhispererEndpoint:
 
     TEST_CONNECTION = "test-connection"
     WHISPER = "whisper"
+    STATUS = "whisper-status"
+    RETRIEVE = "whisper-retrieve"
+
+
+class WhispererEnv:
+    """Env variables for LLM whisperer.
+
+    Can be used to alter behaviour at runtime.
+
+    Attributes:
+        POLL_INTERVAL: Time in seconds to wait before polling
+            LLMWhisperer's status API. Defaults to 30s
+        MAX_POLLS: Total number of times to poll the status API.
+            Set to -1 to poll indefinitely. Defaults to -1
+    """
+
+    POLL_INTERVAL = "ADAPTER_LLMW_POLL_INTERVAL"
+    MAX_POLLS = "ADAPTER_LLMW_MAX_POLLS"
 
 
 class WhispererConfig:
@@ -40,9 +59,23 @@ class WhispererConfig:
     FORCE_TEXT_PROCESSING = "force_text_processing"
 
 
+class WhisperStatus:
+    """Values returned / used by /whisper-status endpoint."""
+
+    PROCESSING = "processing"
+    PROCESSED = "processed"
+    DELIVERED = "delivered"
+    UNKNOWN = "unknown"
+    # Used for async processing
+    WHISPER_HASH = "whisper-hash"
+    STATUS = "status"
+
+
 class WhispererDefaults:
-    """Defaults meant for OCR mode."""
+    """Defaults meant for LLM whisperer."""
 
     MEDIAN_FILTER_SIZE = 0
     GAUSSIAN_BLUR_RADIUS = 0.0
     FORCE_TEXT_PROCESSING = False
+    POLL_INTERVAL = os.getenv(WhispererEnv.POLL_INTERVAL, 30)
+    MAX_POLLS = os.getenv(WhispererEnv.MAX_POLLS, -1)
