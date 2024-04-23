@@ -35,12 +35,6 @@
         "default": "text",
         "description": "Choose the type of result. Markdown or text."
       },
-      "num_workers": {
-        "type": "integer",
-        "title": "Number of Workers",
-        "default": 4,
-        "description": "Used for multiple files to split the API calls between the workers."
-      },
       "verbose": {
         "type": "boolean",
         "title": "Verbose",

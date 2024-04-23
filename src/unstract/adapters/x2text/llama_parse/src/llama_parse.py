@@ -7,6 +7,7 @@ from llama_parse import LlamaParse
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.x2text.llama_parse.src.constants import LlamaParseConfig
 from unstract.adapters.x2text.x2text_adapter import X2TextAdapter
+from httpx import ConnectError
 
 logger = logging.getLogger(__name__)
 
@@ -57,7 +58,7 @@ class LlamaParseAdapter(X2TextAdapter):
         try :
             documents = parser.load_data(input_file_path)
 
-        except ConnectionError as connec_err:
+        except ConnectError as connec_err:
             logger.error(f"Invalid Base URL given. : {connec_err}")
             raise AdapterError(
                 "Unable to connect to llama-parse`s service, "
