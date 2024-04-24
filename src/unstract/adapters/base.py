@@ -6,10 +6,7 @@ from llama_index.core import MockEmbedding
 from llama_index.core.embeddings import BaseEmbedding
 from llama_index.core.llms import LLM, MockLLM
 from llama_index.core.vector_stores import SimpleVectorStore
-from llama_index.core.vector_stores.types import (
-    BasePydanticVectorStore,
-    VectorStore,
-)
+from llama_index.core.vector_stores.types import BasePydanticVectorStore, VectorStore
 
 from unstract.adapters.enums import AdapterTypes
 
@@ -60,9 +57,7 @@ class Adapter(ABC):
         # Overriding implementations use vector_db_config
         return SimpleVectorStore()
 
-    def get_embedding_instance(
-        self, embed_config: dict[str, Any]
-    ) -> BaseEmbedding:
+    def get_embedding_instance(self, embed_config: dict[str, Any]) -> BaseEmbedding:
         return MockEmbedding(embed_dim=1)
 
     @abstractmethod

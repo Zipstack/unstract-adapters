@@ -37,9 +37,7 @@ class EmbeddingAdapter(Adapter, ABC):
     def get_adapter_type() -> AdapterTypes:
         return AdapterTypes.EMBEDDING
 
-    def get_embedding_instance(
-        self, embed_config: dict[str, Any]
-    ) -> BaseEmbedding:
+    def get_embedding_instance(self, embed_config: dict[str, Any]) -> BaseEmbedding:
         """Instantiate the llama index BaseEmbedding class.
 
         Returns:

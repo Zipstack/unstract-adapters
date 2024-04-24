@@ -54,9 +54,7 @@ class AnthropicLLM(LLMAdapter):
                     self.config.get(Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT)
                 ),
                 max_retries=int(
-                    self.config.get(
-                        Constants.MAX_RETIRES, LLMKeys.DEFAULT_MAX_RETRIES
-                    )
+                    self.config.get(Constants.MAX_RETIRES, LLMKeys.DEFAULT_MAX_RETRIES)
                 ),
                 temperature=0,
             )

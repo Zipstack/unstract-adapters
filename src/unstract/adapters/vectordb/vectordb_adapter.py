@@ -2,10 +2,7 @@ from abc import ABC
 from typing import Any, Union
 
 from llama_index.core.vector_stores import SimpleVectorStore
-from llama_index.core.vector_stores.types import (
-    BasePydanticVectorStore,
-    VectorStore,
-)
+from llama_index.core.vector_stores.types import BasePydanticVectorStore, VectorStore
 
 from unstract.adapters.base import Adapter
 from unstract.adapters.enums import AdapterTypes

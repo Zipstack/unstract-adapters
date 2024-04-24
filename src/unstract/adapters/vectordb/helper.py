@@ -9,10 +9,7 @@ from llama_index.core import (
     VectorStoreIndex,
 )
 from llama_index.core.llms import MockLLM
-from llama_index.core.vector_stores.types import (
-    BasePydanticVectorStore,
-    VectorStore,
-)
+from llama_index.core.vector_stores.types import BasePydanticVectorStore, VectorStore
 
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.vectordb.constants import VectorDbConstants
@@ -29,9 +26,7 @@ class VectorDBHelper:
             if vector_store is None:
                 return False
 
-            storage_context = StorageContext.from_defaults(
-                vector_store=vector_store
-            )
+            storage_context = StorageContext.from_defaults(vector_store=vector_store)
             local_path = f"{os.path.dirname(__file__)}/samples/"
             # Using mock llm and embedding here.
             # For custom embedding args will be:
@@ -95,13 +90,8 @@ class VectorDBHelper:
                     return value -> unstract_vector_db
 
         """
-        vector_db_collection_name: str = (
-            VectorDbConstants.DEFAULT_VECTOR_DB_NAME
-        )
-        if (
-            collection_name_prefix is not None
-            and embedding_dimension is not None
-        ):
+        vector_db_collection_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
+        if collection_name_prefix is not None and embedding_dimension is not None:
             vector_db_collection_name = (
                 collection_name_prefix
                 + "_"

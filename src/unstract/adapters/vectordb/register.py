@@ -17,9 +17,7 @@ class VectorDBRegistry(AdapterRegistry):
         package = "unstract.adapters.vectordb"
 
         for adapter in os.listdir(current_directory):
-            adapter_path = os.path.join(
-                current_directory, adapter, Common.SRC_FOLDER
-            )
+            adapter_path = os.path.join(current_directory, adapter, Common.SRC_FOLDER)
             # Check if the item is a directory and not a
             # special directory like __pycache__
             if os.path.isdir(adapter_path) and not adapter.startswith("__"):
@@ -46,6 +44,4 @@ class VectorDBRegistry(AdapterRegistry):
                         Common.METADATA: metadata,
                     }
         except ModuleNotFoundError as exception:
-            logger.error(
-                f"Error while importing vectorDB adapters : {exception}"
-            )
+            logger.error(f"Error while importing vectorDB adapters : {exception}")

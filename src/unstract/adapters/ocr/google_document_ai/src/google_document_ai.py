@@ -100,9 +100,7 @@ class GoogleDocumentAI(OCRAdapter):
             sample_contents = file_obj.read(100)
             file_type = filetype.guess(sample_contents)
 
-        file_type_mime: str = (
-            file_type.MIME if file_type else FileType.TEXT_PLAIN
-        )
+        file_type_mime: str = file_type.MIME if file_type else FileType.TEXT_PLAIN
 
         if file_type_mime not in FileType.ALLOWED_TYPES:
             logger.error("Input file type not supported: " f"{file_type_mime}")
@@ -129,9 +127,7 @@ class GoogleDocumentAI(OCRAdapter):
             )
             response = requests.post(processor_url, headers=headers, json=data)
             if response.status_code != 200:
-                logger.error(
-                    f"Error while calling Google Document AI: {response.text}"
-                )
+                logger.error(f"Error while calling Google Document AI: {response.text}")
             response_json: dict[str, Any] = response.json()
             result_text: str = response_json["document"]["text"]
             if output_file_path is not None:
@@ -155,12 +151,8 @@ class GoogleDocumentAI(OCRAdapter):
             headers = self._get_request_headers()
             response = requests.get(url, headers=headers)
             if response.status_code != 200:
-                logger.error(
-                    f"Error while testing Google Document AI: {response.text}"
-                )
-                raise AdapterError(
-                    f"{response.status_code} - {response.reason}"
-                )
+                logger.error(f"Error while testing Google Document AI: {response.text}")
+                raise AdapterError(f"{response.status_code} - {response.reason}")
             else:
                 return True
         except Exception as e:

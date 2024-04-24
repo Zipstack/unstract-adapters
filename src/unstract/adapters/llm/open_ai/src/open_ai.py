@@ -56,9 +56,7 @@ class OpenAILLM(LLMAdapter):
                 api_base=str(self.config.get(Constants.API_BASE)),
                 api_version=str(self.config.get(Constants.API_VERSION)),
                 max_retries=int(
-                    self.config.get(
-                        Constants.MAX_RETIRES, LLMKeys.DEFAULT_MAX_RETRIES
-                    )
+                    self.config.get(Constants.MAX_RETIRES, LLMKeys.DEFAULT_MAX_RETRIES)
                 ),
                 api_type="openai",
                 temperature=0,

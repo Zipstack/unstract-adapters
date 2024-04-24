@@ -20,9 +20,7 @@ class PaLM(EmbeddingAdapter):
     def __init__(self, settings: dict[str, Any]):
         super().__init__("Palm")
         self.config = settings
-        self.json_credentials = json.loads(
-            settings.get("json_credentials", "{}")
-        )
+        self.json_credentials = json.loads(settings.get("json_credentials", "{}"))
 
     @staticmethod
     def get_id() -> str:

@@ -50,9 +50,7 @@ class MistralLLM(LLMAdapter):
                 model=str(self.config.get(Constants.MODEL)),
                 api_key=str(self.config.get(Constants.API_KEY)),
                 temperature=0,
-                timeout=self.config.get(
-                    Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT
-                ),
+                timeout=self.config.get(Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT),
             )
             return llm
         except Exception as e:

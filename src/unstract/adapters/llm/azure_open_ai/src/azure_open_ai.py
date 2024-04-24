@@ -60,9 +60,7 @@ class AzureOpenAILLM(LLMAdapter):
                 azure_endpoint=str(self.config.get(Constants.AZURE_ENDPONT)),
                 api_type=Constants.API_TYPE,
                 temperature=0,
-                timeout=self.config.get(
-                    Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT
-                ),
+                timeout=self.config.get(Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT),
             )
             return llm
         except Exception as e:
