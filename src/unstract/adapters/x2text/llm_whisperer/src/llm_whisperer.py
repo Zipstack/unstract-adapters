@@ -218,7 +218,7 @@ class LLMWhisperer(X2TextAdapter):
             # Exit with error if max poll count is reached
             if request_count >= MAX_POLLS:
                 raise ExtractorError(
-                    "Unable to extract text after attempting" f" {MAX_POLLS} times"
+                    "Unable to extract text after attempting" f" {request_count} times"
                 )
             time.sleep(POLL_INTERVAL)
 
