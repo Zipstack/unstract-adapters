@@ -2,12 +2,12 @@ import logging
 import os
 from typing import Any, Optional
 
-from llama_parse import LlamaParse 
+from httpx import ConnectError
+from llama_parse import LlamaParse
 
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.x2text.llama_parse.src.constants import LlamaParseConfig
 from unstract.adapters.x2text.x2text_adapter import X2TextAdapter
-from httpx import ConnectError
 
 logger = logging.getLogger(__name__)
 
@@ -42,19 +42,19 @@ class LlamaParseAdapter(X2TextAdapter):
 
     def _call_parser(
         self,
-        input_file_path:str,
+        input_file_path: str,
     ) -> str:
-        
+
         parser = LlamaParse(
-        api_key=self.config.get(LlamaParseConfig.API_KEY),
-        base_url=self.config.get(LlamaParseConfig.BASE_URL),
-        result_type=self.config.get(LlamaParseConfig.RESULT_TYPE), 
-        verbose=self.config.get(LlamaParseConfig.VERBOSE), 
-        language="en",
-        ignore_errors=False
+            api_key=self.config.get(LlamaParseConfig.API_KEY),
+            base_url=self.config.get(LlamaParseConfig.BASE_URL),
+            result_type=self.config.get(LlamaParseConfig.RESULT_TYPE),
+            verbose=self.config.get(LlamaParseConfig.VERBOSE),
+            language="en",
+            ignore_errors=False,
         )
-        
-        try :
+
+        try:
             documents = parser.load_data(input_file_path)
 
         except ConnectError as connec_err:
@@ -63,12 +63,14 @@ class LlamaParseAdapter(X2TextAdapter):
                 "Unable to connect to llama-parse`s service, "
                 "please check the Base URL"
             )
-        except Exception as exe :
-                logger.error(f"Seems like an invalid API Key or possible internal errors: {exe}")
-                raise AdapterError(exe)
-           
+        except Exception as exe:
+            logger.error(
+                "Seems like an invalid API Key or possible internal errors: {exe}"
+            )
+            raise AdapterError(exe)
+
         response_text = documents[0].text
-        return response_text
+        return response_text  # type: ignore
 
     def process(
         self,
@@ -76,14 +78,15 @@ class LlamaParseAdapter(X2TextAdapter):
         output_file_path: Optional[str] = None,
         **kwargs: dict[Any, Any],
     ) -> str:
-        
-        response_text=self._call_parser(input_file_path=input_file_path)
+
+        response_text = self._call_parser(input_file_path=input_file_path)
         if output_file_path:
             with open(output_file_path, "w", encoding="utf-8") as f:
                 f.write(response_text)
         return response_text
 
-
     def test_connection(self) -> bool:
-        self._call_parser(input_file_path=f"{os.path.dirname(__file__)}/static/test_input.doc")
+        self._call_parser(
+            input_file_path=f"{os.path.dirname(__file__)}/static/test_input.doc"
+        )
         return True

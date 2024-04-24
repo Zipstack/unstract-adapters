@@ -60,9 +60,7 @@ class LLMWhisperer(X2TextAdapter):
         """
         return {
             "accept": "application/json",
-            WhispererHeader.UNSTRACT_KEY: self.config.get(
-                WhispererConfig.UNSTRACT_KEY
-            ),
+            WhispererHeader.UNSTRACT_KEY: self.config.get(WhispererConfig.UNSTRACT_KEY),
         }
 
     def _make_request(
@@ -108,15 +106,12 @@ class LLMWhisperer(X2TextAdapter):
                     data=data,
                 )
             else:
-                raise ExtractorError(
-                    f"Unsupported request method: {request_method}"
-                )
+                raise ExtractorError(f"Unsupported request method: {request_method}")
             response.raise_for_status()
         except ConnectionError as e:
             logger.error(f"Adapter error: {e}")
             raise ExtractorError(
-                "Unable to connect to LLM Whisperer service, "
-                "please check the URL"
+                "Unable to connect to LLM Whisperer service, " "please check the URL"
             )
         except Timeout as e:
             msg = "Request to LLM whisperer has timed out"
@@ -196,7 +191,6 @@ class LLMWhisperer(X2TextAdapter):
         request_count = 0
 
         # Check status in fixed intervals upto max poll count.
-        # If max poll count is -1, check happens indefinitely
         while True:
             request_count += 1
             logger.info(
@@ -211,9 +205,7 @@ class LLMWhisperer(X2TextAdapter):
             )
             if status_response.status_code == 200:
                 status_data = status_response.json()
-                status = status_data.get(
-                    WhisperStatus.STATUS, WhisperStatus.UNKNOWN
-                )
+                status = status_data.get(WhisperStatus.STATUS, WhisperStatus.UNKNOWN)
                 logger.info(f"Whisper status for {whisper_hash}: {status}")
                 if status in [WhisperStatus.PROCESSED, WhisperStatus.DELIVERED]:
                     break
@@ -224,10 +216,9 @@ class LLMWhisperer(X2TextAdapter):
                 )
 
             # Exit with error if max poll count is reached
-            if request_count == MAX_POLLS:
+            if request_count >= MAX_POLLS:
                 raise ExtractorError(
-                    "Unable to extract text after attempting"
-                    f" {MAX_POLLS} times"
+                    "Unable to extract text after attempting" f" {request_count} times"
                 )
             time.sleep(POLL_INTERVAL)
 
