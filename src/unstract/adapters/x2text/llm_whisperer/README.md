@@ -7,4 +7,4 @@ The below env variables are resolved by LLM Whisperer adapter
 | Variable                     | Description                                                                                  |
 | ---------------------------- | -------------------------------------------------------------------------------------------- |
 | `ADAPTER_LLMW_POLL_INTERVAL` | Time in seconds to wait before polling LLMWhisperer's status API. Defaults to 30s            |
-| `ADAPTER_LLMW_MAX_POLLS`     | Total number of times to poll the status API. Set to -1 to poll indefinitely. Defaults to -1 |
+| `ADAPTER_LLMW_MAX_POLLS`     | Total number of times to poll the status API. Defaults to 30                                 |

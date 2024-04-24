@@ -78,4 +78,4 @@ class WhispererDefaults:
     GAUSSIAN_BLUR_RADIUS = 0.0
     FORCE_TEXT_PROCESSING = False
     POLL_INTERVAL = os.getenv(WhispererEnv.POLL_INTERVAL, 30)
-    MAX_POLLS = os.getenv(WhispererEnv.MAX_POLLS, -1)
+    MAX_POLLS = os.getenv(WhispererEnv.MAX_POLLS, 30)
