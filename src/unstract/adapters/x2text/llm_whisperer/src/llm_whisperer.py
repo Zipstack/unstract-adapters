@@ -111,7 +111,7 @@ class LLMWhisperer(X2TextAdapter):
         except ConnectionError as e:
             logger.error(f"Adapter error: {e}")
             raise ExtractorError(
-                "Unable to connect to LLM Whisperer service, " "please check the URL"
+                "Unable to connect to LLM Whisperer service, please check the URL"
             )
         except Timeout as e:
             msg = "Request to LLM whisperer has timed out"
