@@ -1,16 +1,18 @@
+import logging
 import os
 from typing import Any
 
 from httpx import ConnectError, HTTPStatusError
 from llama_index.core.llms import LLM
 from llama_index.llms.ollama import Ollama
-import logging
+
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.llm.constants import LLMKeys
 from unstract.adapters.llm.helper import LLMHelper
 from unstract.adapters.llm.llm_adapter import LLMAdapter
 
 logger = logging.getLogger(__name__)
+
 
 class Constants:
     MODEL = "model"
@@ -51,12 +53,15 @@ class OllamaLLM(LLMAdapter):
 
     def get_llm_instance(self) -> LLM:
         try:
-            llm = Ollama(model=str(self.config.get(Constants.MODEL)),
-                        base_url=str(self.config.get(Constants.BASE_URL)),
-                        request_timeout=self.config.get(
-                    Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT),
-                    json_mode=self.config.get(Constants.JSON_MODE, False),
-                    context_window=self.config.get(Constants.CONTEXT_WINDOW,3900))
+            llm: LLM = Ollama(
+                model=str(self.config.get(Constants.MODEL)),
+                base_url=str(self.config.get(Constants.BASE_URL)),
+                request_timeout=self.config.get(
+                    Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT
+                ),
+                json_mode=self.config.get(Constants.JSON_MODE, False),
+                context_window=self.config.get(Constants.CONTEXT_WINDOW, 3900),
+            )
             return llm
 
         except ConnectError as connec_err:
@@ -70,11 +75,11 @@ class OllamaLLM(LLMAdapter):
             if http_err.response:
                 if http_err.response.status_code == 404:
                     logger.error(
-                        f"Error occured while sending requst to the model{http_err}")
+                        f"Error occured while sending requst to the model{http_err}"
+                    )
                     raise AdapterError(
-                        "Model under use is not found."
-                        "Try pulling it first."
-                        )
+                        "Model under use is not found." "Try pulling it first."
+                    )
             raise AdapterError(
                 f"Some issue while communicating with the model. "
                 f"Details : {http_err.response.text}"
