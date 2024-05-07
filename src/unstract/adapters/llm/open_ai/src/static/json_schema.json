@@ -40,7 +40,7 @@
     },
     "max_retries": {
       "type": "integer",
-      "title": "Max retries",
+      "title": "Max Retries",
       "default": 5,
       "description": "The maximum number of times to retry a request if it fails."
     },

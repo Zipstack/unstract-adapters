@@ -25,6 +25,12 @@
       "format": "password",
       "description": "API Key for Mistral AI LLM"
     },
+    "max_retries": {
+      "type": "integer",
+      "title": "Max Retries",
+      "default": 5,
+      "description": "Maximum number of retries to attempt when a request fails."
+    },
     "timeout": {
       "type": "number",
       "title": "Timeout",
