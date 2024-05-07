@@ -27,7 +27,7 @@ dependencies = [
     "llama-index-vector-stores-milvus==0.1.6",
     "llama-index-vector-stores-weaviate==0.1.4",
     "llama-index-vector-stores-pinecone==0.1.4",
-    "llama-index-vector-stores-qdrant==0.1.4",
+    "llama-index-vector-stores-qdrant==0.2.8",
     "llama-index-llms-palm==0.1.4",
     "llama-index-llms-mistralai==0.1.10",
     "llama-index-llms-anyscale==0.1.3",
