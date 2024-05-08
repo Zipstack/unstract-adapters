@@ -2,6 +2,7 @@ import logging
 import os
 from typing import Any, Optional
 
+import filetype
 from httpx import ConnectError
 from llama_parse import LlamaParse
 
@@ -55,6 +56,16 @@ class LlamaParseAdapter(X2TextAdapter):
         )
 
         try:
+            extention = input_file_path.rsplit(".", 1)[1]
+            if not extention:
+                with open(input_file_path, mode="rb") as file_obj:
+                    sample_contents = file_obj.read(100)
+                    file_type = filetype.guess(sample_contents)
+                    input_file_path_copy = input_file_path
+                    input_file_path = ".".join(
+                        (input_file_path_copy, file_type.EXTENSION)
+                    )
+
             documents = parser.load_data(input_file_path)
 
         except ConnectError as connec_err:
