@@ -31,7 +31,7 @@
       "description": "The maximum number of context tokens for the model."
     },
     "request_timeout": {
-      "type": "float",
+      "type": "number",
       "title": "Request Timeout",
       "default": 900,
       "description": "Request timeout in seconds"
