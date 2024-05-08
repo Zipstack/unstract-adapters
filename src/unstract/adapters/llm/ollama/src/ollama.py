@@ -42,7 +42,7 @@ class OllamaLLM(LLMAdapter):
 
     @staticmethod
     def get_icon() -> str:
-        return "/icons/adapter-icons/Ollama%20LLM.png"
+        return "/icons/adapter-icons/ollama.png"
 
     @staticmethod
     def get_json_schema() -> str:
