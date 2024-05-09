@@ -1860,8 +1860,8 @@ files = [
 
 [[package]]
 name = "llama-index-vector-stores-qdrant"
-version = "0.1.4"
-requires_python = ">=3.9,<4.0"
+version = "0.2.8"
+requires_python = "<3.13,>=3.9"
 summary = "llama-index vector_stores qdrant integration"
 groups = ["default"]
 dependencies = [
@@ -1870,8 +1870,8 @@ dependencies = [
     "qdrant-client<2.0.0,>=1.7.1",
 ]
 files = [
-    {file = "llama_index_vector_stores_qdrant-0.1.4-py3-none-any.whl", hash = "sha256:cb1adad8f6812fdda888079195fdb0697d7e9409e437a0e48dddd1288276bdab"},
-    {file = "llama_index_vector_stores_qdrant-0.1.4.tar.gz", hash = "sha256:5088842fb65470642eb3286cf5c16c3ce67cab11fba2ea029d031e9a5868d250"},
+    {file = "llama_index_vector_stores_qdrant-0.2.8-py3-none-any.whl", hash = "sha256:04a4a3c094ab7c75b6b543a584291385aa127b4cb379f46e2576e1da91a67310"},
+    {file = "llama_index_vector_stores_qdrant-0.2.8.tar.gz", hash = "sha256:a9e295ee39414ee8d411831c3c24be3c00fac519530558bf0c6259fcc48deb80"},
 ]
 
 [[package]]
