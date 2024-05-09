@@ -43,7 +43,7 @@ dependencies = [
     # For singleton classes
     "singleton-decorator~=1.0.0",
     # For Llama Parse X2Text
-    "llama-parse>=0.4.1",
+    "llama-parse==0.4.1",
     "httpx>=0.25.2",
 ]
 readme = "README.md"
