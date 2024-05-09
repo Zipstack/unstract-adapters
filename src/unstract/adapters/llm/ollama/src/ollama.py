@@ -1,5 +1,6 @@
 import logging
 import os
+import re
 from typing import Any
 
 from httpx import ConnectError, HTTPStatusError
@@ -8,7 +9,6 @@ from llama_index.llms.ollama import Ollama
 
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.llm.constants import LLMKeys
-from unstract.adapters.llm.helper import LLMHelper
 from unstract.adapters.llm.llm_adapter import LLMAdapter
 
 logger = logging.getLogger(__name__)
@@ -21,6 +21,7 @@ class Constants:
     BASE_URL = "base_url"
     JSON_MODE = "json_mode"
     CONTEXT_WINDOW = "context_window"
+    MODEL_MISSING_ERROR = "try pulling it first"
 
 
 class OllamaLLM(LLMAdapter):
@@ -56,11 +57,11 @@ class OllamaLLM(LLMAdapter):
             llm: LLM = Ollama(
                 model=str(self.config.get(Constants.MODEL)),
                 base_url=str(self.config.get(Constants.BASE_URL)),
-                request_timeout=self.config.get(
-                    Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT
+                request_timeout=float(
+                    self.config.get(Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT)
                 ),
                 json_mode=self.config.get(Constants.JSON_MODE, False),
-                context_window=self.config.get(Constants.CONTEXT_WINDOW, 3900),
+                context_window=int(self.config.get(Constants.CONTEXT_WINDOW, 3900)),
             )
             return llm
 
@@ -71,9 +72,31 @@ class OllamaLLM(LLMAdapter):
                 "please check if the server is up and running or"
                 "if it is accepting connections."
             )
+        except Exception as exc:
+            logger.error(f"Error occured while getting llm instance:{exc}")
+            raise AdapterError(str(exc))
+
+    def test_connection(self) -> bool:
+        try:
+            llm = self.get_llm_instance()
+            if not llm:
+                return False
+            response = llm.complete(
+                "The capital of Tamilnadu is ",
+                temperature=0.003,
+            )
+            response_lower_case: str = response.text.lower()
+            find_match = re.search("chennai", response_lower_case)
+            if find_match:
+                return True
+            else:
+                return False
         except HTTPStatusError as http_err:
             if http_err.response:
-                if http_err.response.status_code == 404:
+                if (
+                    http_err.response.status_code == 404
+                    and Constants.MODEL_MISSING_ERROR in http_err.response.text
+                ):
                     logger.error(
                         f"Error occured while sending requst to the model{http_err}"
                     )
@@ -84,11 +107,7 @@ class OllamaLLM(LLMAdapter):
                 f"Some issue while communicating with the model. "
                 f"Details : {http_err.response.text}"
             )
-        except Exception as exc:
-            logger.error(f"Error occured while getting llm instance:{exc}")
-            raise AdapterError(str(exc))
 
-    def test_connection(self) -> bool:
-        llm = self.get_llm_instance()
-        test_result: bool = LLMHelper.test_llm_instance(llm=llm)
-        return test_result
+        except Exception as e:
+            logger.error(f"Error occured while testing adapter {e}")
+            raise AdapterError(str(e))
