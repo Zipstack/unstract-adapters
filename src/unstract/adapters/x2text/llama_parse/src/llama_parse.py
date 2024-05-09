@@ -13,6 +13,10 @@ from unstract.adapters.x2text.x2text_adapter import X2TextAdapter
 logger = logging.getLogger(__name__)
 
 
+class Constants:
+    INFILE = "INFILE"
+
+
 class LlamaParseAdapter(X2TextAdapter):
     def __init__(self, settings: dict[str, Any]):
         super().__init__("LlamaParse")
@@ -56,8 +60,7 @@ class LlamaParseAdapter(X2TextAdapter):
         )
 
         try:
-            extention = input_file_path.rsplit(".", 1)[1]
-            if not extention:
+            if Constants.INFILE in input_file_path:
                 try:
                     with open(input_file_path, mode="rb") as file_obj:
                         sample_contents = file_obj.read(100)
