@@ -58,13 +58,17 @@ class LlamaParseAdapter(X2TextAdapter):
         try:
             extention = input_file_path.rsplit(".", 1)[1]
             if not extention:
-                with open(input_file_path, mode="rb") as file_obj:
-                    sample_contents = file_obj.read(100)
-                    file_type = filetype.guess(sample_contents)
-                    input_file_path_copy = input_file_path
-                    input_file_path = ".".join(
-                        (input_file_path_copy, file_type.EXTENSION)
-                    )
+                try:
+                    with open(input_file_path, mode="rb") as file_obj:
+                        sample_contents = file_obj.read(100)
+                        file_type = filetype.guess(sample_contents)
+                        input_file_path_copy = input_file_path
+                        input_file_path = ".".join(
+                            (input_file_path_copy, file_type.EXTENSION)
+                        )
+                except OSError as os_err:
+                    logger.error("Exception raised while handling input file.")
+                    raise AdapterError(str(os_err))
 
             documents = parser.load_data(input_file_path)
 
@@ -78,7 +82,7 @@ class LlamaParseAdapter(X2TextAdapter):
             logger.error(
                 "Seems like an invalid API Key or possible internal errors: {exe}"
             )
-            raise AdapterError(exe)
+            raise AdapterError(str(exe))
 
         response_text = documents[0].text
         return response_text  # type: ignore
