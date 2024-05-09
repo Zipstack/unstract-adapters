@@ -78,7 +78,7 @@ class OllamaLLM(LLMAdapter):
                         f"Error occured while sending requst to the model{http_err}"
                     )
                     raise AdapterError(
-                        "Model under use is not found." "Try pulling it first."
+                        "Model under use is not found. Try pulling it first."
                     )
             raise AdapterError(
                 f"Some issue while communicating with the model. "
