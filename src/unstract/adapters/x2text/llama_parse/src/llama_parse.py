@@ -1,5 +1,6 @@
 import logging
 import os
+import pathlib
 from typing import Any, Optional
 
 import filetype
@@ -11,10 +12,6 @@ from unstract.adapters.x2text.llama_parse.src.constants import LlamaParseConfig
 from unstract.adapters.x2text.x2text_adapter import X2TextAdapter
 
 logger = logging.getLogger(__name__)
-
-
-class Constants:
-    INFILE = "INFILE"
 
 
 class LlamaParseAdapter(X2TextAdapter):
@@ -60,7 +57,8 @@ class LlamaParseAdapter(X2TextAdapter):
         )
 
         try:
-            if Constants.INFILE in input_file_path:
+            file_extension = pathlib.Path(input_file_path).suffix
+            if not file_extension:
                 try:
                     with open(input_file_path, mode="rb") as file_obj:
                         sample_contents = file_obj.read(100)
