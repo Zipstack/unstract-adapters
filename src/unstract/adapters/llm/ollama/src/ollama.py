@@ -60,7 +60,7 @@ class OllamaLLM(LLMAdapter):
                 request_timeout=float(
                     self.config.get(Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT)
                 ),
-                json_mode=self.config.get(Constants.JSON_MODE, False),
+                json_mode=False,
                 context_window=int(self.config.get(Constants.CONTEXT_WINDOW, 3900)),
             )
             return llm
