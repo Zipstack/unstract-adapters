@@ -35,12 +35,6 @@
       "title": "Request Timeout",
       "default": 900,
       "description": "Request timeout in seconds"
-    },
-    "json_mode": {
-      "type": "boolean",
-      "title": "JSON Mode",
-      "default": false,
-      "description": "Whether to use JSON mode for the Ollama API."
     }
   }
 }
