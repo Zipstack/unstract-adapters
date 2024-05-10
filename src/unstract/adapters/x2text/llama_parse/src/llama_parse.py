@@ -3,11 +3,11 @@ import os
 import pathlib
 from typing import Any, Optional
 
-import filetype
 from httpx import ConnectError
 from llama_parse import LlamaParse
 
 from unstract.adapters.exceptions import AdapterError
+from unstract.adapters.utils import AdapterUtils
 from unstract.adapters.x2text.llama_parse.src.constants import LlamaParseConfig
 from unstract.adapters.x2text.x2text_adapter import X2TextAdapter
 
@@ -60,13 +60,11 @@ class LlamaParseAdapter(X2TextAdapter):
             file_extension = pathlib.Path(input_file_path).suffix
             if not file_extension:
                 try:
-                    with open(input_file_path, mode="rb") as file_obj:
-                        sample_contents = file_obj.read(100)
-                        file_type = filetype.guess(sample_contents)
-                        input_file_path_copy = input_file_path
-                        input_file_path = ".".join(
-                            (input_file_path_copy, file_type.EXTENSION)
-                        )
+                    input_file_extension = AdapterUtils.guess_extention(input_file_path)
+                    input_file_path_copy = input_file_path
+                    input_file_path = ".".join(
+                        (input_file_path_copy, input_file_extension)
+                    )
                 except OSError as os_err:
                     logger.error("Exception raised while handling input file.")
                     raise AdapterError(str(os_err))
@@ -86,7 +84,7 @@ class LlamaParseAdapter(X2TextAdapter):
             raise AdapterError(str(exe))
 
         response_text = documents[0].text
-        return response_text  # type: ignore
+        return response_text  # type:ignore
 
     def process(
         self,
