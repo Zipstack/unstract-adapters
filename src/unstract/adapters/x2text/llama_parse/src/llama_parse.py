@@ -1,11 +1,13 @@
 import logging
 import os
+import pathlib
 from typing import Any, Optional
 
 from httpx import ConnectError
 from llama_parse import LlamaParse
 
 from unstract.adapters.exceptions import AdapterError
+from unstract.adapters.utils import AdapterUtils
 from unstract.adapters.x2text.llama_parse.src.constants import LlamaParseConfig
 from unstract.adapters.x2text.x2text_adapter import X2TextAdapter
 
@@ -55,6 +57,18 @@ class LlamaParseAdapter(X2TextAdapter):
         )
 
         try:
+            file_extension = pathlib.Path(input_file_path).suffix
+            if not file_extension:
+                try:
+                    input_file_extension = AdapterUtils.guess_extention(input_file_path)
+                    input_file_path_copy = input_file_path
+                    input_file_path = ".".join(
+                        (input_file_path_copy, input_file_extension)
+                    )
+                except OSError as os_err:
+                    logger.error("Exception raised while handling input file.")
+                    raise AdapterError(str(os_err))
+
             documents = parser.load_data(input_file_path)
 
         except ConnectError as connec_err:
@@ -67,10 +81,10 @@ class LlamaParseAdapter(X2TextAdapter):
             logger.error(
                 "Seems like an invalid API Key or possible internal errors: {exe}"
             )
-            raise AdapterError(exe)
+            raise AdapterError(str(exe))
 
         response_text = documents[0].text
-        return response_text  # type: ignore
+        return response_text  # type:ignore
 
     def process(
         self,
