@@ -5,7 +5,7 @@
 groups = ["default", "lint"]
 strategy = ["cross_platform", "inherit_metadata"]
 lock_version = "4.4.1"
-content_hash = "sha256:1a3ede417087425f15aa471b80d2f49030d7d150e4c3fd8c7c75d369006a65ac"
+content_hash = "sha256:203e1492a7eac30affbc1f3ef2100328f97969ddc6c090369977c2de81161850"
 
 [[package]]
 name = "absolufy-imports"
@@ -108,7 +108,7 @@ files = [
 
 [[package]]
 name = "anthropic"
-version = "0.17.0"
+version = "0.23.1"
 requires_python = ">=3.7"
 summary = "The official Python library for the anthropic API"
 groups = ["default"]
@@ -122,8 +122,8 @@ dependencies = [
     "typing-extensions<5,>=4.7",
 ]
 files = [
-    {file = "anthropic-0.17.0-py3-none-any.whl", hash = "sha256:e582635d65d940cd0d957631d548aa2d8add4f261556bf53f8c1f6e5fa6082fd"},
-    {file = "anthropic-0.17.0.tar.gz", hash = "sha256:6f1958e7ffd706a19741260d6dfef3fd9af07d31a57b837792331b4ba0aa067c"},
+    {file = "anthropic-0.23.1-py3-none-any.whl", hash = "sha256:6dc5779dae83a5834864f4a4af0166c972b70f4cb8fd2765e1558282cc6d6242"},
+    {file = "anthropic-0.23.1.tar.gz", hash = "sha256:9325103702cbc96bb09d1b58c36bde75c726f6a01029fb4d85f41ebba07e9066"},
 ]
 
 [[package]]
@@ -582,7 +582,7 @@ files = [
 
 [[package]]
 name = "dataclasses-json"
-version = "0.6.5"
+version = "0.6.6"
 requires_python = "<4.0,>=3.7"
 summary = "Easily serialize dataclasses to and from JSON."
 groups = ["default"]
@@ -591,8 +591,8 @@ dependencies = [
     "typing-inspect<1,>=0.4.0",
 ]
 files = [
-    {file = "dataclasses_json-0.6.5-py3-none-any.whl", hash = "sha256:f49c77aa3a85cac5bf5b7f65f4790ca0d2be8ef4d92c75e91ba0103072788a39"},
-    {file = "dataclasses_json-0.6.5.tar.gz", hash = "sha256:1c287594d9fcea72dc42d6d3836cf14848c2dc5ce88f65ed61b36b57f515fe26"},
+    {file = "dataclasses_json-0.6.6-py3-none-any.whl", hash = "sha256:e54c5c87497741ad454070ba0ed411523d46beb5da102e221efb873801b0ba85"},
+    {file = "dataclasses_json-0.6.6.tar.gz", hash = "sha256:0c09827d26fffda27f1be2fed7a7a01a29c5ddcd2eb6393ad5ebf9d77e9deae8"},
 ]
 
 [[package]]
@@ -1599,17 +1599,17 @@ files = [
 
 [[package]]
 name = "llama-index-llms-anthropic"
-version = "0.1.5"
-requires_python = ">=3.8.1,<4.0"
+version = "0.1.11"
+requires_python = "<4.0,>=3.8.1"
 summary = "llama-index llms anthropic integration"
 groups = ["default"]
 dependencies = [
-    "anthropic<0.18.0,>=0.17.0",
+    "anthropic<0.24.0,>=0.23.1",
     "llama-index-core<0.11.0,>=0.10.1",
 ]
 files = [
-    {file = "llama_index_llms_anthropic-0.1.5-py3-none-any.whl", hash = "sha256:4884fa25c07073baec248aa07b843c29c969a8515dec58abda86cd8e5e15f44f"},
-    {file = "llama_index_llms_anthropic-0.1.5.tar.gz", hash = "sha256:33d4622d7833d8ca326cd57e903ad50da3efbf7ae92bdf70b37b4b5419d8c91f"},
+    {file = "llama_index_llms_anthropic-0.1.11-py3-none-any.whl", hash = "sha256:488964147907058c81f5c272830401fa17da3bfe0a6688db87ec2538d5887491"},
+    {file = "llama_index_llms_anthropic-0.1.11.tar.gz", hash = "sha256:7ec7008b54076cbb846cc3d4f5811354778148d75562f92f83e5622cde7657b9"},
 ]
 
 [[package]]
@@ -2199,7 +2199,7 @@ files = [
 
 [[package]]
 name = "openai"
-version = "1.28.0"
+version = "1.28.1"
 requires_python = ">=3.7.1"
 summary = "The official Python library for the openai API"
 groups = ["default"]
@@ -2213,8 +2213,8 @@ dependencies = [
     "typing-extensions<5,>=4.7",
 ]
 files = [
-    {file = "openai-1.28.0-py3-none-any.whl", hash = "sha256:94b5a99f5121e1747dda1bb8fff31820d5ab4b49056a9cf2e3605f5c90011955"},
-    {file = "openai-1.28.0.tar.gz", hash = "sha256:ac43b8b48aec70de4b76cfc96ae906bf8d5814427475b9dabb662f84f655f0e1"},
+    {file = "openai-1.28.1-py3-none-any.whl", hash = "sha256:943e0d0d587b9a62f99bd3acbaf479ae5362986e5fff013f57b5b7bde85cce93"},
+    {file = "openai-1.28.1.tar.gz", hash = "sha256:8a3adbba16882434768d76fd3129fcc9b40ace98f8d55a6ddacfc05c4096ac30"},
 ]
 
 [[package]]
@@ -3432,13 +3432,13 @@ files = [
 
 [[package]]
 name = "types-setuptools"
-version = "69.5.0.20240423"
+version = "69.5.0.20240513"
 requires_python = ">=3.8"
 summary = "Typing stubs for setuptools"
 groups = ["lint"]
 files = [
-    {file = "types-setuptools-69.5.0.20240423.tar.gz", hash = "sha256:a7ba908f1746c4337d13f027fa0f4a5bcad6d1d92048219ba792b3295c58586d"},
-    {file = "types_setuptools-69.5.0.20240423-py3-none-any.whl", hash = "sha256:a4381e041510755a6c9210e26ad55b1629bc10237aeb9cb8b6bd24996b73db48"},
+    {file = "types-setuptools-69.5.0.20240513.tar.gz", hash = "sha256:3a8ccea3e3f1f639856a1dd622be282f74e94e00fdc364630240f999cc9594fc"},
+    {file = "types_setuptools-69.5.0.20240513-py3-none-any.whl", hash = "sha256:bd3964c08cffd5a057d9cabe61641c86a41a1b5dd2b652b8d371eed64d89d726"},
 ]
 
 [[package]]
