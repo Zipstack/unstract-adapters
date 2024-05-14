@@ -81,3 +81,7 @@ class Milvus(VectorDBAdapter):
         if self.client is not None:
             self.client.drop_collection(self.collection_name)
         return test_result
+
+    def close(self, **kwargs: Any) -> None:
+        if self.client:
+            self.client.close()

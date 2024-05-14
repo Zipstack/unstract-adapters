@@ -80,3 +80,7 @@ class Qdrant(VectorDBAdapter):
         if self.client is not None:
             self.client.delete_collection(self.collection_name)
         return test_result
+
+    def close(self, **kwargs: Any) -> None:
+        if self.client:
+            self.client.close(**kwargs)

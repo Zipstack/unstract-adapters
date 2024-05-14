@@ -109,3 +109,7 @@ class Postgres(VectorDBAdapter):
             self.client.commit()
 
         return test_result
+
+    def close(self, **kwargs: Any) -> None:
+        if self.client:
+            self.client.close()

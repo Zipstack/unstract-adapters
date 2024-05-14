@@ -124,3 +124,7 @@ class Pinecone(VectorDBAdapter):
         if self.client:
             self.client.delete_index(self.collection_name)
         return test_result
+
+    def close(self, **kwargs: Any) -> None:
+        # Close connection is not defined for this client
+        pass
