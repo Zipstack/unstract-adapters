@@ -29,7 +29,8 @@
       "description": "Provide the name of the deployment you defined in Azure console"
     },
     "embed_batch_size": {
-      "type": "integer",
+      "type": "number",
+      "minimum": 1,
       "title": "Embedding Batch Size",
       "default": 5
     },
