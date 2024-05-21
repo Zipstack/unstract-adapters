@@ -30,7 +30,8 @@
     },
     "embed_batch_size": {
       "type": "number",
-      "minimum": 1,
+      "minimum": 0,
+      "multipleOf": 1,
       "title": "Embedding Batch Size",
       "default": 5
     },
