@@ -22,10 +22,11 @@ class Constants:
 
 class Supabase(VectorDBAdapter):
     def __init__(self, settings: dict[str, Any]):
-        super().__init__("Supabase")
-        self.config = settings
-        self.client: Optional[Client] = None
-        self.collection_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
+        self._config = settings
+        self._client: Optional[Client] = None
+        self._collection_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
+        self._vector_db_instance = self._get_vector_db_instance()
+        super().__init__("Supabase", self._vector_db_instance)
 
     @staticmethod
     def get_id() -> str:
@@ -51,40 +52,43 @@ class Supabase(VectorDBAdapter):
         return schema
 
     def get_vector_db_instance(self) -> VectorStore:
+        return self._vector_db_instance
+
+    def _get_vector_db_instance(self) -> VectorStore:
         try:
-            self.collection_name = VectorDBHelper.get_collection_name(
-                self.config.get(VectorDbConstants.VECTOR_DB_NAME),
-                self.config.get(
+            self._collection_name = VectorDBHelper.get_collection_name(
+                self._config.get(VectorDbConstants.VECTOR_DB_NAME),
+                self._config.get(
                     VectorDbConstants.EMBEDDING_DIMENSION,
                     VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
                 ),
             )
-            user = str(self.config.get(Constants.USER))
-            password = str(self.config.get(Constants.PASSWORD))
-            host = str(self.config.get(Constants.HOST))
-            port = str(self.config.get(Constants.PORT))
-            db_name = str(self.config.get(Constants.DATABASE))
+            user = str(self._config.get(Constants.USER))
+            password = str(self._config.get(Constants.PASSWORD))
+            host = str(self._config.get(Constants.HOST))
+            port = str(self._config.get(Constants.PORT))
+            db_name = str(self._config.get(Constants.DATABASE))
 
             postgres_connection_string = (
                 f"postgresql://{user}:{password}@{host}:{port}/{db_name}"
             )
-            dimension = self.config.get(
+            dimension = self._config.get(
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
             )
             vector_db: VectorStore = SupabaseVectorStore(
                 postgres_connection_string=postgres_connection_string,
-                collection_name=self.collection_name,
+                collection_name=self._collection_name,
                 dimension=dimension,
             )
             if vector_db is not None:
-                self.client = vector_db.client
+                self._client = vector_db.client
             return vector_db
         except Exception as e:
             raise AdapterError(str(e))
 
     def test_connection(self) -> bool:
-        self.config[VectorDbConstants.EMBEDDING_DIMENSION] = (
+        self._config[VectorDbConstants.EMBEDDING_DIMENSION] = (
             VectorDbConstants.TEST_CONNECTION_EMBEDDING_SIZE
         )
         vector_db = self.get_vector_db_instance()
@@ -92,10 +96,10 @@ class Supabase(VectorDBAdapter):
             vector_store=vector_db
         )
         # Delete the collection that was created for testing
-        if self.client is not None:
-            self.client.delete_collection(self.collection_name)
+        if self._client is not None:
+            self._client.delete_collection(self._collection_name)
         return test_result
 
     def close(self, **kwargs: Any) -> None:
-        if self.client:
-            self.client.close()
+        if self._client:
+            self._client.close()

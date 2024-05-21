@@ -19,10 +19,11 @@ class Constants:
 
 class Milvus(VectorDBAdapter):
     def __init__(self, settings: dict[str, Any]):
-        super().__init__("Milvus")
-        self.config = settings
-        self.client: Optional[MilvusClient] = None
-        self.collection_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
+        self._config = settings
+        self._client: Optional[MilvusClient] = None
+        self._collection_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
+        self._vector_db_instance = self._get_vector_db_instance()
+        super().__init__("Milvus", self._vector_db_instance)
 
     @staticmethod
     def get_id() -> str:
@@ -48,29 +49,32 @@ class Milvus(VectorDBAdapter):
         return schema
 
     def get_vector_db_instance(self) -> VectorStore:
+        return self._vector_db_instance
+
+    def _get_vector_db_instance(self) -> VectorStore:
         try:
-            self.collection_name = VectorDBHelper.get_collection_name(
-                self.config.get(VectorDbConstants.VECTOR_DB_NAME),
-                self.config.get(VectorDbConstants.EMBEDDING_DIMENSION),
+            self._collection_name = VectorDBHelper.get_collection_name(
+                self._config.get(VectorDbConstants.VECTOR_DB_NAME),
+                self._config.get(VectorDbConstants.EMBEDDING_DIMENSION),
             )
-            dimension = self.config.get(
+            dimension = self._config.get(
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
             )
             vector_db: VectorStore = MilvusVectorStore(
-                uri=self.config.get(Constants.URI, ""),
-                collection_name=self.collection_name,
-                token=self.config.get(Constants.TOKEN, ""),
+                uri=self._config.get(Constants.URI, ""),
+                collection_name=self._collection_name,
+                token=self._config.get(Constants.TOKEN, ""),
                 dim=dimension,
             )
             if vector_db is not None:
-                self.client = vector_db.client
+                self._client = vector_db.client
             return vector_db
         except Exception as e:
             raise AdapterError(str(e))
 
     def test_connection(self) -> bool:
-        self.config[VectorDbConstants.EMBEDDING_DIMENSION] = (
+        self._config[VectorDbConstants.EMBEDDING_DIMENSION] = (
             VectorDbConstants.TEST_CONNECTION_EMBEDDING_SIZE
         )
         vector_db = self.get_vector_db_instance()
@@ -78,10 +82,10 @@ class Milvus(VectorDBAdapter):
             vector_store=vector_db
         )
         # Delete the collection that was created for testing
-        if self.client is not None:
-            self.client.drop_collection(self.collection_name)
+        if self._client is not None:
+            self._client.drop_collection(self._collection_name)
         return test_result
 
     def close(self, **kwargs: Any) -> None:
-        if self.client:
-            self.client.close()
+        if self._client:
+            self._client.close()

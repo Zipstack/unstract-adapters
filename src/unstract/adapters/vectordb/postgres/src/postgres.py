@@ -23,11 +23,12 @@ class Constants:
 
 class Postgres(VectorDBAdapter):
     def __init__(self, settings: dict[str, Any]):
-        super().__init__("Postgres")
-        self.config = settings
-        self.client: Optional[connection] = None
-        self.collection_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
-        self.schema_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
+        self._config = settings
+        self._client: Optional[connection] = None
+        self._collection_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
+        self._schema_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
+        self._vector_db_instance = self._get_vector_db_instance()
+        super().__init__("Postgres", self._vector_db_instance)
 
     @staticmethod
     def get_id() -> str:
@@ -53,35 +54,38 @@ class Postgres(VectorDBAdapter):
         return schema
 
     def get_vector_db_instance(self) -> BasePydanticVectorStore:
+        return self._vector_db_instance
+
+    def _get_vector_db_instance(self) -> BasePydanticVectorStore:
         try:
-            self.collection_name = VectorDBHelper.get_collection_name(
-                self.config.get(VectorDbConstants.VECTOR_DB_NAME),
-                self.config.get(VectorDbConstants.EMBEDDING_DIMENSION),
+            self._collection_name = VectorDBHelper.get_collection_name(
+                self._config.get(VectorDbConstants.VECTOR_DB_NAME),
+                self._config.get(VectorDbConstants.EMBEDDING_DIMENSION),
             )
-            self.schema_name = self.config.get(
+            self._schema_name = self._config.get(
                 Constants.SCHEMA,
-                VectorDbConstants.DEFAULT_VECTOR_DB_NAME,
+                VectorDbConstants.VECTOR_DB_NAME,
             )
-            dimension = self.config.get(
+            dimension = self._config.get(
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
             )
             vector_db: BasePydanticVectorStore = PGVectorStore.from_params(
-                database=self.config.get(Constants.DATABASE),
-                schema_name=self.schema_name,
-                host=self.config.get(Constants.HOST),
-                password=self.config.get(Constants.PASSWORD),
-                port=str(self.config.get(Constants.PORT)),
-                user=self.config.get(Constants.USER),
-                table_name=self.collection_name,
+                database=self._config.get(Constants.DATABASE),
+                schema_name=self._schema_name,
+                host=self._config.get(Constants.HOST),
+                password=self._config.get(Constants.PASSWORD),
+                port=str(self._config.get(Constants.PORT)),
+                user=self._config.get(Constants.USER),
+                table_name=self._collection_name,
                 embed_dim=dimension,
             )
-            self.client = psycopg2.connect(
-                database=self.config.get(Constants.DATABASE),
-                host=self.config.get(Constants.HOST),
-                user=self.config.get(Constants.USER),
-                password=self.config.get(Constants.PASSWORD),
-                port=str(self.config.get(Constants.PORT)),
+            self._client = psycopg2.connect(
+                database=self._config.get(Constants.DATABASE),
+                host=self._config.get(Constants.HOST),
+                user=self._config.get(Constants.USER),
+                password=self._config.get(Constants.PASSWORD),
+                port=str(self._config.get(Constants.PORT)),
             )
 
             return vector_db
@@ -89,7 +93,7 @@ class Postgres(VectorDBAdapter):
             raise AdapterError(str(e))
 
     def test_connection(self) -> bool:
-        self.config[VectorDbConstants.EMBEDDING_DIMENSION] = (
+        self._config[VectorDbConstants.EMBEDDING_DIMENSION] = (
             VectorDbConstants.TEST_CONNECTION_EMBEDDING_SIZE
         )
         vector_db = self.get_vector_db_instance()
@@ -98,18 +102,18 @@ class Postgres(VectorDBAdapter):
         )
 
         # Delete the collection that was created for testing
-        if self.client is not None:
-            self.client.cursor().execute(
+        if self._client is not None:
+            self._client.cursor().execute(
                 f"DROP TABLE IF EXISTS "
-                f"{self.schema_name}.data_{self.collection_name} CASCADE"
+                f"{self._schema_name}.data_{self._collection_name} CASCADE"
             )
-            self.client.cursor().execute(
-                f"DROP SCHEMA IF EXISTS {self.schema_name} CASCADE"
+            self._client.cursor().execute(
+                f"DROP SCHEMA IF EXISTS {self._schema_name} CASCADE"
             )
-            self.client.commit()
+            self._client.commit()
 
         return test_result
 
     def close(self, **kwargs: Any) -> None:
-        if self.client:
-            self.client.close()
+        if self._client:
+            self._client.close()
