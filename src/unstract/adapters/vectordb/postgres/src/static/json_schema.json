@@ -28,6 +28,7 @@
     },
     "port": {
       "type": "integer",
+      "default": 5432,
       "title": "Port"
     },
     "user": {
