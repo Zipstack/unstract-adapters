@@ -25,7 +25,8 @@
       "description": "Additional kwargs to pass to the model."
     },
     "max_retries": {
-      "type": "integer",
+      "type": "number",
+      "minimum": 0,
       "title": "Max Retries",
       "default": 5,
       "description": "Maximum number of retries to make when a request fails."

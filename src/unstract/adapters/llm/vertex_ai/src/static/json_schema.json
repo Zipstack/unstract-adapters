@@ -33,7 +33,8 @@
       "description": "Provide the name of the deployment or project you defined for vectorai"
     },
     "max_retries": {
-      "type": "integer",
+      "type": "number",
+      "minimum": 0,
       "title": "Max Retries",
       "default": 5,
       "description": "Maximum number of retries to attempt when a request fails."

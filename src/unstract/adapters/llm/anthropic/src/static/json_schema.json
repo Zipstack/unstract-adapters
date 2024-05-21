@@ -21,12 +21,14 @@
     },
     "timeout": {
       "type": "number",
+      "minimum": 0,
       "title": "Timeout",
       "default": 900,
       "description": "Timeout in seconds"
     },
     "max_retries": {
-      "type": "integer",
+      "type": "number",
+      "minimum": 0,
       "title": "Max Retries",
       "default": 3,
       "format": "number",
