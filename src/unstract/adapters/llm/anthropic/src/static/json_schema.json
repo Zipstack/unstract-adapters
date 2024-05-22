@@ -27,7 +27,7 @@
     },
     "max_retries": {
       "type": "integer",
-      "title": "Max retries",
+      "title": "Max Retries",
       "default": 3,
       "format": "number",
       "description": "Maximum number of retries"

@@ -14,6 +14,7 @@ class Constants:
     MODEL = "model"
     API_KEY = "api_key"
     TIMEOUT = "timeout"
+    MAX_RETRIES = "max_retries"
 
 
 class MistralLLM(LLMAdapter):
@@ -45,12 +46,18 @@ class MistralLLM(LLMAdapter):
         return schema
 
     def get_llm_instance(self) -> LLM:
+        max_retries = int(
+            self.config.get(Constants.MAX_RETRIES, LLMKeys.DEFAULT_MAX_RETRIES)
+        )
         try:
             llm: LLM = MistralAI(
                 model=str(self.config.get(Constants.MODEL)),
                 api_key=str(self.config.get(Constants.API_KEY)),
                 temperature=0,
-                timeout=self.config.get(Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT),
+                timeout=float(
+                    self.config.get(Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT)
+                ),
+                max_retries=max_retries,
             )
             return llm
         except Exception as e:

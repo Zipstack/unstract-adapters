@@ -77,5 +77,5 @@ class WhispererDefaults:
     MEDIAN_FILTER_SIZE = 0
     GAUSSIAN_BLUR_RADIUS = 0.0
     FORCE_TEXT_PROCESSING = False
-    POLL_INTERVAL = os.getenv(WhispererEnv.POLL_INTERVAL, 30)
-    MAX_POLLS = os.getenv(WhispererEnv.MAX_POLLS, 30)
+    POLL_INTERVAL = int(os.getenv(WhispererEnv.POLL_INTERVAL, 30))
+    MAX_POLLS = int(os.getenv(WhispererEnv.MAX_POLLS, 30))

@@ -15,7 +15,7 @@ class Constants:
     DEPLOYMENT_NAME = "deployment_name"
     API_KEY = "api_key"
     API_VERSION = "api_version"
-    MAX_RETIRES = "max_retries"
+    MAX_RETRIES = "max_retries"
     AZURE_ENDPONT = "azure_endpoint"
     API_TYPE = "azure"
     TIMEOUT = "timeout"
@@ -51,6 +51,9 @@ class AzureOpenAILLM(LLMAdapter):
         return schema
 
     def get_llm_instance(self) -> LLM:
+        max_retries = int(
+            self.config.get(Constants.MAX_RETRIES, LLMKeys.DEFAULT_MAX_RETRIES)
+        )
         try:
             llm: LLM = AzureOpenAI(
                 model=self.config.get(Constants.MODEL, Constants.DEFAULT_MODEL),
@@ -60,7 +63,10 @@ class AzureOpenAILLM(LLMAdapter):
                 azure_endpoint=str(self.config.get(Constants.AZURE_ENDPONT)),
                 api_type=Constants.API_TYPE,
                 temperature=0,
-                timeout=self.config.get(Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT),
+                timeout=float(
+                    self.config.get(Constants.TIMEOUT, LLMKeys.DEFAULT_TIMEOUT)
+                ),
+                max_retries=max_retries,
             )
             return llm
         except Exception as e:

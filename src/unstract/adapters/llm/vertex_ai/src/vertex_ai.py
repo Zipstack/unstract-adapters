@@ -7,6 +7,7 @@ from google.oauth2 import service_account
 from llama_index.core.llms import LLM
 from llama_index.llms.vertex import Vertex
 
+from unstract.adapters.llm.constants import LLMKeys
 from unstract.adapters.llm.helper import LLMHelper
 from unstract.adapters.llm.llm_adapter import LLMAdapter
 
@@ -15,6 +16,7 @@ class Constants:
     MODEL = "model"
     PROJECT = "project"
     JSON_CREDENTIALS = "json_credentials"
+    MAX_RETRIES = "max_retries"
 
 
 class VertexAILLM(LLMAdapter):
@@ -55,11 +57,15 @@ class VertexAILLM(LLMAdapter):
             scopes=["https://www.googleapis.com/auth/cloud-platform"],
         )
         credentials.refresh(google_requests.Request())
+        max_retries = int(
+            self.config.get(Constants.MAX_RETRIES, LLMKeys.DEFAULT_MAX_RETRIES)
+        )
         llm: LLM = Vertex(
             project=str(self.config.get(Constants.PROJECT)),
             model=str(self.config.get(Constants.MODEL)),
             credentials=credentials,
             temperature=0,
+            max_retries=max_retries,
             additional_kwargs={},
         )
         return llm
