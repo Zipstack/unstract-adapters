@@ -22,10 +22,11 @@ class Constants:
 
 class Weaviate(VectorDBAdapter):
     def __init__(self, settings: dict[str, Any]):
-        super().__init__("Weaviate")
-        self.config = settings
-        self.client: Optional[weaviate.Client] = None
-        self.collection_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
+        self._config = settings
+        self._client: Optional[weaviate.Client] = None
+        self._collection_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
+        self._vector_db_instance = self._get_vector_db_instance()
+        super().__init__("Weaviate", self._vector_db_instance)
 
     @staticmethod
     def get_id() -> str:
@@ -51,19 +52,22 @@ class Weaviate(VectorDBAdapter):
         return schema
 
     def get_vector_db_instance(self) -> BasePydanticVectorStore:
+        return self._vector_db_instance
+
+    def _get_vector_db_instance(self) -> BasePydanticVectorStore:
         try:
             collection_name = VectorDBHelper.get_collection_name(
-                self.config.get(VectorDbConstants.VECTOR_DB_NAME),
-                self.config.get(VectorDbConstants.EMBEDDING_DIMENSION),
+                self._config.get(VectorDbConstants.VECTOR_DB_NAME),
+                self._config.get(VectorDbConstants.EMBEDDING_DIMENSION),
             )
             # Capitalise the frst letter as Weaviate expects this
             # LLama-index throws the error if not capitalised while using
             # Weaviate
-            self.collection_name = collection_name.capitalize()
-            self.client = weaviate.Client(
-                url=str(self.config.get(Constants.URL)),
+            self._collection_name = collection_name.capitalize()
+            self._client = weaviate.Client(
+                url=str(self._config.get(Constants.URL)),
                 auth_client_secret=weaviate.AuthApiKey(
-                    api_key=str(self.config.get(Constants.API_KEY))
+                    api_key=str(self._config.get(Constants.API_KEY))
                 ),
             )
 
@@ -71,11 +75,11 @@ class Weaviate(VectorDBAdapter):
                 # Class definition object. Weaviate's autoschema
                 # feature will infer properties when importing.
                 class_obj = {
-                    "class": self.collection_name,
+                    "class": self._collection_name,
                     "vectorizer": "none",
                 }
                 # Add the class to the schema
-                self.client.schema.create_class(class_obj)
+                self._client.schema.create_class(class_obj)
             except Exception as e:
                 if isinstance(e, UnexpectedStatusCodeException):
                     if "already exists" in e.message:
@@ -83,15 +87,15 @@ class Weaviate(VectorDBAdapter):
                 else:
                     raise e
             vector_db: BasePydanticVectorStore = WeaviateVectorStore(
-                weaviate_client=self.client,
-                index_name=self.collection_name,
+                weaviate_client=self._client,
+                index_name=self._collection_name,
             )
             return vector_db
         except Exception as e:
             raise AdapterError(str(e))
 
     def test_connection(self) -> bool:
-        self.config[VectorDbConstants.EMBEDDING_DIMENSION] = (
+        self._config[VectorDbConstants.EMBEDDING_DIMENSION] = (
             VectorDbConstants.TEST_CONNECTION_EMBEDDING_SIZE
         )
         vector_db = self.get_vector_db_instance()
@@ -99,6 +103,6 @@ class Weaviate(VectorDBAdapter):
             vector_store=vector_db
         )
         # Delete the collection that was created for testing
-        if self.client is not None:
-            self.client.schema.delete_class(self.collection_name)
+        if self._client is not None:
+            self._client.schema.delete_class(self._collection_name)
         return test_result

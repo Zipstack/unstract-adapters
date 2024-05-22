@@ -21,10 +21,11 @@ class Constants:
 
 class Qdrant(VectorDBAdapter):
     def __init__(self, settings: dict[str, Any]):
-        super().__init__("Qdrant")
-        self.config = settings
-        self.client: Optional[QdrantClient] = None
-        self.collection_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
+        self._config = settings
+        self._client: Optional[QdrantClient] = None
+        self._collection_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
+        self._vector_db_instance = self._get_vector_db_instance()
+        super().__init__("Qdrant", self._vector_db_instance)
 
     @staticmethod
     def get_id() -> str:
@@ -50,20 +51,23 @@ class Qdrant(VectorDBAdapter):
         return schema
 
     def get_vector_db_instance(self) -> BasePydanticVectorStore:
+        return self._vector_db_instance
+
+    def _get_vector_db_instance(self) -> BasePydanticVectorStore:
         try:
-            self.collection_name = VectorDBHelper.get_collection_name(
-                self.config.get(VectorDbConstants.VECTOR_DB_NAME),
-                self.config.get(VectorDbConstants.EMBEDDING_DIMENSION),
+            self._collection_name = VectorDBHelper.get_collection_name(
+                self._config.get(VectorDbConstants.VECTOR_DB_NAME),
+                self._config.get(VectorDbConstants.EMBEDDING_DIMENSION),
             )
-            url = self.config.get(Constants.URL)
-            api_key: Optional[str] = self.config.get(Constants.API_KEY, None)
+            url = self._config.get(Constants.URL)
+            api_key: Optional[str] = self._config.get(Constants.API_KEY, None)
             if api_key:
-                self.client = QdrantClient(url=url, api_key=api_key)
+                self._client = QdrantClient(url=url, api_key=api_key)
             else:
-                self.client = QdrantClient(url=url)
+                self._client = QdrantClient(url=url)
             vector_db: BasePydanticVectorStore = QdrantVectorStore(
-                collection_name=self.collection_name,
-                client=self.client,
+                collection_name=self._collection_name,
+                client=self._client,
                 url=url,
                 api_key=api_key,
             )
@@ -77,6 +81,10 @@ class Qdrant(VectorDBAdapter):
             vector_store=vector_db
         )
         # Delete the collection that was created for testing
-        if self.client is not None:
-            self.client.delete_collection(self.collection_name)
+        if self._client is not None:
+            self._client.delete_collection(self._collection_name)
         return test_result
+
+    def close(self, **kwargs: Any) -> None:
+        if self._client:
+            self._client.close(**kwargs)
