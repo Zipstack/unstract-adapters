@@ -25,7 +25,9 @@
       "description": "The name of the model to use for this adapter instance. Refer to https://ai.google.dev/models/palm Leave it empty to use the default model."
     },
     "num_output": {
-      "type": "integer",
+      "type": "number",
+      "minimum": 0,
+      "multipleOf": 1,
       "title": "Number of Output Tokens",
       "description": "The number of tokens to generate. The higher the number, the longer the response will be. Leave it empty to use the default value."
     }

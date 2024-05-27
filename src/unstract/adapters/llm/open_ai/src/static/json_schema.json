@@ -39,13 +39,17 @@
       "description": "Provide the API version. Refer to the documentation provided by OpenAI. Example: 2023-05-15"
     },
     "max_retries": {
-      "type": "integer",
+      "type": "number",
+      "minimum": 0,
+      "multipleOf": 1,
       "title": "Max Retries",
       "default": 5,
       "description": "The maximum number of times to retry a request if it fails."
     },
     "timeout": {
       "type": "number",
+      "minimum": 0,
+      "multipleOf": 1,
       "title": "Timeout",
       "default": 900,
       "description": "Timeout in seconds"

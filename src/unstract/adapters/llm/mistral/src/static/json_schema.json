@@ -26,13 +26,17 @@
       "description": "API Key for Mistral AI LLM"
     },
     "max_retries": {
-      "type": "integer",
+      "type": "number",
+      "minimum": 0,
+      "multipleOf": 1,
       "title": "Max Retries",
       "default": 5,
       "description": "Maximum number of retries to attempt when a request fails."
     },
     "timeout": {
       "type": "number",
+      "minimum": 0,
+      "multipleOf": 1,
       "title": "Timeout",
       "default": 900,
       "description": "Timeout in seconds"

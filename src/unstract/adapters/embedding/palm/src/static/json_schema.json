@@ -25,7 +25,9 @@
       "format": "password"
     },
     "embed_batch_size": {
-      "type": "integer",
+      "type": "number",
+      "minimum": 0,
+      "multipleOf": 1,
       "title": "Embed Batch Size",
       "default": 10
     }
