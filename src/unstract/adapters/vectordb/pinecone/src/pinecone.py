@@ -2,6 +2,7 @@ import logging
 import os
 from typing import Any, Optional
 
+from llama_index.core.schema import BaseNode
 from llama_index.core.vector_stores.types import BasePydanticVectorStore
 from llama_index.vector_stores.pinecone import PineconeVectorStore
 from pinecone import NotFoundException
@@ -33,10 +34,11 @@ class Constants:
 
 class Pinecone(VectorDBAdapter):
     def __init__(self, settings: dict[str, Any]):
-        super().__init__("Pinecone")
-        self.config = settings
-        self.client: Optional[LLamaIndexPinecone] = None
-        self.collection_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
+        self._config = settings
+        self._client: Optional[LLamaIndexPinecone] = None
+        self._collection_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
+        self._vector_db_instance = self._get_vector_db_instance()
+        super().__init__("Pinecone", self._vector_db_instance)
 
     @staticmethod
     def get_id() -> str:
@@ -62,58 +64,57 @@ class Pinecone(VectorDBAdapter):
         return schema
 
     def get_vector_db_instance(self) -> BasePydanticVectorStore:
-        try:
-            self.client = LLamaIndexPinecone(
-                api_key=str(self.config.get(Constants.API_KEY))
-            )
-            collection_name = VectorDBHelper.get_collection_name(
-                self.config.get(VectorDbConstants.VECTOR_DB_NAME),
-                self.config.get(VectorDbConstants.EMBEDDING_DIMENSION),
-            )
-            self.collection_name = collection_name.replace("_", "-").lower()
-            dimension = self.config.get(
-                VectorDbConstants.EMBEDDING_DIMENSION,
-                VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
-            )
+        return self._vector_db_instance
 
-            specification = self.config.get(Constants.SPECIFICATION)
-            if specification == Constants.SPEC_POD:
-                environment = self.config.get(Constants.ENVIRONMENT)
-                spec = PodSpec(
-                    environment=environment,
-                    replicas=Constants.DEFAULT_SPEC_COUNT_VALUE,
-                    shards=Constants.DEFAULT_SPEC_COUNT_VALUE,
-                    pods=Constants.DEFAULT_SPEC_COUNT_VALUE,
-                    pod_type=Constants.DEFAULT_POD_TYPE,
-                )
-            elif specification == Constants.SPEC_SERVERLESS:
-                cloud = self.config.get(Constants.CLOUD)
-                region = self.config.get(Constants.REGION)
-                spec = ServerlessSpec(cloud=cloud, region=region)
-            logger.info(f"Setting up Pinecone spec for {spec}")
-            try:
-                self.client.describe_index(name=self.collection_name)
-            except NotFoundException:
-                logger.info(
-                    f"Index:{self.collection_name} does not exist. Creating it."
-                )
-                self.client.create_index(
-                    name=self.collection_name,
-                    dimension=dimension,
-                    metric=Constants.METRIC,
-                    spec=spec,
-                )
-            vector_db: BasePydanticVectorStore = PineconeVectorStore(
-                index_name=self.collection_name,
-                api_key=str(self.config.get(Constants.API_KEY)),
-                environment=str(self.config.get(Constants.ENVIRONMENT)),
+    def _get_vector_db_instance(self) -> BasePydanticVectorStore:
+
+        self._client = LLamaIndexPinecone(
+            api_key=str(self._config.get(Constants.API_KEY))
+        )
+        collection_name = VectorDBHelper.get_collection_name(
+            self._config.get(VectorDbConstants.VECTOR_DB_NAME),
+            self._config.get(VectorDbConstants.EMBEDDING_DIMENSION),
+        )
+        self._collection_name = collection_name.replace("_", "-").lower()
+        dimension = self._config.get(
+            VectorDbConstants.EMBEDDING_DIMENSION,
+            VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
+        )
+
+        specification = self._config.get(Constants.SPECIFICATION)
+        if specification == Constants.SPEC_POD:
+            environment = self._config.get(Constants.ENVIRONMENT)
+            spec = PodSpec(
+                environment=environment,
+                replicas=Constants.DEFAULT_SPEC_COUNT_VALUE,
+                shards=Constants.DEFAULT_SPEC_COUNT_VALUE,
+                pods=Constants.DEFAULT_SPEC_COUNT_VALUE,
+                pod_type=Constants.DEFAULT_POD_TYPE,
             )
-            return vector_db
-        except Exception as e:
-            raise AdapterError(str(e))
+        elif specification == Constants.SPEC_SERVERLESS:
+            cloud = self._config.get(Constants.CLOUD)
+            region = self._config.get(Constants.REGION)
+            spec = ServerlessSpec(cloud=cloud, region=region)
+        logger.info(f"Setting up Pinecone spec for {spec}")
+        try:
+            self._client.describe_index(name=self._collection_name)
+        except NotFoundException:
+            logger.info(f"Index:{self._collection_name} does not exist. Creating it.")
+            self._client.create_index(
+                name=self._collection_name,
+                dimension=dimension,
+                metric=Constants.METRIC,
+                spec=spec,
+            )
+        self.vector_db: BasePydanticVectorStore = PineconeVectorStore(
+            index_name=self._collection_name,
+            api_key=str(self._config.get(Constants.API_KEY)),
+            environment=str(self._config.get(Constants.ENVIRONMENT)),
+        )
+        return self.vector_db
 
     def test_connection(self) -> bool:
-        self.config[VectorDbConstants.EMBEDDING_DIMENSION] = (
+        self._config[VectorDbConstants.EMBEDDING_DIMENSION] = (
             VectorDbConstants.TEST_CONNECTION_EMBEDDING_SIZE
         )
         vector_db = self.get_vector_db_instance()
@@ -121,6 +122,43 @@ class Pinecone(VectorDBAdapter):
             vector_store=vector_db
         )
         # Delete the collection that was created for testing
-        if self.client:
-            self.client.delete_index(self.collection_name)
+        if self._client:
+            self._client.delete_index(self._collection_name)
         return test_result
+
+    def close(self, **kwargs: Any) -> None:
+        # Close connection is not defined for this client
+        pass
+
+    def delete(self, ref_doc_id: str, **delete_kwargs: dict[Any, Any]) -> None:
+        specification = self._config.get(Constants.SPECIFICATION)
+        if specification == Constants.SPEC_SERVERLESS:
+            # To delete all records representing chunks of a single document,
+            # first list the record IDs based on their common ID prefix,
+            # and then delete the records by ID:
+            try:
+                index = self._client.Index(self._collection_name)  # type: ignore
+                # Get all record having the ref_doc_id and delete them
+                for ids in index.list(prefix=ref_doc_id):
+                    logger.info(ids)
+                    index.delete(ids=ids)
+            except Exception as e:
+                raise AdapterError(str(e))
+        elif specification == Constants.SPEC_POD:
+            if self.vector_db.environment == "gcp-starter":  # type: ignore
+                raise AdapterError(
+                    "Re-indexing is not supported on Starter indexes. "
+                    "Use Serverless or paid plan for Pod spec"
+                )
+            else:
+                super().delete(ref_doc_id=ref_doc_id, **delete_kwargs)
+
+    def add(
+        self,
+        ref_doc_id: str,
+        nodes: list[BaseNode],
+    ) -> list[str]:
+        for i, node in enumerate(nodes):
+            node_id = ref_doc_id + "-" + node.node_id
+            nodes[i].id_ = node_id
+        return self.vector_db.add(nodes=nodes)

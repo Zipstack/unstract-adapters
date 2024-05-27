@@ -145,6 +145,14 @@ class LLMWhisperer(X2TextAdapter):
                 WhispererConfig.FORCE_TEXT_PROCESSING,
                 WhispererDefaults.FORCE_TEXT_PROCESSING,
             ),
+            WhispererConfig.LINE_SPLITTER_TOLERANCE: self.config.get(
+                WhispererConfig.LINE_SPLITTER_TOLERANCE,
+                WhispererDefaults.LINE_SPLITTER_TOLERANCE,
+            ),
+            WhispererConfig.HORIZONTAL_STRETCH_FACTOR: self.config.get(
+                WhispererConfig.HORIZONTAL_STRETCH_FACTOR,
+                WhispererDefaults.HORIZONTAL_STRETCH_FACTOR,
+            ),
         }
         if not params[WhispererConfig.FORCE_TEXT_PROCESSING]:
             params.update(
