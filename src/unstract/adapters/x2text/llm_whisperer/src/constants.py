@@ -57,6 +57,8 @@ class WhispererConfig:
     MEDIAN_FILTER_SIZE = "median_filter_size"
     GAUSSIAN_BLUR_RADIUS = "gaussian_blur_radius"
     FORCE_TEXT_PROCESSING = "force_text_processing"
+    LINE_SPLITTER_TOLERANCE = "line_splitter_tolerance"
+    HORIZONTAL_STRETCH_FACTOR = "horizontal_stretch_factor"
 
 
 class WhisperStatus:
@@ -77,5 +79,7 @@ class WhispererDefaults:
     MEDIAN_FILTER_SIZE = 0
     GAUSSIAN_BLUR_RADIUS = 0.0
     FORCE_TEXT_PROCESSING = False
+    LINE_SPLITTER_TOLERANCE = 0.75
+    HORIZONTAL_STRETCH_FACTOR = 1.0
     POLL_INTERVAL = int(os.getenv(WhispererEnv.POLL_INTERVAL, 30))
     MAX_POLLS = int(os.getenv(WhispererEnv.MAX_POLLS, 30))
