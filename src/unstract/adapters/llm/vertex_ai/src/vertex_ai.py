@@ -17,6 +17,8 @@ class Constants:
     PROJECT = "project"
     JSON_CREDENTIALS = "json_credentials"
     MAX_RETRIES = "max_retries"
+    MAX_TOKENS = "max_tokens"
+    DEFAULT_MAX_TOKENS = 2048
 
 
 class VertexAILLM(LLMAdapter):
@@ -60,12 +62,16 @@ class VertexAILLM(LLMAdapter):
         max_retries = int(
             self.config.get(Constants.MAX_RETRIES, LLMKeys.DEFAULT_MAX_RETRIES)
         )
+        max_tokens = int(
+            self.config.get(Constants.MAX_TOKENS, Constants.DEFAULT_MAX_TOKENS)
+        )
         llm: LLM = Vertex(
             project=str(self.config.get(Constants.PROJECT)),
             model=str(self.config.get(Constants.MODEL)),
             credentials=credentials,
             temperature=0,
             max_retries=max_retries,
+            max_tokens=max_tokens,
             additional_kwargs={},
         )
         return llm

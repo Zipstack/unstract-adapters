@@ -14,6 +14,7 @@ class Constants:
     API_KEY = "api_key"
     NUM_OUTPUT = "num_output"
     API_TYPE = "palm"
+    DEFAULT_MAX_TOKENS = 1024
 
 
 class PaLMLLM(LLMAdapter):
@@ -47,7 +48,7 @@ class PaLMLLM(LLMAdapter):
     def get_llm_instance(self) -> LLM:
         try:
             num_output = (
-                int(self.config.get(Constants.NUM_OUTPUT, 50))
+                int(self.config.get(Constants.NUM_OUTPUT, Constants.DEFAULT_MAX_TOKENS))
                 if self.config.get(Constants.NUM_OUTPUT) is not None
                 else None
             )
@@ -58,6 +59,7 @@ class PaLMLLM(LLMAdapter):
                 api_type=Constants.API_TYPE,
                 temperature=0,
             )
+
             return llm
         except Exception as e:
             raise AdapterError(str(e))
