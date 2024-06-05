@@ -18,7 +18,7 @@ class Constants:
     JSON_CREDENTIALS = "json_credentials"
     MAX_RETRIES = "max_retries"
     MAX_TOKENS = "max_tokens"
-    DEFAULT_MAX_TOKENS = 1024
+    DEFAULT_MAX_TOKENS = 2048
 
 
 class VertexAILLM(LLMAdapter):
