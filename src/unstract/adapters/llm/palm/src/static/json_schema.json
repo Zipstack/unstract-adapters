@@ -28,7 +28,7 @@
       "type": "number",
       "minimum": 0,
       "multipleOf": 1,
-      "title": "Number of Output Tokens",
+      "title": "Max output tokens",
       "description": "The number of tokens to generate. The higher the number, the longer the response will be. Leave it empty to use the default value."
     }
   }
