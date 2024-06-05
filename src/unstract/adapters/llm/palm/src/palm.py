@@ -5,6 +5,7 @@ from llama_index.core.llms import LLM
 from llama_index.llms.palm import PaLM
 
 from unstract.adapters.exceptions import AdapterError
+from unstract.adapters.llm.constants import LLMKeys
 from unstract.adapters.llm.helper import LLMHelper
 from unstract.adapters.llm.llm_adapter import LLMAdapter
 
@@ -47,7 +48,7 @@ class PaLMLLM(LLMAdapter):
     def get_llm_instance(self) -> LLM:
         try:
             num_output = (
-                int(self.config.get(Constants.NUM_OUTPUT, 50))
+                int(self.config.get(Constants.NUM_OUTPUT, LLMKeys.DEFAULT_MAX_TOKENS))
                 if self.config.get(Constants.NUM_OUTPUT) is not None
                 else None
             )
@@ -58,6 +59,7 @@ class PaLMLLM(LLMAdapter):
                 api_type=Constants.API_TYPE,
                 temperature=0,
             )
+
             return llm
         except Exception as e:
             raise AdapterError(str(e))

@@ -39,6 +39,14 @@
       "title": "Max Retries",
       "default": 5,
       "description": "Maximum number of retries to attempt when a request fails."
+    },
+    "max_tokens": {
+      "type": "number",
+      "minimum": 0,
+      "multipleOf": 1,
+      "title": "Max output tokens",
+      "default": 512,
+      "description": "Maximum number of output tokens to generate. This is limited by the maximum supported by the model and will vary from model to model."
     }
   }
 }
