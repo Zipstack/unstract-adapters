@@ -17,15 +17,11 @@ class EmbeddingRegistry(AdapterRegistry):
         package = "unstract.adapters.embedding"
 
         for adapter in os.listdir(current_directory):
-            adapter_path = os.path.join(
-                current_directory, adapter, Common.SRC_FOLDER
-            )
+            adapter_path = os.path.join(current_directory, adapter, Common.SRC_FOLDER)
             # Check if the item is a directory and not
             # a special directory like __pycache__
             if os.path.isdir(adapter_path) and not adapter.startswith("__"):
-                EmbeddingRegistry._build_adapter_list(
-                    adapter, package, adapters
-                )
+                EmbeddingRegistry._build_adapter_list(adapter, package, adapters)
         if len(adapters) == 0:
             logger.warning("No embedding adapter found.")
 
@@ -48,6 +44,4 @@ class EmbeddingRegistry(AdapterRegistry):
                         Common.METADATA: metadata,
                     }
         except ModuleNotFoundError as exception:
-            logger.error(
-                f"Error while importing embedding adapters : {exception}"
-            )
+            logger.warning(f"Error while importing embedding adapters : {exception}")

@@ -64,7 +64,7 @@ class Postgres(VectorDBAdapter):
             )
             self._schema_name = self._config.get(
                 Constants.SCHEMA,
-                VectorDbConstants.VECTOR_DB_NAME,
+                VectorDbConstants.DEFAULT_VECTOR_DB_NAME,
             )
             dimension = self._config.get(
                 VectorDbConstants.EMBEDDING_DIMENSION,
