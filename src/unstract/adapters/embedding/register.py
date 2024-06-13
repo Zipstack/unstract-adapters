@@ -44,4 +44,4 @@ class EmbeddingRegistry(AdapterRegistry):
                         Common.METADATA: metadata,
                     }
         except ModuleNotFoundError as exception:
-            logger.warning(f"Error while importing embedding adapters : {exception}")
+            logger.warning(f"Unable to import embedding adapters : {exception}")

@@ -44,4 +44,4 @@ class OCRRegistry(AdapterRegistry):
                         Common.METADATA: metadata,
                     }
         except ModuleNotFoundError as exception:
-            logger.warning(f"Error while importing ocr adapters : {exception}")
+            logger.warning(f"Unable to ocr adapters : {exception}")

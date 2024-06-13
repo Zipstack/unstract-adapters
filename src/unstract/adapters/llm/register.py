@@ -44,4 +44,4 @@ class LLMRegistry(AdapterRegistry):
                         Common.METADATA: metadata,
                     }
         except ModuleNotFoundError as exception:
-            logger.warning(f"Error while importing llm adapters : {exception}")
+            logger.warning(f"Unable to import llm adapters : {exception}")

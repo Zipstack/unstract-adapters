@@ -44,4 +44,4 @@ class X2TextRegistry(AdapterRegistry):
                         Common.METADATA: metadata,
                     }
         except ModuleNotFoundError as exception:
-            logger.warning(f"Error while importing X2Text adapters : {exception}")
+            logger.warning(f"Unable to import X2Text adapters : {exception}")
