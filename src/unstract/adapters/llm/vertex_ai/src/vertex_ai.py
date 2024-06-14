@@ -108,8 +108,6 @@ class VertexAILLM(LLMAdapter):
             self._get_vertex_safety_settings(safety_settings_user_config)
         )
 
-        logger.info(f"Safety settings: {vertex_safety_settings}")
-
         llm: LLM = Vertex(
             project=str(self.config.get(Constants.PROJECT)),
             model=str(self.config.get(Constants.MODEL)),
