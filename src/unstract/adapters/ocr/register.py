@@ -17,9 +17,7 @@ class OCRRegistry(AdapterRegistry):
         package = "unstract.adapters.ocr"
 
         for adapter in os.listdir(current_directory):
-            adapter_path = os.path.join(
-                current_directory, adapter, Common.SRC_FOLDER
-            )
+            adapter_path = os.path.join(current_directory, adapter, Common.SRC_FOLDER)
             # Check if the item is a directory and not a
             # special directory like __pycache__
             if os.path.isdir(adapter_path) and not adapter.startswith("__"):
@@ -46,4 +44,4 @@ class OCRRegistry(AdapterRegistry):
                         Common.METADATA: metadata,
                     }
         except ModuleNotFoundError as exception:
-            logger.error(f"Error while importing ocr adapters : {exception}")
+            logger.warning(f"Unable to import ocr adapters : {exception}")
