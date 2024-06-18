@@ -337,6 +337,16 @@ class LLMWhisperer(X2TextAdapter):
         output_file_path: Optional[str] = None,
         **kwargs: dict[Any, Any],
     ) -> dict[str, str]:
+        """Used to extract text from documents.
+
+        Args:
+            input_file_path (str): Path to file that needs to be extracted
+            output_file_path (Optional[str], optional): File path to write
+                extracted text into, if None doesn't write to a file.
+                Defaults to None.
+        Returns:
+            dict[str, str]: extrcted text, whisper_hash
+        """
         output = {}
 
         response: requests.Response = self._send_whisper_request(input_file_path)
