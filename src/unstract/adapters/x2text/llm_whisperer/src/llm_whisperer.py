@@ -267,23 +267,7 @@ class LLMWhisperer(X2TextAdapter):
                 f"{retrieve_response.status_code} - {retrieve_response.text}"
             )
 
-    def process(
-        self,
-        input_file_path: str,
-        output_file_path: Optional[str] = None,
-        **kwargs: dict[Any, Any],
-    ) -> str:
-        """Used to extract text from documents.
-
-        Args:
-            input_file_path (str): Path to file that needs to be extracted
-            output_file_path (Optional[str], optional): File path to write
-                extracted text into, if None doesn't write to a file.
-                Defaults to None.
-
-        Returns:
-            str: Extracted text
-        """
+    def _send_whisper_request(self, input_file_path: str) -> requests.Response:
         headers = self._get_request_headers()
         headers["Content-Type"] = "application/octet-stream"
         params = self._get_whisper_params()
@@ -301,6 +285,11 @@ class LLMWhisperer(X2TextAdapter):
         except OSError as e:
             logger.error(f"OS error while reading {input_file_path}: {e}")
             raise ExtractorError(str(e))
+        return response
+
+    def _process_extract_text_from_response(
+        self, output_file_path: Optional[str], response: requests.Response
+    ) -> str:
 
         output = ""
         if response.status_code == 200:
@@ -319,4 +308,40 @@ class LLMWhisperer(X2TextAdapter):
         except OSError as e:
             logger.error(f"OS error while writing {output_file_path}: {e} ")
             raise ExtractorError(str(e))
+        return output
+
+    def process(
+        self,
+        input_file_path: str,
+        output_file_path: Optional[str] = None,
+        **kwargs: dict[Any, Any],
+    ) -> str:
+        """Used to extract text from documents.
+
+        Args:
+            input_file_path (str): Path to file that needs to be extracted
+            output_file_path (Optional[str], optional): File path to write
+                extracted text into, if None doesn't write to a file.
+                Defaults to None.
+
+        Returns:
+            str: Extracted text
+        """
+        response: requests.Response = self._send_whisper_request(input_file_path)
+
+        return self._process_extract_text_from_response(output_file_path, response)
+
+    def process_with_hash(
+        self,
+        input_file_path: str,
+        output_file_path: Optional[str] = None,
+        **kwargs: dict[Any, Any],
+    ) -> dict[str, str]:
+        output = {}
+
+        response: requests.Response = self._send_whisper_request(input_file_path)
+        output["extracted_text"] = self._process_extract_text_from_response(
+            output_file_path, response
+        )
+        output["whisper_hash"] = response.headers.get("whisper-hash", "")
         return output
