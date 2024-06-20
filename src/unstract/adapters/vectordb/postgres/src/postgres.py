@@ -59,7 +59,7 @@ class Postgres(VectorDBAdapter):
 
     def _get_vector_db_instance(self) -> BasePydanticVectorStore:
         try:
-            encrypted_password = urllib.parse.quote_plus(
+            encoded_password = urllib.parse.quote_plus(
                 str(self._config.get(Constants.PASSWORD))
             )
             self._collection_name = VectorDBHelper.get_collection_name(
@@ -78,7 +78,7 @@ class Postgres(VectorDBAdapter):
                 database=self._config.get(Constants.DATABASE),
                 schema_name=self._schema_name,
                 host=self._config.get(Constants.HOST),
-                password=encrypted_password,
+                password=encoded_password,
                 port=str(self._config.get(Constants.PORT)),
                 user=self._config.get(Constants.USER),
                 table_name=self._collection_name,
