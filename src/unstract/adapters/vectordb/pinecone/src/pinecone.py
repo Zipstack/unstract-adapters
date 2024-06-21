@@ -71,15 +71,15 @@ class Pinecone(VectorDBAdapter):
         self._client = LLamaIndexPinecone(
             api_key=str(self._config.get(Constants.API_KEY))
         )
-        collection_name = VectorDBHelper.get_collection_name(
-            self._config.get(VectorDbConstants.VECTOR_DB_NAME),
-            self._config.get(VectorDbConstants.EMBEDDING_DIMENSION),
-        )
-        self._collection_name = collection_name.replace("_", "-").lower()
         dimension = self._config.get(
             VectorDbConstants.EMBEDDING_DIMENSION,
             VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
         )
+        collection_name = VectorDBHelper.get_collection_name(
+            self._config.get(VectorDbConstants.VECTOR_DB_NAME),
+            dimension,
+        )
+        self._collection_name = collection_name.replace("_", "-").lower()
 
         specification = self._config.get(Constants.SPECIFICATION)
         if specification == Constants.SPEC_POD:
@@ -114,9 +114,6 @@ class Pinecone(VectorDBAdapter):
         return self.vector_db
 
     def test_connection(self) -> bool:
-        self._config[VectorDbConstants.EMBEDDING_DIMENSION] = (
-            VectorDbConstants.TEST_CONNECTION_EMBEDDING_SIZE
-        )
         vector_db = self.get_vector_db_instance()
         test_result: bool = VectorDBHelper.test_vector_db_instance(
             vector_store=vector_db
