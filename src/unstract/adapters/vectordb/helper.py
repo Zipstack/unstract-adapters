@@ -97,7 +97,7 @@ class VectorDBHelper:
             vector_db_collection_name = (
                 vector_db_collection_name + "_" + str(embedding_dimension)
             )
-        if collection_name_prefix is not None:
+        if collection_name_prefix:
             vector_db_collection_name = (
                 collection_name_prefix + vector_db_collection_name
             )
