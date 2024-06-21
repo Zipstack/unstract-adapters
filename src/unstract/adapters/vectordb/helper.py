@@ -93,7 +93,7 @@ class VectorDBHelper:
 
         """
         vector_db_collection_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
-        if embedding_dimension is not None:
+        if embedding_dimension:
             vector_db_collection_name = (
                 vector_db_collection_name + "_" + str(embedding_dimension)
             )
