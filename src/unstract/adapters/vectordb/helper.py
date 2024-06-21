@@ -93,13 +93,13 @@ class VectorDBHelper:
 
         """
         vector_db_collection_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
-        if collection_name_prefix is not None and embedding_dimension is not None:
+        if embedding_dimension is not None:
             vector_db_collection_name = (
-                collection_name_prefix
-                + "_"
-                + VectorDbConstants.DEFAULT_VECTOR_DB_NAME
-                + "_"
-                + str(embedding_dimension)
+                vector_db_collection_name + "_" + str(embedding_dimension)
+            )
+        if collection_name_prefix is not None:
+            vector_db_collection_name = (
+                collection_name_prefix + vector_db_collection_name
             )
         logger.info(f"Vector DB name: {vector_db_collection_name}")
         return vector_db_collection_name
