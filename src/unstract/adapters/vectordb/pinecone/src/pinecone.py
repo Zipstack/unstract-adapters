@@ -67,51 +67,55 @@ class Pinecone(VectorDBAdapter):
         return self._vector_db_instance
 
     def _get_vector_db_instance(self) -> BasePydanticVectorStore:
-
-        self._client = LLamaIndexPinecone(
-            api_key=str(self._config.get(Constants.API_KEY))
-        )
-        dimension = self._config.get(
-            VectorDbConstants.EMBEDDING_DIMENSION,
-            VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
-        )
-        collection_name = VectorDBHelper.get_collection_name(
-            self._config.get(VectorDbConstants.VECTOR_DB_NAME),
-            dimension,
-        )
-        self._collection_name = collection_name.replace("_", "-").lower()
-
-        specification = self._config.get(Constants.SPECIFICATION)
-        if specification == Constants.SPEC_POD:
-            environment = self._config.get(Constants.ENVIRONMENT)
-            spec = PodSpec(
-                environment=environment,
-                replicas=Constants.DEFAULT_SPEC_COUNT_VALUE,
-                shards=Constants.DEFAULT_SPEC_COUNT_VALUE,
-                pods=Constants.DEFAULT_SPEC_COUNT_VALUE,
-                pod_type=Constants.DEFAULT_POD_TYPE,
-            )
-        elif specification == Constants.SPEC_SERVERLESS:
-            cloud = self._config.get(Constants.CLOUD)
-            region = self._config.get(Constants.REGION)
-            spec = ServerlessSpec(cloud=cloud, region=region)
-        logger.info(f"Setting up Pinecone spec for {spec}")
         try:
-            self._client.describe_index(name=self._collection_name)
-        except NotFoundException:
-            logger.info(f"Index:{self._collection_name} does not exist. Creating it.")
-            self._client.create_index(
-                name=self._collection_name,
-                dimension=dimension,
-                metric=Constants.METRIC,
-                spec=spec,
+            self._client = LLamaIndexPinecone(
+                api_key=str(self._config.get(Constants.API_KEY))
             )
-        self.vector_db: BasePydanticVectorStore = PineconeVectorStore(
-            index_name=self._collection_name,
-            api_key=str(self._config.get(Constants.API_KEY)),
-            environment=str(self._config.get(Constants.ENVIRONMENT)),
-        )
-        return self.vector_db
+            dimension = self._config.get(
+                VectorDbConstants.EMBEDDING_DIMENSION,
+                VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
+            )
+            collection_name = VectorDBHelper.get_collection_name(
+                self._config.get(VectorDbConstants.VECTOR_DB_NAME),
+                dimension,
+            )
+            self._collection_name = collection_name.replace("_", "-").lower()
+
+            specification = self._config.get(Constants.SPECIFICATION)
+            if specification == Constants.SPEC_POD:
+                environment = self._config.get(Constants.ENVIRONMENT)
+                spec = PodSpec(
+                    environment=environment,
+                    replicas=Constants.DEFAULT_SPEC_COUNT_VALUE,
+                    shards=Constants.DEFAULT_SPEC_COUNT_VALUE,
+                    pods=Constants.DEFAULT_SPEC_COUNT_VALUE,
+                    pod_type=Constants.DEFAULT_POD_TYPE,
+                )
+            elif specification == Constants.SPEC_SERVERLESS:
+                cloud = self._config.get(Constants.CLOUD)
+                region = self._config.get(Constants.REGION)
+                spec = ServerlessSpec(cloud=cloud, region=region)
+            logger.info(f"Setting up Pinecone spec for {spec}")
+            try:
+                self._client.describe_index(name=self._collection_name)
+            except NotFoundException:
+                logger.info(
+                    f"Index:{self._collection_name} does not exist. Creating it."
+                )
+                self._client.create_index(
+                    name=self._collection_name,
+                    dimension=dimension,
+                    metric=Constants.METRIC,
+                    spec=spec,
+                )
+            self.vector_db: BasePydanticVectorStore = PineconeVectorStore(
+                index_name=self._collection_name,
+                api_key=str(self._config.get(Constants.API_KEY)),
+                environment=str(self._config.get(Constants.ENVIRONMENT)),
+            )
+            return self.vector_db
+        except Exception as e:
+            raise AdapterError(str(e))
 
     def test_connection(self) -> bool:
         vector_db = self.get_vector_db_instance()
