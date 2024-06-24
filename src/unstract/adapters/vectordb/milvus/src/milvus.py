@@ -53,13 +53,13 @@ class Milvus(VectorDBAdapter):
 
     def _get_vector_db_instance(self) -> VectorStore:
         try:
-            self._collection_name = VectorDBHelper.get_collection_name(
-                self._config.get(VectorDbConstants.VECTOR_DB_NAME),
-                self._config.get(VectorDbConstants.EMBEDDING_DIMENSION),
-            )
             dimension = self._config.get(
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
+            )
+            self._collection_name = VectorDBHelper.get_collection_name(
+                self._config.get(VectorDbConstants.VECTOR_DB_NAME),
+                dimension,
             )
             vector_db: VectorStore = MilvusVectorStore(
                 uri=self._config.get(Constants.URI, ""),
@@ -74,9 +74,6 @@ class Milvus(VectorDBAdapter):
             raise AdapterError(str(e))
 
     def test_connection(self) -> bool:
-        self._config[VectorDbConstants.EMBEDDING_DIMENSION] = (
-            VectorDbConstants.TEST_CONNECTION_EMBEDDING_SIZE
-        )
         vector_db = self.get_vector_db_instance()
         test_result: bool = VectorDBHelper.test_vector_db_instance(
             vector_store=vector_db

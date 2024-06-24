@@ -34,7 +34,9 @@ class VectorDBHelper:
             #     chunk_size - 512
             #     llm=None
             llm = MockLLM()
-            embed_model = MockEmbedding(embed_dim=1)
+            embed_model = MockEmbedding(
+                embed_dim=VectorDbConstants.DEFAULT_EMBEDDING_SIZE
+            )
             index = VectorStoreIndex.from_documents(
                 # By default, SimpleDirectoryReader discards paths which
                 # contain one or more parts that are hidden.
@@ -91,13 +93,13 @@ class VectorDBHelper:
 
         """
         vector_db_collection_name: str = VectorDbConstants.DEFAULT_VECTOR_DB_NAME
-        if collection_name_prefix is not None and embedding_dimension is not None:
+        if embedding_dimension:
             vector_db_collection_name = (
-                collection_name_prefix
-                + "_"
-                + VectorDbConstants.DEFAULT_VECTOR_DB_NAME
-                + "_"
-                + str(embedding_dimension)
+                vector_db_collection_name + "_" + str(embedding_dimension)
+            )
+        if collection_name_prefix:
+            vector_db_collection_name = (
+                collection_name_prefix + vector_db_collection_name
             )
         logger.info(f"Vector DB name: {vector_db_collection_name}")
         return vector_db_collection_name
