@@ -59,6 +59,7 @@ class WhispererConfig:
     FORCE_TEXT_PROCESSING = "force_text_processing"
     LINE_SPLITTER_TOLERANCE = "line_splitter_tolerance"
     HORIZONTAL_STRETCH_FACTOR = "horizontal_stretch_factor"
+    STORE_METADATA_FOR_HIGHLIGHTING = "store_metadata_for_highlighting"
 
 
 class WhisperStatus:

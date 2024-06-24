@@ -126,7 +126,7 @@ class LLMWhisperer(X2TextAdapter):
             raise ExtractorError(msg)
         return response
 
-    def _get_whisper_params(self) -> dict[str, Any]:
+    def _get_whisper_params(self, enable_highlight: bool = False) -> dict[str, Any]:
         """Gets query params meant for /whisper endpoint.
 
         The params is filled based on the configuration passed.
@@ -166,6 +166,11 @@ class LLMWhisperer(X2TextAdapter):
                         WhispererDefaults.GAUSSIAN_BLUR_RADIUS,
                     ),
                 }
+            )
+
+        if enable_highlight:
+            params.update(
+                {WhispererConfig.STORE_METADATA_FOR_HIGHLIGHTING: enable_highlight}
             )
         return params
 
@@ -267,10 +272,12 @@ class LLMWhisperer(X2TextAdapter):
                 f"{retrieve_response.status_code} - {retrieve_response.text}"
             )
 
-    def _send_whisper_request(self, input_file_path: str) -> requests.Response:
+    def _send_whisper_request(
+        self, input_file_path: str, enable_highlight: bool = False
+    ) -> requests.Response:
         headers = self._get_request_headers()
         headers["Content-Type"] = "application/octet-stream"
-        params = self._get_whisper_params()
+        params = self._get_whisper_params(enable_highlight)
 
         response: requests.Response
         try:
@@ -349,7 +356,7 @@ class LLMWhisperer(X2TextAdapter):
         """
         output = {}
 
-        response: requests.Response = self._send_whisper_request(input_file_path)
+        response: requests.Response = self._send_whisper_request(input_file_path, True)
         output["extracted_text"] = self._process_extract_text_from_response(
             output_file_path, response
         )
