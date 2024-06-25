@@ -339,7 +339,7 @@ class LLMWhisperer(X2TextAdapter):
         output = {}
 
         response: requests.Response = self._send_whisper_request(
-            input_file_path, bool(kwargs.get("enable_highlight", False))
+            input_file_path, bool(kwargs.get(X2TextConstants.ENABLE_HIGHLIGHT, False))
         )
 
         output[X2TextConstants.EXTRACTED_TEXT] = self._extract_text_from_response(
