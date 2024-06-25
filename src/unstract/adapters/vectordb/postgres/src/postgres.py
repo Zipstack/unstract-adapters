@@ -1,4 +1,5 @@
 import os
+from urllib.parse import quote_plus
 from typing import Any, Optional
 
 import psycopg2
@@ -58,7 +59,9 @@ class Postgres(VectorDBAdapter):
 
     def _get_vector_db_instance(self) -> BasePydanticVectorStore:
         try:
-
+            encoded_password = quote_plus(
+                str(self._config.get(Constants.PASSWORD)
+            )
             dimension = self._config.get(
                 VectorDbConstants.EMBEDDING_DIMENSION,
                 VectorDbConstants.DEFAULT_EMBEDDING_SIZE,
@@ -75,7 +78,7 @@ class Postgres(VectorDBAdapter):
                 database=self._config.get(Constants.DATABASE),
                 schema_name=self._schema_name,
                 host=self._config.get(Constants.HOST),
-                password=self._config.get(Constants.PASSWORD),
+                password=encoded_password,
                 port=str(self._config.get(Constants.PORT)),
                 user=self._config.get(Constants.USER),
                 table_name=self._collection_name,
