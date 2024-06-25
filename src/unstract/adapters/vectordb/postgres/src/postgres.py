@@ -1,5 +1,5 @@
 import os
-import urllib.parse
+from urllib.parse import quote_plus
 from typing import Any, Optional
 
 import psycopg2
