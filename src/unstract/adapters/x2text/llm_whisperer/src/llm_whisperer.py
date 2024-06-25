@@ -9,6 +9,7 @@ from requests.exceptions import ConnectionError, HTTPError, Timeout
 
 from unstract.adapters.exceptions import ExtractorError
 from unstract.adapters.utils import AdapterUtils
+from unstract.adapters.x2text.constants import X2TextConstants
 from unstract.adapters.x2text.llm_whisperer.src.constants import (
     HTTPMethod,
     OutputModes,
@@ -294,7 +295,7 @@ class LLMWhisperer(X2TextAdapter):
             raise ExtractorError(str(e))
         return response
 
-    def _process_extract_text_from_response(
+    def _extract_text_from_response(
         self, output_file_path: Optional[str], response: requests.Response
     ) -> str:
 
@@ -322,7 +323,7 @@ class LLMWhisperer(X2TextAdapter):
         input_file_path: str,
         output_file_path: Optional[str] = None,
         **kwargs: dict[Any, Any],
-    ) -> str:
+    ) -> dict[str, Any]:
         """Used to extract text from documents.
 
         Args:
@@ -334,31 +335,17 @@ class LLMWhisperer(X2TextAdapter):
         Returns:
             str: Extracted text
         """
-        response: requests.Response = self._send_whisper_request(input_file_path)
 
-        return self._process_extract_text_from_response(output_file_path, response)
-
-    def process_with_hash(
-        self,
-        input_file_path: str,
-        output_file_path: Optional[str] = None,
-        **kwargs: dict[Any, Any],
-    ) -> dict[str, str]:
-        """Used to extract text from documents.
-
-        Args:
-            input_file_path (str): Path to file that needs to be extracted
-            output_file_path (Optional[str], optional): File path to write
-                extracted text into, if None doesn't write to a file.
-                Defaults to None.
-        Returns:
-            dict[str, str]: extrcted text, whisper_hash
-        """
         output = {}
 
-        response: requests.Response = self._send_whisper_request(input_file_path, True)
-        output["extracted_text"] = self._process_extract_text_from_response(
+        response: requests.Response = self._send_whisper_request(
+            input_file_path, bool(kwargs.get("enable_highlight", False))
+        )
+
+        output[X2TextConstants.EXTRACTED_TEXT] = self._extract_text_from_response(
             output_file_path, response
         )
-        output["whisper_hash"] = response.headers.get("whisper-hash", "")
+        output[X2TextConstants.WHISPER_HASH] = response.headers.get(
+            X2TextConstants.WHISPER_HASH, ""
+        )
         return output

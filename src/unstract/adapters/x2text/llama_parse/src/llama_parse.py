@@ -8,6 +8,7 @@ from llama_parse import LlamaParse
 
 from unstract.adapters.exceptions import AdapterError
 from unstract.adapters.utils import AdapterUtils
+from unstract.adapters.x2text.constants import X2TextConstants
 from unstract.adapters.x2text.llama_parse.src.constants import LlamaParseConfig
 from unstract.adapters.x2text.x2text_adapter import X2TextAdapter
 
@@ -91,13 +92,16 @@ class LlamaParseAdapter(X2TextAdapter):
         input_file_path: str,
         output_file_path: Optional[str] = None,
         **kwargs: dict[Any, Any],
-    ) -> str:
+    ) -> dict[str, Any]:
 
         response_text = self._call_parser(input_file_path=input_file_path)
         if output_file_path:
             with open(output_file_path, "w", encoding="utf-8") as f:
                 f.write(response_text)
-        return response_text
+
+        output = {}
+        output[X2TextConstants.EXTRACTED_TEXT] = response_text
+        return output
 
     def test_connection(self) -> bool:
         self._call_parser(

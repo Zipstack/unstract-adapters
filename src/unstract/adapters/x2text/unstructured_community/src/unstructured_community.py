@@ -2,6 +2,7 @@ import logging
 import os
 from typing import Any, Optional
 
+from unstract.adapters.x2text.constants import X2TextConstants
 from unstract.adapters.x2text.helper import UnstructuredHelper
 from unstract.adapters.x2text.x2text_adapter import X2TextAdapter
 
@@ -41,10 +42,13 @@ class UnstructuredCommunity(X2TextAdapter):
         input_file_path: str,
         output_file_path: Optional[str] = None,
         **kwargs: dict[Any, Any],
-    ) -> str:
-        output: str = UnstructuredHelper.process_document(
+    ) -> dict[str, Any]:
+        extracted_text: str = UnstructuredHelper.process_document(
             self.config, input_file_path, output_file_path
         )
+
+        output = {}
+        output[X2TextConstants.EXTRACTED_TEXT] = extracted_text
         return output
 
     def test_connection(self) -> bool:
