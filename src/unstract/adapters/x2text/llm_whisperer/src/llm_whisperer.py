@@ -10,7 +10,7 @@ from requests.exceptions import ConnectionError, HTTPError, Timeout
 from unstract.adapters.exceptions import ExtractorError
 from unstract.adapters.utils import AdapterUtils
 from unstract.adapters.x2text.constants import X2TextConstants
-from unstract.adapters.x2text.dto import TextExtractionMetaData, TextExtractionResult
+from unstract.adapters.x2text.dto import TextExtractionMetadata, TextExtractionResult
 from unstract.adapters.x2text.llm_whisperer.src.constants import (
     HTTPMethod,
     OutputModes,
@@ -341,7 +341,7 @@ class LLMWhisperer(X2TextAdapter):
             input_file_path, bool(kwargs.get(X2TextConstants.ENABLE_HIGHLIGHT, False))
         )
 
-        metadata = TextExtractionMetaData(
+        metadata = TextExtractionMetadata(
             whisper_hash=response.headers.get(X2TextConstants.WHISPER_HASH, "")
         )
 
