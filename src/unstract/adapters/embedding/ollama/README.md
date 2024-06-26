@@ -1,0 +1,1 @@
+# Unstract Ollama Embedding Adapter
