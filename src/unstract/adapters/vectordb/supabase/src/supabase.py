@@ -1,6 +1,6 @@
 import os
 from typing import Any, Optional
-
+from urllib.parse import quote_plus
 from llama_index.core.vector_stores.types import VectorStore
 from llama_index.vector_stores.supabase import SupabaseVectorStore
 from vecs import Client
@@ -70,12 +70,15 @@ class Supabase(VectorDBAdapter):
             )
             user = str(self._config.get(Constants.USER))
             password = str(self._config.get(Constants.PASSWORD))
+            encoded_password = quote_plus(
+                str(password)
+            )
             host = str(self._config.get(Constants.HOST))
             port = str(self._config.get(Constants.PORT))
             db_name = str(self._config.get(Constants.DATABASE))
 
             postgres_connection_string = (
-                f"postgresql://{user}:{password}@{host}:{port}/{db_name}"
+                f"postgresql://{user}:{encoded_password}@{host}:{port}/{db_name}"
             )
             vector_db: VectorStore = SupabaseVectorStore(
                 postgres_connection_string=postgres_connection_string,
