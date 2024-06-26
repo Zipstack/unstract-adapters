@@ -2,7 +2,7 @@ import logging
 import os
 from typing import Any, Optional
 
-from unstract.adapters.x2text.constants import X2TextConstants
+from unstract.adapters.x2text.dto import TextExtractionResult
 from unstract.adapters.x2text.helper import UnstructuredHelper
 from unstract.adapters.x2text.x2text_adapter import X2TextAdapter
 
@@ -42,13 +42,14 @@ class UnstructuredEnterprise(X2TextAdapter):
         input_file_path: str,
         output_file_path: Optional[str] = None,
         **kwargs: dict[str, Any],
-    ) -> dict[str, Any]:
+    ) -> TextExtractionResult:
         extracted_text: str = UnstructuredHelper.process_document(
             self.config, input_file_path, output_file_path
         )
-        output = {}
-        output[X2TextConstants.EXTRACTED_TEXT] = extracted_text
-        return output
+
+        return TextExtractionResult(
+            extracted_text=extracted_text, extraction_metadata=None
+        )
 
     def test_connection(self) -> bool:
         result: bool = UnstructuredHelper.test_server_connection(self.config)

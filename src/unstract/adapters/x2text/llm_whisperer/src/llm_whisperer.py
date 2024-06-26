@@ -10,6 +10,7 @@ from requests.exceptions import ConnectionError, HTTPError, Timeout
 from unstract.adapters.exceptions import ExtractorError
 from unstract.adapters.utils import AdapterUtils
 from unstract.adapters.x2text.constants import X2TextConstants
+from unstract.adapters.x2text.dto import TextExtractionMetaData, TextExtractionResult
 from unstract.adapters.x2text.llm_whisperer.src.constants import (
     HTTPMethod,
     OutputModes,
@@ -323,7 +324,7 @@ class LLMWhisperer(X2TextAdapter):
         input_file_path: str,
         output_file_path: Optional[str] = None,
         **kwargs: dict[Any, Any],
-    ) -> dict[str, Any]:
+    ) -> TextExtractionResult:
         """Used to extract text from documents.
 
         Args:
@@ -336,16 +337,15 @@ class LLMWhisperer(X2TextAdapter):
             str: Extracted text
         """
 
-        output = {}
-
         response: requests.Response = self._send_whisper_request(
             input_file_path, bool(kwargs.get(X2TextConstants.ENABLE_HIGHLIGHT, False))
         )
 
-        output[X2TextConstants.EXTRACTED_TEXT] = self._extract_text_from_response(
-            output_file_path, response
+        metadata = TextExtractionMetaData(
+            whisper_hash=response.headers.get(X2TextConstants.WHISPER_HASH, "")
         )
-        output[X2TextConstants.WHISPER_HASH] = response.headers.get(
-            X2TextConstants.WHISPER_HASH, ""
+
+        return TextExtractionResult(
+            extracted_text=self._extract_text_from_response(output_file_path, response),
+            extraction_metadata=metadata,
         )
-        return output
