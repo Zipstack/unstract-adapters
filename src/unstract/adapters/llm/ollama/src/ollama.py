@@ -62,6 +62,7 @@ class OllamaLLM(LLMAdapter):
                 ),
                 json_mode=False,
                 context_window=int(self.config.get(Constants.CONTEXT_WINDOW, 3900)),
+                temperature=0.01,
             )
             return llm
 
