@@ -60,7 +60,7 @@ class Postgres(VectorDBAdapter):
     def _get_vector_db_instance(self) -> BasePydanticVectorStore:
         try:
             encoded_password = quote_plus(
-                str(self._config.get(Constants.PASSWORD)
+                str(self._config.get(Constants.PASSWORD))
             )
             dimension = self._config.get(
                 VectorDbConstants.EMBEDDING_DIMENSION,
