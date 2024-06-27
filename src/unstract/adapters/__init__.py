@@ -1,6 +1,5 @@
 __version__ = "0.20.0"
 
-
 import logging
 from logging import NullHandler
 from typing import Any
