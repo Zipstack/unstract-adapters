@@ -1,5 +1,5 @@
 from dataclasses import dataclass
-from typing import Union
+from typing import Optional
 
 
 @dataclass
@@ -10,4 +10,4 @@ class TextExtractionMetadata:
 @dataclass
 class TextExtractionResult:
     extracted_text: str
-    extraction_metadata: Union[TextExtractionMetadata, None]
+    extraction_metadata: Optional[TextExtractionMetadata] = None

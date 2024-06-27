@@ -99,9 +99,7 @@ class LlamaParseAdapter(X2TextAdapter):
             with open(output_file_path, "w", encoding="utf-8") as f:
                 f.write(response_text)
 
-        return TextExtractionResult(
-            extracted_text=response_text, extraction_metadata=None
-        )
+        return TextExtractionResult(extracted_text=response_text)
 
     def test_connection(self) -> bool:
         self._call_parser(

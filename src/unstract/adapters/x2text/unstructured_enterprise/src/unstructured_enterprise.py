@@ -47,9 +47,7 @@ class UnstructuredEnterprise(X2TextAdapter):
             self.config, input_file_path, output_file_path
         )
 
-        return TextExtractionResult(
-            extracted_text=extracted_text, extraction_metadata=None
-        )
+        return TextExtractionResult(extracted_text=extracted_text)
 
     def test_connection(self) -> bool:
         result: bool = UnstructuredHelper.test_server_connection(self.config)
