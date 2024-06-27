@@ -99,7 +99,7 @@ class VectorDBHelper:
             )
         if collection_name_prefix:
             vector_db_collection_name = (
-                collection_name_prefix + vector_db_collection_name
+                collection_name_prefix + "_" + vector_db_collection_name
             )
         logger.info(f"Vector DB name: {vector_db_collection_name}")
         return vector_db_collection_name
