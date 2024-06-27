@@ -1,0 +1,29 @@
+{
+  "title": "Ollama Embedding",
+  "type": "object",
+  "required": [
+    "adapter_name",
+    "model_name"
+  ],
+  "properties": {
+    "adapter_name": {
+      "type": "string",
+      "title": "Name",
+      "default": "",
+      "description": "Provide a unique name for this adapter instance. Example: ollama-emb-1"
+    },
+    "model_name": {
+      "type": "string",
+      "title": "Model Name",
+      "default": "mxbai-embed-large",
+      "description": "Provide the name of the model to use for embedding. Example: mxbai-embed-large"
+    },
+    "embed_batch_size": {
+      "type": "number",
+      "minimum": 0,
+      "multipleOf": 1,
+      "title": "Embed Batch Size",
+      "default": 10
+    }
+  }
+}
