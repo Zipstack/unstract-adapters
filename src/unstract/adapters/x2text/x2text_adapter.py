@@ -3,6 +3,7 @@ from typing import Any, Optional
 
 from unstract.adapters.base import Adapter
 from unstract.adapters.enums import AdapterTypes
+from unstract.adapters.x2text.dto import TextExtractionResult
 
 
 class X2TextAdapter(Adapter, ABC):
@@ -42,6 +43,8 @@ class X2TextAdapter(Adapter, ABC):
         input_file_path: str,
         output_file_path: Optional[str] = None,
         **kwargs: dict[Any, Any],
-    ) -> str:
-        # Overriding methods will have the actual implementation
-        return ""
+    ) -> TextExtractionResult:
+
+        return TextExtractionResult(
+            extracted_text="extracted text", extraction_metadata=None
+        )

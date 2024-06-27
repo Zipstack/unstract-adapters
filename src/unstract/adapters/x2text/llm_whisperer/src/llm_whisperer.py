@@ -9,6 +9,8 @@ from requests.exceptions import ConnectionError, HTTPError, Timeout
 
 from unstract.adapters.exceptions import ExtractorError
 from unstract.adapters.utils import AdapterUtils
+from unstract.adapters.x2text.constants import X2TextConstants
+from unstract.adapters.x2text.dto import TextExtractionMetadata, TextExtractionResult
 from unstract.adapters.x2text.llm_whisperer.src.constants import (
     HTTPMethod,
     OutputModes,
@@ -126,7 +128,7 @@ class LLMWhisperer(X2TextAdapter):
             raise ExtractorError(msg)
         return response
 
-    def _get_whisper_params(self) -> dict[str, Any]:
+    def _get_whisper_params(self, enable_highlight: bool = False) -> dict[str, Any]:
         """Gets query params meant for /whisper endpoint.
 
         The params is filled based on the configuration passed.
@@ -166,6 +168,11 @@ class LLMWhisperer(X2TextAdapter):
                         WhispererDefaults.GAUSSIAN_BLUR_RADIUS,
                     ),
                 }
+            )
+
+        if enable_highlight:
+            params.update(
+                {WhispererConfig.STORE_METADATA_FOR_HIGHLIGHTING: enable_highlight}
             )
         return params
 
@@ -267,26 +274,12 @@ class LLMWhisperer(X2TextAdapter):
                 f"{retrieve_response.status_code} - {retrieve_response.text}"
             )
 
-    def process(
-        self,
-        input_file_path: str,
-        output_file_path: Optional[str] = None,
-        **kwargs: dict[Any, Any],
-    ) -> str:
-        """Used to extract text from documents.
-
-        Args:
-            input_file_path (str): Path to file that needs to be extracted
-            output_file_path (Optional[str], optional): File path to write
-                extracted text into, if None doesn't write to a file.
-                Defaults to None.
-
-        Returns:
-            str: Extracted text
-        """
+    def _send_whisper_request(
+        self, input_file_path: str, enable_highlight: bool = False
+    ) -> requests.Response:
         headers = self._get_request_headers()
         headers["Content-Type"] = "application/octet-stream"
-        params = self._get_whisper_params()
+        params = self._get_whisper_params(enable_highlight)
 
         response: requests.Response
         try:
@@ -301,6 +294,11 @@ class LLMWhisperer(X2TextAdapter):
         except OSError as e:
             logger.error(f"OS error while reading {input_file_path}: {e}")
             raise ExtractorError(str(e))
+        return response
+
+    def _extract_text_from_response(
+        self, output_file_path: Optional[str], response: requests.Response
+    ) -> str:
 
         output = ""
         if response.status_code == 200:
@@ -320,3 +318,34 @@ class LLMWhisperer(X2TextAdapter):
             logger.error(f"OS error while writing {output_file_path}: {e} ")
             raise ExtractorError(str(e))
         return output
+
+    def process(
+        self,
+        input_file_path: str,
+        output_file_path: Optional[str] = None,
+        **kwargs: dict[Any, Any],
+    ) -> TextExtractionResult:
+        """Used to extract text from documents.
+
+        Args:
+            input_file_path (str): Path to file that needs to be extracted
+            output_file_path (Optional[str], optional): File path to write
+                extracted text into, if None doesn't write to a file.
+                Defaults to None.
+
+        Returns:
+            str: Extracted text
+        """
+
+        response: requests.Response = self._send_whisper_request(
+            input_file_path, bool(kwargs.get(X2TextConstants.ENABLE_HIGHLIGHT, False))
+        )
+
+        metadata = TextExtractionMetadata(
+            whisper_hash=response.headers.get(X2TextConstants.WHISPER_HASH, "")
+        )
+
+        return TextExtractionResult(
+            extracted_text=self._extract_text_from_response(output_file_path, response),
+            extraction_metadata=metadata,
+        )
