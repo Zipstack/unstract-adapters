@@ -1,5 +1,4 @@
-__version__ = "0.19.2"
-
+__version__ = "0.20.0"
 
 import logging
 from logging import NullHandler
