@@ -18,6 +18,12 @@
       "default": "mxbai-embed-large",
       "description": "Provide the name of the model to use for embedding. Example: mxbai-embed-large"
     },
+    "base_url": {
+      "type": "string",
+      "title": "Base URL",
+      "default": "",
+      "description": "Provide the base URL where Ollama server is running."
+    },
     "embed_batch_size": {
       "type": "number",
       "minimum": 0,

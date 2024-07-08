@@ -13,6 +13,7 @@ from unstract.adapters.exceptions import AdapterError
 class Constants:
     MODEL = "model_name"
     ADAPTER_NAME = "adapter_name"
+    BASE_URL = "base_url"
 
 
 class Ollama(EmbeddingAdapter):
@@ -51,6 +52,7 @@ class Ollama(EmbeddingAdapter):
             )
             embedding: BaseEmbedding = OllamaEmbedding(
                 model_name=str(self.config.get(Constants.MODEL)),
+                base_url=str(self.config.get(Constants.BASE_URL)),
                 embed_batch_size=embedding_batch_size,
             )
             return embedding
