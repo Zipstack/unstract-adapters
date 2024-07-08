@@ -21,7 +21,7 @@
     "base_url": {
       "type": "string",
       "title": "Base URL",
-      "default": "",
+      "default": "http://localhost:11434",
       "description": "Provide the base URL where Ollama server is running."
     },
     "embed_batch_size": {
