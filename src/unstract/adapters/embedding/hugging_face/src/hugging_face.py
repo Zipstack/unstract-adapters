@@ -1,4 +1,3 @@
-import json
 import os
 from typing import Any, Optional
 
@@ -22,9 +21,6 @@ class HuggingFace(EmbeddingAdapter):
     def __init__(self, settings: dict[str, Any]):
         super().__init__("HuggingFace")
         self.config = settings
-        self.json_credentials = json.loads(
-            settings.get("json_credentials", "{}")
-        )
 
     @staticmethod
     def get_id() -> str:
