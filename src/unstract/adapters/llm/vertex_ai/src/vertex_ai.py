@@ -66,6 +66,10 @@ class VertexAILLM(LLMAdapter):
         return "Vertex Gemini LLM"
 
     @staticmethod
+    def get_provider() -> str:
+        return "vertex_ai"
+
+    @staticmethod
     def get_icon() -> str:
         return "/icons/adapter-icons/VertexAI.png"
 

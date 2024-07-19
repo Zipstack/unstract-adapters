@@ -28,6 +28,10 @@ class LLMAdapter(Adapter, ABC):
         return ""
 
     @staticmethod
+    def get_provider() -> str:
+        return ""
+
+    @staticmethod
     def get_icon() -> str:
         return ""
 

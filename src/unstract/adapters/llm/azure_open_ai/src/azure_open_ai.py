@@ -40,6 +40,10 @@ class AzureOpenAILLM(LLMAdapter):
         return "AzureOpenAI LLM"
 
     @staticmethod
+    def get_description() -> str:
+        return "azure"
+
+    @staticmethod
     def get_icon() -> str:
         return "/icons/adapter-icons/AzureopenAI.png"
 

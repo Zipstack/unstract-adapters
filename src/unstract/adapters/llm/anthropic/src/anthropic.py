@@ -35,6 +35,10 @@ class AnthropicLLM(LLMAdapter):
         return "Anthropic LLM"
 
     @staticmethod
+    def get_description() -> str:
+        return "anthropic"
+
+    @staticmethod
     def get_icon() -> str:
         return "/icons/adapter-icons/Anthropic.png"
 

@@ -32,7 +32,7 @@ class HuggingFace(EmbeddingAdapter):
 
     @staticmethod
     def get_description() -> str:
-        return "HuggingFace LLM"
+        return "HuggingFace Embedding"
 
     @staticmethod
     def get_icon() -> str:

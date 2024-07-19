@@ -36,6 +36,10 @@ class AnyScaleLLM(LLMAdapter):
         return "AnyScale LLM"
 
     @staticmethod
+    def get_description() -> str:
+        return "anyscale"
+
+    @staticmethod
     def get_icon() -> str:
         return "/icons/adapter-icons/anyscale.png"
 
