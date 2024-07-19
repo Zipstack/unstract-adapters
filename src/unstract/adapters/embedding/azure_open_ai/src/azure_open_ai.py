@@ -38,7 +38,7 @@ class AzureOpenAI(EmbeddingAdapter):
 
     @staticmethod
     def get_provider() -> str:
-        return "openai"
+        return "azure"
 
     @staticmethod
     def get_icon() -> str:
