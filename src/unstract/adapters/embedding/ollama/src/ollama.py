@@ -33,6 +33,10 @@ class Ollama(EmbeddingAdapter):
         return "Ollama Embedding"
 
     @staticmethod
+    def get_provider() -> str:
+        return "ollama"
+
+    @staticmethod
     def get_icon() -> str:
         return "/icons/adapter-icons/ollama.png"
 

@@ -35,6 +35,10 @@ class OpenAI(EmbeddingAdapter):
         return "OpenAI LLM"
 
     @staticmethod
+    def get_provider() -> str:
+        return "openai"
+
+    @staticmethod
     def get_icon() -> str:
         return "/icons/adapter-icons/OpenAI.png"
 

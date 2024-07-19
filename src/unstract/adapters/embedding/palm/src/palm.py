@@ -33,6 +33,10 @@ class PaLM(EmbeddingAdapter):
         return "PaLM Embedding"
 
     @staticmethod
+    def get_provider() -> str:
+        return "palm"
+
+    @staticmethod
     def get_icon() -> str:
         return "/icons/adapter-icons/PaLM.png"
 
