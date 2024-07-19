@@ -40,7 +40,7 @@ class AzureOpenAILLM(LLMAdapter):
         return "AzureOpenAI LLM"
 
     @staticmethod
-    def get_description() -> str:
+    def get_provider() -> str:
         return "azure"
 
     @staticmethod
