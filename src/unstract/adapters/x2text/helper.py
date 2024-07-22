@@ -49,9 +49,7 @@ class UnstructuredHelper:
     PROCESS = "process"
 
     @staticmethod
-    def test_server_connection(
-        unstructured_adapter_config: dict[str, Any]
-    ) -> bool:
+    def test_server_connection(unstructured_adapter_config: dict[str, Any]) -> bool:
         UnstructuredHelper.make_request(
             unstructured_adapter_config, UnstructuredHelper.TEST_CONNECTION
         )
@@ -66,9 +64,7 @@ class UnstructuredHelper:
         try:
             response: Response
             with open(input_file_path, "rb") as input_f:
-                mime_type = AdapterUtils.get_file_mime_type(
-                    input_file=input_file_path
-                )
+                mime_type = AdapterUtils.get_file_mime_type(input_file=input_file_path)
                 files = {"file": (input_file_path, input_f, mime_type)}
                 response = UnstructuredHelper.make_request(
                     unstructured_adapter_config=unstructured_adapter_config,
@@ -95,9 +91,7 @@ class UnstructuredHelper:
         request_type: str,
         **kwargs: dict[Any, Any],
     ) -> Response:
-        unstructured_url = unstructured_adapter_config.get(
-            UnstructuredHelper.URL
-        )
+        unstructured_url = unstructured_adapter_config.get(UnstructuredHelper.URL)
 
         x2text_service_url = unstructured_adapter_config.get(
             X2TextConstants.X2TEXT_HOST
